@@ -132,6 +132,11 @@
                   name="Daily Attendance Report"
                   sequence="1"
                   action="hiworth_hr_attendance_view_employee_attendance_action"/>
+<!--        <menuitem id="menu_permenant_employee_indiv_attendance_hiworth"-->
+<!--                  parent="hiworth_hr_attendance.menu_attendance_reports"-->
+<!--                  name="Individual Attendance Report"-->
+<!--                  sequence="9"-->
+<!--                  action="hiworth_hr_attendance.action_emp_indiv_attendance_wizard"/>-->
 
 
     </data>

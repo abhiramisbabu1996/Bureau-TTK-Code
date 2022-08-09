@@ -15,6 +15,7 @@
         'security/ir.model.access.csv',
         # 'security/ir.rule.csv',
         'report/hiworth_hr_leave.xml',
+        'report/individual_attendance_report.xml',
         'report/daily_report.xml',
         'report/payslip_batches_report_view.xml',
         'report/individual_payslip_report_views.xml',

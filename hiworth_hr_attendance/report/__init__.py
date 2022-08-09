@@ -5,3 +5,4 @@ import attendance_report
 import pt_report
 import esi_report
 import labour_welfare_fund_report
+import individual_attendance_report
