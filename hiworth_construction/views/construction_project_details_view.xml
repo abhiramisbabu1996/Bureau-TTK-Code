@@ -1945,8 +1945,8 @@ same stock location, same pricelist,same GST Rate calculation and same currency 
 				</xpath>
 				<xpath expr="//field[@name='email']" position="after">
 
-					<field name="tds_applicable" />
-					<field name="pan_no" attrs="{'required':[('tds_applicable','=',True)]}"/>
+					<field name="tds_applicable" invisible="1"/>
+<!--					<field name="pan_no" attrs="{'required':[('tds_applicable','=',True)]}" invisible="1"/>-->
 				</xpath>
 				<xpath expr="//field[@name='email']" position="attributes">
 					<field name="required">0</field>
@@ -1955,7 +1955,7 @@ same stock location, same pricelist,same GST Rate calculation and same currency 
 					<field name="post" placeholder="Post" />
 				</xpath>
 				<xpath expr="//field[@name='city']" position="replace">
-					<field name="city" placeholder="District" style="width: 40%%" />
+					<field name="city" placeholder="City" style="width: 40%%" />
 				</xpath>
 				<xpath expr="//field[@name='street']" position="replace">
 					<field name="street" placeholder="House no., House name" />

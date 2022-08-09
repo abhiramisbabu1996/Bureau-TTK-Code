@@ -79,9 +79,9 @@
         <record id="make_invisible_insurance" model="res.groups">
             <field name="name">Visible Insurance Menu</field>
         </record>
-        <record model="ir.ui.menu" id="hiworth_hr_attendance.employee_insurance_menu">
-            <field name="groups_id" eval="[(5,ref('make_invisible_insurance'))]"/>
-        </record>
+<!--        <record model="ir.ui.menu" id="hiworth_hr_attendance.employee_insurance_menu">-->
+<!--            <field name="groups_id" eval="[(5,ref('make_invisible_insurance'))]"/>-->
+<!--        </record>-->
 		<menuitem id="hiworth_hr_attendance.employee_insurance_menu"  name="Insurances" groups="make_invisible_insurance"/>
 
 
@@ -147,9 +147,9 @@
         <record id="make_invisible_canteen_canteen_atten" model="res.groups">
             <field name="name">Canteen Attendance</field>
         </record>
-        <record model="ir.ui.menu" id="hiworth_hr_attendance.employee_canteen11">
-            <field name="groups_id" eval="[(5,ref('make_invisible_canteen_canteen_atten'))]"/>
-        </record>
+<!--        <record model="ir.ui.menu" id="hiworth_hr_attendance.employee_canteen11">-->
+<!--            <field name="groups_id" eval="[(5,ref('make_invisible_canteen_canteen_atten'))]"/>-->
+<!--        </record>-->
         <menuitem id="hiworth_hr_attendance.employee_canteen11" groups="make_invisible_canteen_canteen_atten"/>
 
 
