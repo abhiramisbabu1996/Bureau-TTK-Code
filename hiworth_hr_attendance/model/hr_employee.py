@@ -320,7 +320,7 @@ class HrEmployee(models.Model):
     salary_account_no = fields.Char('Salary Account Number')
     p_bank_name = fields.Char('Bank')
     p_iban = fields.Char('IBAN')
-    p_ifsc_code = fields.Char('Bank')
+    p_ifsc_code = fields.Char('IFSC')
     wps = fields.Char('WPS Salary Account')
     bank_exch = fields.Char('Bank/Exchange')
     card_no = fields.Char('Account/Card Number')

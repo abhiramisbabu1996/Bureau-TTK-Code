@@ -178,12 +178,12 @@
         </record>
 
 
-        <menuitem id="menu_hr_payroll_employee"
-                  parent="hr_payroll.menu_hr_root_payroll"
-                  name="Employee - Payroll List"
-                  action="open_view_employee_list_paroll_action"
-                  groups="base.group_hr_manager,group_hr"
-                  sequence="1"/>
+<!--        <menuitem id="menu_hr_payroll_employee"-->
+<!--                  parent="hr_payroll.menu_hr_root_payroll"-->
+<!--                  name="Employee - Payroll List"-->
+<!--                  action="open_view_employee_list_paroll_action"-->
+<!--                  groups="base.group_hr_manager,group_hr"-->
+<!--                  sequence="1"/>-->
 
           <record model="ir.ui.view" id="monthly_leave_status_id_tree">
         <field name="name">Previous Monthly Leave</field>

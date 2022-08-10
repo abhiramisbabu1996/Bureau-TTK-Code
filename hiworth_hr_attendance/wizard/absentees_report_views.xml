@@ -34,11 +34,11 @@
 
         </record>
 
-          <menuitem id="menu_absentees_report"
-                  parent="hiworth_hr_attendance.menu_attendance_reports"
-                  name="Absentees Report"
-                  sequence="3"
-                  action="action_absentees_report"/>
+<!--          <menuitem id="menu_absentees_report"-->
+<!--                  parent="hiworth_hr_attendance.menu_attendance_reports"-->
+<!--                  name="Absentees Report"-->
+<!--                  sequence="3"-->
+<!--                  action="action_absentees_report"/>-->
 
 
 
