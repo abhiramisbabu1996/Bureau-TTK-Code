@@ -203,11 +203,6 @@ class AbsenteesReport(models.TransientModel):
     attendance_category = fields.Selection([('all','All'),
                                             ('office_staff', 'Office Staff'),
                                             ('site_employee', 'Site Employee'),
-                                            ('taurus_driver', 'Taurus Driver'),
-                                            ('eicher_driver', 'Eicher Driver'),
-                                            ('pickup_driver', 'Pick Up Driver'),
-                                            ('operators', 'Operators'),
-                                            ('cleaners', 'Cleaners')
                                             ], string='Attendance Category')
 
 

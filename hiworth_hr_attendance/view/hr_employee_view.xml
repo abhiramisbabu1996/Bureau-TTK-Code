@@ -726,10 +726,13 @@
                           <field name="licence" attrs="{'invisible':[('type_of_card','!=','license')]}"/>
                           <field name="vehicle_no"/>
                       </group>
-                      <group string="Bank account Informations">
-                        <field name="address_home_id" invisible="1"/>
-                        <field name="bank_account_id"/>
-                      </group>
+                        <group string="House Details" attrs="{'invisible':[('user_category','=','labour')]}">
+                        <field name="house_ownership"/>
+                        <field name="house_area"/>
+                        <field name="building_roof"/>
+                        <field name="is_truss_house"/>
+                    </group>
+
                     </group>
                     <group>
                     <group string="Status">
@@ -742,6 +745,7 @@
                         <field name="user_id" invisible="1"/>
                         <field name="emergency_person"/>
                         <field name="emergency_no"/>
+                        <field name="emergency_con_address"/>
                       </group>
                       <group string="Birth">
                         <field name="birthday"/>
@@ -752,16 +756,7 @@
                         <field name="weight"/>
                       </group>
                     </group>
-                    <group string="House Details" attrs="{'invisible':[('user_category','=','labour')]}">
-                      <group>
-                        <field name="house_ownership"/>
-                        <field name="house_area"/>
-                        <field name="building_roof"/>
-                        <field name="is_truss_house"/>
-                      </group>
-                      <group>
-                      </group>
-                    </group>
+
                     <group string="Family Members" attrs="{'invisible':[('user_category','=','labour')]}">
                       <field name="family_ids" nolabel="1">
                         <tree editable="bottom">
@@ -805,8 +800,28 @@
                   
                   <!-- <field name="employee_type"/> -->
                 </page>
-                
+
+
+
+
                 </xpath>
+                <xpath expr="//page[@string='HR Settings']" position="after">
+                        <page string="Bank Account Informations">
+                            <group>
+                        <field name="address_home_id" invisible="1"/>
+                        <field name="salary_account_no" style="width: 70%"/>
+                        <field name="p_bank_name" style="width: 70%"/>
+                        <field name="p_iban" style="width: 70%"/>
+                        <field name="p_ifsc_code" style="width: 70%"/>
+                        <field name="wps" style="width: 70%"/>
+                        <field name="bank_exch" style="width: 70%"/>
+                        <field name="card_no" style="width: 70%"/>
+                      </group>
+                        </page>
+                    <page string="Bank Account" invisible="1">
+                        <field name="bank_account_id" string="Salary Account Number" style="width: 70%" invisible="1"/>
+                    </page>
+                    </xpath>
 
 <!--                <xpath expr="//page[@string='HR Settings']" position="after">-->
 <!--                  <page string="Signature Settings" attrs="{'invisible':[('user_category','=','labour')]}">-->

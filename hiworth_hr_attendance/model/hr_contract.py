@@ -200,6 +200,11 @@ class HrContract(models.Model):
 
     reference_number = fields.Char()
 
+    emirate_id_no = fields.Char('Emirates ID Number')
+    emirate_id_exp = fields.Date('Emirates ID Expiry')
+    passport_no = fields.Char('Passport Number')
+    passport_expiry = fields.Date('Passport Expiry')
+
     @api.multi
     def action_active(self):
         for rec in self:

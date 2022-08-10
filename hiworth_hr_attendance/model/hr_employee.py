@@ -253,7 +253,7 @@ class HrEmployee(models.Model):
                                       # ('fuels', 'Fuels')
                                       ], string='Position', required=True)
 
-    attendance_category = fields.Selection([('office_staff', 'Office Emoloyee'),
+    attendance_category = fields.Selection([('office_staff', 'Office Employee'),
                                             ('project_eng', 'Project Engineer'),
                                             ('site_employee', 'Site Employee'),
                                             ], string='Attendance Category')
@@ -312,6 +312,19 @@ class HrEmployee(models.Model):
     labour_category_account_id = fields.Many2one('account.account',domain="[('labour_categ','=',True)]",string="Labour Account Category")
     pt_check = fields.Boolean("Professional Tax")
     labour_welfare_fund = fields.Boolean("Labour Welfare Fund")
+
+    emergency_con_person = fields.Char('Emergency Contact Person')
+    emergency_con_person_ph = fields.Char('Emergency Contact Person Number')
+    emergency_con_address = fields.Char('Emergency Contact Address')
+
+    salary_account_no = fields.Char('Salary Account Number')
+    p_bank_name = fields.Char('Bank')
+    p_iban = fields.Char('IBAN')
+    p_ifsc_code = fields.Char('Bank')
+    wps = fields.Char('WPS Salary Account')
+    bank_exch = fields.Char('Bank/Exchange')
+    card_no = fields.Char('Account/Card Number')
+
 
     @api.onchange('address_boolean')
     def _onchange_address_boolean(self):

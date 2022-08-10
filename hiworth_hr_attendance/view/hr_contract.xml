@@ -21,6 +21,19 @@
                 </header>
             </xpath>
 
+
+<!--            <xpath expr="//notebook/page[@string='Work Permit']" position="attributes">-->
+<!--            <attribute name="invisible">1</attribute>-->
+<!--            </xpath>-->
+
+            <xpath expr="//notebook/page[@string='Work Permit']/group/field[@name='visa_expire']" position="after">
+
+                  <field name="emirate_id_no"/>
+                  <field name="passport_no"/>
+                  <field name="emirate_id_exp"/>
+                  <field name="passport_expiry"/>
+            </xpath>
+
              <xpath expr="//notebook/page[1]/group[1]/group[2]" position="replace">
                  <group name="duration_group" string="Duration">
                      <group>

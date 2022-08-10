@@ -113,7 +113,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_partner_tree2_attendance"></field>
-            <field name="domain">[('status1','!=','resign'),('attendance_category','in',['office_staff'])]</field>
+            <field name="domain">[('status1','!=','resign')]</field>
             <field name="search_view_id" ref="view_partner_search_attendance"/>
             <field name="context">{"search_default_attendance_category":1}</field>
         </record>

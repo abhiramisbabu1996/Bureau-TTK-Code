@@ -14,13 +14,9 @@ class HiworthHrLeave(models.Model):
     attendance_type = fields.Selection([('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')],
                                        default='monthly')
     active_ids = fields.Char()
-    attendance_category = fields.Selection([('office_staff', 'Office Staff'),
+    attendance_category = fields.Selection([('office_staff', 'Office Employee '),
                                             ('site_employee', 'Site Employee'),
-                                            ('taurus_driver', 'Taurus Driver'),
-                                            ('eicher_driver', 'Eicher Driver'),
-                                            ('pickup_driver', 'Pick Up Driver'),
-                                            ('operators', 'Operators'),
-                                            ('cleaners', 'Cleaners')
+                                            ('project_eng', 'Project Engineer'),
                                             ], string='Attendance Category')
 
     @api.multi
@@ -115,7 +111,7 @@ class HiworthHrLeave(models.Model):
             dom.append(('attendance_category', '=', self.attendance_category))
         else:
             dom.append(('attendance_category', 'in',
-                        ['office_staff', 'site_employee', 'taurus_driver', 'eicher_driver', 'pickup_driver',
+                        ['office_staff', 'site_employee', 'project_eng','taurus_driver', 'eicher_driver', 'pickup_driver',
                          'operators', 'cleaners']))
         return self.env['hr.employee'].search(dom)
 
