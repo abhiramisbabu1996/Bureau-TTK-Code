@@ -16,7 +16,7 @@ class HiworthHrLeave(models.Model):
     active_ids = fields.Char()
     attendance_category = fields.Selection([('office_staff', 'Office Employee '),
                                             ('site_employee', 'Site Employee'),
-                                            ('project_eng', 'Project Engineer'),
+                                            ('project_eng', 'Project Team'),
                                             ], string='Attendance Category')
 
     @api.multi

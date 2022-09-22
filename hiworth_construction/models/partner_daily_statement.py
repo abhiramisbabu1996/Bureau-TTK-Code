@@ -370,6 +370,7 @@ class PartnerDailyStatement(models.Model):
 	rent_fuel_transfer_ids = fields.One2many('partner.fuel.transfer', 'rent_daily_statement_id')
 	project_id = fields.Many2one('project.project',string="Project")
 	item_received_lines = fields.One2many('items.received', 'product_id', 'Materials Used')
+	labour_details_ids = fields.One2many('labour.employee.details', 'supervisor_statement_id')
 
 	# @api.onchange('location_ids')
 	# def _onchange_date(self):
@@ -2819,4 +2820,48 @@ class PartnerStmtProducts(models.Model):
 	product_id = fields.Many2one('product.product', 'Product')
 	quantity = fields.Float('Quantity')
 
+
+class LabourEmployeeDetails(models.Model):
+	_name = 'labour.employee.details'
+
+	supervisor_id = fields.Many2one('hr.employee')
+	item_id = fields.Many2one('daily.statement.item', 'Item')
+	remarks = fields.Text('Remarks')
+	details_ids = fields.One2many('labours.details', 'labour_id')
+	supervisor_statement_id = fields.Many2one('partner.daily.statement')
+	start_time = fields.Datetime()
+	end_time = fields.Datetime()
+	mep = fields.Selection([('mechanical', 'Mechanical'), ('electricel', 'Electrical'), ('plumbing', 'Plumbing')], string="Work Category")
+	site_id = fields.Many2one('stock.location',string='Site', related='supervisor_statement_id.location_ids')
+	project_id = fields.Many2one('project.project', related='supervisor_statement_id.project_id')
+	
+	@api.model
+	def create(self, vals):
+		res = super(LabourEmployeeDetails, self).create(vals)
+		if res.supervisor_id:
+
+			lines = {'labour_name': res.supervisor_id.id,
+					 'labour_id':res.id,
+					 'site_id': res.site_id.id,
+					 'project': res.project_id.id,
+					 'end_time': res.end_time,
+					'start_time':res.start_time,}
+			
+			res.details_ids.create(lines)
+		return res
+			
+	
+class LaboursDetails(models.Model):
+	_name = 'labours.details'
+
+	labour_id = fields.Many2one('labour.employee.details')
+	labour_name = fields.Many2one('hr.employee', domain=[('attendance_category', '!=', 'office_staff')])
+	remarks = fields.Text('Remarks')
+	start_time = fields.Datetime()
+	end_time = fields.Datetime()
+	position = fields.Selection(related='labour_name.user_category')
+	mep = fields.Selection([('mechanical', 'Mechanical'), ('electricel', 'Electrical'), ('plumbing', 'Plumbing')], string="Work Category")
+	site_id = fields.Many2one('stock.location',string='Site', related='labour_id.site_id')
+	project = fields.Many2one('project.project', related='labour_id.project_id', store=True)
+	date = fields.Date(default=fields.Date.today())
 

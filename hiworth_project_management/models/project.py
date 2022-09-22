@@ -207,8 +207,9 @@ class ProjectProject(models.Model):
 	def name_get(self):
 		result = []
 		for record in self:
-			if record.partner_id.nick_name:
-				result.append((record.id,u"%s (%s)" % (record.name, record.partner_id.nick_name)))
+			if record.partner_id:
+				if record.partner_id.nick_name:
+					result.append((record.id,u"%s (%s)" % (record.name, record.partner_id.nick_name)))
 			else:
 				result.append((record.id,u"%s" % (record.name)))
 		return result

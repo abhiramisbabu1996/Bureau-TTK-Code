@@ -344,7 +344,7 @@ class HiworthHrAttendance(models.Model):
     half_compensatory_off = fields.Boolean("Compensatory Off")
     attendance_category = fields.Selection([('office_staff', 'Office Staff'),
                                             ('site_employee', 'Site Employee'),
-                                            ('project_eng', 'Project Engineer')
+                                            ('project_eng', 'Project Team')
                                             ], string='Attendance Category')
     leave_id = fields.Many2one('employee.leave.request')
     exgratia_id1 = fields.Many2one('exgratia.payment')

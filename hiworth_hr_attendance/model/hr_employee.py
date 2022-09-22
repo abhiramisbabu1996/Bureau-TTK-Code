@@ -221,6 +221,7 @@ class HrEmployee(models.Model):
                                       ('qa_qc_manager', 'QA/QC Manager'),
                                       ('qa_qc_officer', 'QA/QC Officer'),
                                       ('planning_eng', 'Planning Engineer'),
+                                      ('admin receptionist', 'Admin Receptionist'),
                                       ('others', 'Others'),
                                       # ('cheif_acc', 'Cheif Accountant'),
                                       # ('sen_acc', 'Senior Accountant'),
@@ -254,7 +255,7 @@ class HrEmployee(models.Model):
                                       ], string='Position', required=True)
 
     attendance_category = fields.Selection([('office_staff', 'Office Employee'),
-                                            ('project_eng', 'Project Engineer'),
+                                            ('project_eng', 'Project Team'),
                                             ('site_employee', 'Site Employee'),
                                             ], string='Attendance Category')
 

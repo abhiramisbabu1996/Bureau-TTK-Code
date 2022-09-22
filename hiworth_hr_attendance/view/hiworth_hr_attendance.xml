@@ -99,7 +99,7 @@
                     <field name="name" />
                     <group expand="0" string="group by">
                         <filter name="attendance_category" string="Attendance Category" 
-                            context="{'group_by':'attendance_category'}"/>  
+                            context="{'group_by':'attendance_category'}"/>
                     </group>
                 </search>
             </field>
@@ -117,6 +117,8 @@
             <field name="search_view_id" ref="view_partner_search_attendance"/>
             <field name="context">{"search_default_attendance_category":1}</field>
         </record>
+
+
 
         <menuitem id="menu_attendance" parent="hr.menu_hr_root" name="Attendance" sequence="10"/>
         <menuitem id="menu_permenant_employee" parent="menu_attendance" name="Employee - Attendance" sequence="1" action="open_view_employee_list_attendance"/>

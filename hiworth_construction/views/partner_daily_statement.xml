@@ -83,7 +83,7 @@
 <!--							<field name="account_id" required="True" />-->
 							<field name="date" required="True" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" />
 
-                                <field name="project_id"/>
+                                <field name="project_id" required="1"/>
 							<field name="location_ids" required="True" options="{'no_create': True, 'no_create_edit':True}" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}"/>
 							<field name="reception" invisible="1" />
 							<field name="transfer" invisible="1" />
@@ -127,89 +127,133 @@
 							</tree>
 						</field>
 						</page>
-						<page string="Labour Details">
-							<group >
+						<page string="Attendance Entry">
+<!--							<group >-->
 								<!-- <button name="add_lines" type="object" string="Add" /> -->
 								<newline />
-								<field name="line_ids" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" >
+								<field name="labour_details_ids">
 									<tree>
-										<field name="account_id" required="True" string="Particulars"/>
+										<field name="supervisor_id" string="Supervisor"/>
+										<field name="mep" string="Work Category"/>
 										<field name="item_id" string="Work"/>
-<!--										<field name="qty_char"/>-->
-<!--										<field name="qty_no" sum="Total" widget="char"/>-->
-										<field name="rate_char" />
-										<field name="payment_total" sum="Total" widget="char"/>
-<!--										<field name="vr_no" />-->
-										<field name="remarks" />
-
+										<field name="site_id"/>
+										<field name="remarks" invisible="1"/>
 									</tree>
 									<form>
 										<sheet>
 											<group>
 												<group>
-													<field name="account_id" string="Particulars" required="1" options="{'no_create': True, 'no_create_edit':True}" domain="['|',('labour_categ','=',True),('is_mason','=',True)]"/>
+													<field name="supervisor_id" string="Supervisor"/>
+													<field name="mep" string="Work Category"/>
+													<field name="item_id" string="Work"/>
 												</group>
 												<group>
-													<field name="item_id" required="1" string="Work" options="{'no_create': True, 'no_create_edit':True}" />
-													<field name="category_id" invisible="1"/>
-													<field name="line_bool" invisible="1" />
-													<field name="quantity" attrs="{'invisible':['|',('line_bool','=',False),('mason_bool','=',True)],'required':[('line_bool','=',True),('mason_bool','=',False)]}" widget="char"/>
-													<!-- <field name="qty_entered" attrs="{'invisible':[('line_bool','=',False)],'required':[('line_bool','=',True)]}"/> -->
-													<field name="rate" attrs="{'invisible':['|',('line_bool','=',False),('mason_bool','=',True)],'required':[('line_bool','=',True),('mason_bool','=',False)],'readonly':[('is_labour','=',True)]}" widget="char" />
-													<field name="total" attrs="{'invisible':['|',('line_bool','=',False),('mason_bool','=',True)],'required':[('line_bool','=',True),('mason_bool','=',False)]}" widget="char" />
-
-													<field name="line_bool" invisible="1"/>
-
-													<field name="is_labour"  invisible="1"/>
-													<field name="account_type"  invisible="1"/>
-													<field name="mason_bool" invisible="1" />
-													<field name="line_bool" invisible="1"/>
-
+													<field name="start_time" string="Start Time"/>
+													<field name="end_time" string="End Time"/>
+													<field name="project_id"/>
+													<field name="site_id"/>
 												</group>
 											</group>
-											<group attrs="{'invisible':[('line_bool','=',True)]}">
-												<field name="particular_ids" nolabel="1">
-													<tree editable="bottom">
-														<field name="account_id" required="1" string="Labours"/>
-														<field name="qty" sum="Total" widget="char"/>
-														<field name="category_id" invisible="1"/>
-														<field name="rate" sum="Total" widget="char"/>
-														<field name="total" sum="Total"  widget="char"/>
-														<field name="payment" sum="Total"  widget="char"/>
-
-
-													</tree>
-												</field>
-											</group>
-
-											<group attrs="{'invisible':[('mason_bool','=',False)]}">
-												<field name="mason_lines" nolabel="1">
-													<tree editable="bottom" create="false" >
-														<field name="name" readonly="1" string="Category"/>
-														<field name="rate" sum="Total" readonly="1"  widget="char"/>
-														<field name="qty" sum="Total" widget="char"/>
-														<field name="total" sum="Total" widget="char"/>
-
-
-													</tree>
-												</field>
-											</group>
-											<group>
-												<group>
-													<field name="vr_no" required="1" />
-													<field name="payment"
-														   attrs="{'invisible':[('line_bool','=',False),('mason_bool','=',False)]}" widget="char"/>
-												</group>
-												<group>
-													<field name="remarks"/>
-												</group>
-											</group>
+											<notebook>
+												<page string="Labours">
+													<field name="details_ids">
+														<tree editable="bottom">
+															<field name="labour_name"/>
+															<field name="project"/>
+															<field name="start_time"/>
+															<field name="end_time"/>
+															<field name="remarks"/>
+															<field name="date" invisible="1"/>
+														</tree>
+													</field>
+												</page>
+											</notebook>
+											<field name="remarks" invisible="1"/>
 										</sheet>
+
 									</form>
-
-
 								</field>
-							</group>
+
+
+<!--								<field name="line_ids" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" >-->
+<!--									<tree>-->
+<!--										<field name="account_id" required="True" string="Particulars"/>-->
+<!--										<field name="item_id" string="Work"/>-->
+<!--&lt;!&ndash;										<field name="qty_char"/>&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="qty_no" sum="Total" widget="char"/>&ndash;&gt;-->
+<!--										<field name="rate_char" />-->
+<!--										<field name="payment_total" sum="Total" widget="char"/>-->
+<!--&lt;!&ndash;										<field name="vr_no" />&ndash;&gt;-->
+<!--										<field name="remarks" />-->
+
+<!--									</tree>-->
+<!--									<form>-->
+<!--										<sheet>-->
+<!--											<group>-->
+<!--												<group>-->
+<!--													<field name="account_id" string="Particulars" required="1" options="{'no_create': True, 'no_create_edit':True}" domain="['|',('labour_categ','=',True),('is_mason','=',True)]"/>-->
+<!--												</group>-->
+<!--												<group>-->
+<!--													<field name="item_id" required="1" string="Work" options="{'no_create': True, 'no_create_edit':True}" />-->
+<!--													<field name="category_id" invisible="1"/>-->
+<!--													<field name="line_bool" invisible="1" />-->
+<!--													<field name="quantity" attrs="{'invisible':['|',('line_bool','=',False),('mason_bool','=',True)],'required':[('line_bool','=',True),('mason_bool','=',False)]}" widget="char"/>-->
+<!--													&lt;!&ndash; <field name="qty_entered" attrs="{'invisible':[('line_bool','=',False)],'required':[('line_bool','=',True)]}"/> &ndash;&gt;-->
+<!--													<field name="rate" attrs="{'invisible':['|',('line_bool','=',False),('mason_bool','=',True)],'required':[('line_bool','=',True),('mason_bool','=',False)],'readonly':[('is_labour','=',True)]}" widget="char" />-->
+<!--													<field name="total" attrs="{'invisible':['|',('line_bool','=',False),('mason_bool','=',True)],'required':[('line_bool','=',True),('mason_bool','=',False)]}" widget="char" />-->
+
+<!--													<field name="line_bool" invisible="1"/>-->
+
+<!--													<field name="is_labour"  invisible="1"/>-->
+<!--													<field name="account_type"  invisible="1"/>-->
+<!--													<field name="mason_bool" invisible="1" />-->
+<!--													<field name="line_bool" invisible="1"/>-->
+
+<!--												</group>-->
+<!--											</group>-->
+<!--											<group attrs="{'invisible':[('line_bool','=',True)]}">-->
+<!--												<field name="particular_ids" nolabel="1">-->
+<!--													<tree editable="bottom">-->
+<!--														<field name="account_id" required="1" string="Labours"/>-->
+<!--														<field name="qty" sum="Total" widget="char"/>-->
+<!--														<field name="category_id" invisible="1"/>-->
+<!--														<field name="rate" sum="Total" widget="char"/>-->
+<!--														<field name="total" sum="Total"  widget="char"/>-->
+<!--														<field name="payment" sum="Total"  widget="char"/>-->
+
+
+<!--													</tree>-->
+<!--												</field>-->
+<!--											</group>-->
+
+<!--											<group attrs="{'invisible':[('mason_bool','=',False)]}">-->
+<!--												<field name="mason_lines" nolabel="1">-->
+<!--													<tree editable="bottom" create="false" >-->
+<!--														<field name="name" readonly="1" string="Category"/>-->
+<!--														<field name="rate" sum="Total" readonly="1"  widget="char"/>-->
+<!--														<field name="qty" sum="Total" widget="char"/>-->
+<!--														<field name="total" sum="Total" widget="char"/>-->
+
+
+<!--													</tree>-->
+<!--												</field>-->
+<!--											</group>-->
+<!--											<group>-->
+<!--												<group>-->
+<!--													<field name="vr_no" required="1" />-->
+<!--													<field name="payment"-->
+<!--														   attrs="{'invisible':[('line_bool','=',False),('mason_bool','=',False)]}" widget="char"/>-->
+<!--												</group>-->
+<!--												<group>-->
+<!--													<field name="remarks"/>-->
+<!--												</group>-->
+<!--											</group>-->
+<!--										</sheet>-->
+<!--									</form>-->
+
+
+<!--								</field>-->
+<!--							</group>-->
 						</page>
 						<page string="Approvers" invisible="1">
 							<field name="approvers" nolabel="1">
@@ -1901,5 +1945,62 @@
 
 
 	   <menuitem id="menu_location_product_quant" action="action_location_product_quant" parent="menu_hiworth_finance_config" name="Stock Quant" sequence="2"/> -->
+
+		<record id="view_labour_attendance" model="ir.ui.view">
+			<field name="name">tree.labour.daily.statement</field>
+			<field name="model">labours.details</field>
+			<field name="arch" type="xml">
+				<tree string="Onsite Daily Statement">
+					<field name="date" />
+					<field name="labour_name" />
+					<field name="position" />
+					<field name="project" />
+					<field name="site_id" />
+					<field name="start_time" />
+					<field name="end_time" />
+					<field name="remarks" />
+				</tree>
+
+			</field>
+		</record>
+
+
+
+		<record id="view_employee_search_attendance" model="ir.ui.view">
+            <field name="name">hr.employee.attendance.search</field>
+            <field name="model">labours.details</field>
+            <field name="arch" type="xml">
+                <search string="Attendance">
+                    <field name="project" />
+                    <field name="date" />
+                    <group expand="0" string="group by">
+                        <filter name="group_by_project" string="Project" context="{'group_by':'project'}"/>
+                        <filter name="group_by_date" string="Date" context="{'group_by':'date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+
+        <record id="open_view_onsite_employee_list_attendance" model="ir.actions.act_window">
+            <field name="name">Onsite Employee - Attendance</field>
+            <field name="res_model">labours.details</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+<!--            <field name="view_id" ref="view_labour_attendance"></field>-->
+<!--            <field name="domain">[('status1','!=','resign')]</field>-->
+            <field name="search_view_id" ref="view_employee_search_attendance"/>
+            <field name="context">{"search_default_group_by_project":True, "search_default_group_by_date":True}</field>
+        </record>
+
+
+
+		<menuitem id="menu_site_employee" parent="hiworth_hr_attendance.menu_attendance_reports" name="Onsite Employee - Attendance" sequence="1" action="open_view_onsite_employee_list_attendance"/>
+
+
+
+
+
 	</data>
 </openerp>
