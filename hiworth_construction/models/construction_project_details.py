@@ -2803,12 +2803,13 @@ class product_template(models.Model):
         context = self._context
         user = self.pool.get('res.users').browse(cr, uid, uid, context)
         warehouse = self.pool.get('stock.warehouse').search(cr, uid, [('company_id', '=', user.company_id.id)], limit=1, context=context)
-        loc_id = self.env['stock.warehouse'].search([('id','=',warehouse[0])]).lot_stock_id
-        for line in self:
-            line.qty_in = 0.0
-            moves = self.env['stock.move'].search([('location_dest_id','=',loc_id.id),('product_id','=',line.id),('state','=','done')])
-            for move in moves:
-                line.qty_in += move.product_uom_qty
+        if warehouse:
+            loc_id = self.env['stock.warehouse'].search([('id','=',warehouse[0])]).lot_stock_id
+            for line in self:
+                line.qty_in = 0.0
+                moves = self.env['stock.move'].search([('location_dest_id','=',loc_id.id),('product_id','=',line.id),('state','=','done')])
+                for move in moves:
+                    line.qty_in += move.product_uom_qty
 
     show_cost_variation = fields.Boolean('Show Cost Variations', default=False)
     cost_table_id = fields.One2many('product.cost.table','product_id', 'Cost Variations')

@@ -208,17 +208,17 @@ class ResPartner(models.Model):
 
 
 
-    def create(self,vals):
-        res = super(ResPartner, self).create(vals)
-        if res.contractor or res.other_mou_supplier or res.is_rent_mach_owner or res.supplier:
-            if not res.tds_applicable and not res.gst_no and not res.tds_not_appicable:
-                raise except_orm(_('Warning'),
-                                 _('Please Fill the three Fields.'
-                                   '1.TDS Applicable'
-                                   '2. TDS Not Applicable'
-                                   '3. GST No'))
-
-        return res
+    # def create(self,vals):
+    #     res = super(ResPartner, self).create(vals)
+    #     if res.contractor or res.other_mou_supplier or res.is_rent_mach_owner or res.supplier:
+    #         if not res.tds_applicable and not res.gst_no and not res.tds_not_appicable:
+    #             raise except_orm(_('Warning'),
+    #                              _('Please Fill the three Fields.'
+    #                                '1.TDS Applicable'
+    #                                '2. TDS Not Applicable'
+    #                                '3. GST No'))
+    #
+    #     return res
 
     @api.multi
     def action_show_mou(self):

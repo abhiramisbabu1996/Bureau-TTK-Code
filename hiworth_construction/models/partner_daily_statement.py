@@ -11,7 +11,6 @@ import math
 class FuelTransfer1(models.Model):
 	_name = 'partner.fuel.transfer'
 
-
 	product_id = fields.Many2one('product.product', 'Fuel', domain=[('fuel_ok', '=', True)])
 	uom_id = fields.Many2one('product.uom', 'Unit', related="product_id.uom_id")
 	available_quantity = fields.Float('Available Quantity', compute="_get_available_qty", store=True)
@@ -32,7 +31,7 @@ class FuelTransfer1(models.Model):
 	@api.multi
 	def unlink(self):
 		res = super(FuelTransfer1, self).unlink()
-		for rec in self:
+		for record in self:
 			location = self.env['stock.location'].search([('usage', '=', 'inventory')], limit=1)
 
 			stock_move = self.env['stock.move'].create({'name': record.product_id.name,
@@ -2839,14 +2838,12 @@ class LabourEmployeeDetails(models.Model):
 	def create(self, vals):
 		res = super(LabourEmployeeDetails, self).create(vals)
 		if res.supervisor_id:
-
 			lines = {'labour_name': res.supervisor_id.id,
 					 'labour_id':res.id,
 					 'site_id': res.site_id.id,
 					 'project': res.project_id.id,
 					 'end_time': res.end_time,
 					'start_time':res.start_time,}
-			
 			res.details_ids.create(lines)
 		return res
 			
@@ -2865,3 +2862,55 @@ class LaboursDetails(models.Model):
 	project = fields.Many2one('project.project', related='labour_id.project_id', store=True)
 	date = fields.Date(default=fields.Date.today())
 
+
+class AttendanceEntryWizard(models.TransientModel):
+	_name = 'attendance.entry.wizard.new'
+
+	@api.model
+	def default_get(self, default_fields):
+		vals = super(AttendanceEntryWizard, self).default_get(default_fields)
+		line_ids2 = []
+		for line in self.env.context.get('active_ids'):
+			employee = self.env['labours.details'].browse(line).labour_name
+			values = {
+				'employee_id': employee.id,
+				'attendance': 'full'
+			}
+			line_ids2.append((0, False, values ))
+			vals['line_ids'] = line_ids2
+		return vals
+
+	date = fields.Date('Date',default=fields.Datetime.now())
+	line_ids = fields.One2many('attendance.entry.wizard.line.new', 'wizard_id', 'Employees')
+	user_id = fields.Many2one('res.users', 'User', default=lambda self: self.env.user)
+
+	@api.multi
+	def do_mass_update(self):
+		for rec in self:
+			attendance = self.env['hiworth.hr.attendance']
+			for lines in rec.line_ids:
+				entry = self.env['hiworth.hr.attendance'].search([('name','=',lines.employee_id.id),('date','=',rec.date)])
+				print 'entry--------------------------', entry
+				if len(entry) != 0:
+					raise osv.except_osv(_('Warning!'), _("Already entered attendance for employee '%s'") % (lines.employee_id.name,))
+				attendance_date = datetime.datetime.strptime(rec.date, "%Y-%m-%d")
+				public_holiday = self.env['public.holiday'].search([('date', '=', attendance_date)])
+				if public_holiday:
+					raise osv.except_osv(_('Warning!'), _("It's a public holiday"))
+				else:
+					values = {'date': rec.date,
+						  'name': lines.employee_id.id,
+						  'user_id': rec.user_id.id,
+						  'attendance': lines.attendance}
+					attendance.create(values)
+
+
+class AttendanceEntryWizardLine(models.TransientModel):
+	_name = 'attendance.entry.wizard.line.new'
+
+	employee_id = fields.Many2one('hr.employee', string='Employees', domain=[('cost_type','=','permanent')])
+	attendance = fields.Selection([('full', 'Full Present'),
+								('half','Half Present'),
+								('absent','Absent')
+								], default='full', string='Attendance')
+	wizard_id = fields.Many2one('attendance.entry.wizard.new', string='Wizard')

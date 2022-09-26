@@ -222,6 +222,7 @@ class HrEmployee(models.Model):
                                       ('qa_qc_officer', 'QA/QC Officer'),
                                       ('planning_eng', 'Planning Engineer'),
                                       ('admin receptionist', 'Admin Receptionist'),
+                                      ('admin officer', 'Admin Officer'),
                                       ('others', 'Others'),
                                       # ('cheif_acc', 'Cheif Accountant'),
                                       # ('sen_acc', 'Senior Accountant'),
@@ -317,6 +318,7 @@ class HrEmployee(models.Model):
     emergency_con_person = fields.Char('Emergency Contact Person')
     emergency_con_person_ph = fields.Char('Emergency Contact Person Number')
     emergency_con_address = fields.Char('Emergency Contact Address')
+    emergency_native_contact = fields.Char('Emergency Native place Contact Number')
 
     salary_account_no = fields.Char('Salary Account Number')
     p_bank_name = fields.Char('Bank')
@@ -325,6 +327,14 @@ class HrEmployee(models.Model):
     wps = fields.Char('WPS Salary Account')
     bank_exch = fields.Char('Bank/Exchange')
     card_no = fields.Char('Account/Card Number')
+
+    salary_account_no2 = fields.Char('Alternative Account Number')
+    p_bank_name2 = fields.Char('Bank')
+    p_iban2 = fields.Char('IBAN')
+    p_ifsc_code2 = fields.Char('IFSC')
+    wps2 = fields.Char('WPS Salary Account')
+    bank_exch2 = fields.Char('Bank/Exchange')
+    card_no2 = fields.Char('Account/Card Number')
 
 
     @api.onchange('address_boolean')

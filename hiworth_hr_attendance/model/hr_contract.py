@@ -204,6 +204,8 @@ class HrContract(models.Model):
     emirate_id_exp = fields.Date('Emirates ID Expiry')
     passport_no = fields.Char('Passport Number')
     passport_expiry = fields.Date('Passport Expiry')
+    medical_insurance_no = fields.Char('Medical Insurance Number')
+    medical_insurance_exp = fields.Date('Medical Insurance Expiry')
 
     @api.multi
     def action_active(self):

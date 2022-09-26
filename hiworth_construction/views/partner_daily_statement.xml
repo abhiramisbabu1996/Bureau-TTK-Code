@@ -1994,11 +1994,47 @@
             <field name="context">{"search_default_group_by_project":True, "search_default_group_by_date":True}</field>
         </record>
 
+		<menuitem id="menu_site_employee" parent="hiworth_hr_attendance.menu_attendance" name="Onsite Employee - Attendance" sequence="1" action="open_view_onsite_employee_list_attendance"/>
+
+					<record id="hiworth_attendance_entry_new" model="ir.ui.view">
+				<field name="name">employee.attendance.entry.new</field>
+				<field name="model">attendance.entry.wizard</field>
+				<field name="arch" type="xml">
+					<form string="Attendance Entry">
+						<sheet>
+							<group>
+								<group>
+									<field name="date" required="1"/>
+								</group>
+								<group>
+									<field name="user_id" required="1"/>
+								</group>
+							</group>
+							<group>
+								<field name="line_ids" nolabel="1">
+									<tree editable="bottom">
+										<field name="employee_id" required="1"/>
+										<field name="attendance"/>
+									</tree>
+								</field>
+							</group>
+							<footer>
+									<button type="object" name="do_mass_update"
+											string="Submit" class="oe_highlight" />
+									<button special="cancel" string="Cancel"/>
+							</footer>
+						</sheet>
+					</form>
+				</field>
+			</record>
 
 
-		<menuitem id="menu_site_employee" parent="hiworth_hr_attendance.menu_attendance_reports" name="Onsite Employee - Attendance" sequence="1" action="open_view_onsite_employee_list_attendance"/>
-
-
+	<act_window id="hiworth_hr_attendance_new_entry"
+					name="Attendance Entry" res_model="attendance.entry.wizard.new"
+					view_mode="form" target="new" multi="True"
+					view_id="hiworth_attendance_entry_new"
+					src_model="labours.details"
+					context="{'employee_ids': active_ids}"/>
 
 
 

@@ -163,6 +163,7 @@ class PurchaseComparison(models.Model):
             'company_contractor_id':self.quotation_id.company_contractor_id.id,
             'vehicle_agent_id': self.mpr_id.vehicle_agent.id,
             'vehicle_id':self.vehicle_id.id,
+            'currency_id':self.quotation_id.currency_id.id,
 
         }
        
@@ -761,9 +762,8 @@ class PurchaseComparisonLine(models.Model):
             s.non_tax_charge1 = non_tax1
             s.non_tax_charge2 = non_tax2
             s.non_tax_charge3 = non_tax3
-
          
-
+    vendor_select_id = fields.Many2one('res.partner', 'Vendor Selected',domain="[('supplier','=',True)]")
     res_id = fields.Many2one('purchase.comparison', 'Purchase Comparison')
     product_id = fields.Many2one('product.product', 'Description',size=10)
     qty = fields.Float('Quantity',size=10)

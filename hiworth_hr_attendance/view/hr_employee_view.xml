@@ -745,6 +745,7 @@
                         <field name="user_id" invisible="1"/>
                         <field name="emergency_person"/>
                         <field name="emergency_no"/>
+                        <field name="emergency_native_contact"/>
                         <field name="emergency_con_address"/>
                       </group>
                       <group string="Birth">
@@ -817,6 +818,17 @@
                         <field name="bank_exch" style="width: 70%"/>
                         <field name="card_no" style="width: 70%"/>
                       </group>
+                            <group>
+                                <field name="address_home_id" invisible="1"/>
+                        <field name="salary_account_no2" style="width: 70%"/>
+                        <field name="p_bank_name2" style="width: 70%"/>
+                        <field name="p_iban2" style="width: 70%"/>
+                        <field name="p_ifsc_code2" style="width: 70%"/>
+                        <field name="wps2" style="width: 70%"/>
+                        <field name="bank_exch2" style="width: 70%"/>
+                        <field name="card_no2" style="width: 70%"/>
+
+                            </group>
                         </page>
                     <page string="Bank Account" invisible="1">
                         <field name="bank_account_id" string="Salary Account Number" style="width: 70%" invisible="1"/>

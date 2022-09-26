@@ -30,8 +30,11 @@
 
                   <field name="emirate_id_no"/>
                   <field name="passport_no"/>
-                  <field name="emirate_id_exp"/>
+                    <field name="emirate_id_exp"/>
                   <field name="passport_expiry"/>
+                  <field name="medical_insurance_no"/>
+                  <field name="medical_insurance_exp"/>
+
             </xpath>
 
              <xpath expr="//notebook/page[1]/group[1]/group[2]" position="replace">

@@ -95,13 +95,15 @@
                                     <field name="product_id" readonly="1" required="1"  class="my_field_palathra"/>
                                     <field name="qty" readonly="1" required="1"  />
                                     <field name="uom" readonly="1" required="1"  />
-                                    <field name="tax_id"  />
-                                    <field name="rate1"  />
-                                    <field name="sub_total1" />
-                                    <field name="rate2" />
-                                    <field name="sub_total2"  />
-                                    <field name="rate3"  />
-                                    <field name="sub_total3" />
+                                    <field name="tax_id"/>
+                                    <field name="rate1"/>
+                                    <field name="sub_total1"/>
+                                    <field name="rate2"/>
+                                    <field name="sub_total2"/>
+                                    <field name="rate3"/>
+                                    <field name="sub_total3"/>
+                                    <field name="vendor_select_id" />
+
                                     <field name="res_id" invisible="1"/>
                                   <!--  <field name="rate4" />
                                     <field name="sub_total4"/>

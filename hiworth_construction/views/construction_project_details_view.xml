@@ -619,12 +619,10 @@
 								   context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'project.group_project_manager']}" />
 						</group>
 						<group>
-
-
+							<field name="company_contractor_id" required="1" options="{'no_create':True}"/>
+							<!--							colspan="2" string="Awarder" />-->
 						</group>
-<!--						<field name="partner_id" on_change="onchange_partner_id(partner_id)"-->
-<!--							colspan="2" string="Awarder" />-->
-<!--						<field name="company_contractor_id" required="1" options="{'no_create':True}"/>-->
+						<!--						<field name="partner_id" on_change="onchange_partner_id(partner_id)"-->
 						<!-- <field name="civil_contractor" colspan="2" string="Civil Contractor"
 							/> -->
 					</group>

@@ -29,10 +29,10 @@
 		<record id="make_invisible_rental" model="res.groups">
             <field name="name">Visible Rental Menu</field>
         </record>
-        <record model="ir.ui.menu" id="expense_voucher.main_menu_main_mou">
-            <field name="groups_id" eval="[(5,ref('make_invisible_rental'))]"/>
-        </record>
-		<menuitem id="expense_voucher.main_menu_main_mou"  name="Rentals" groups="make_invisible_rental"/>
+<!--        <record model="ir.ui.menu" id="expense_voucher.main_menu_main_mou">-->
+<!--            <field name="groups_id" eval="[(5,ref('make_invisible_rental'))]"/>-->
+<!--        </record>-->
+<!--		<menuitem id="expense_voucher.main_menu_main_mou"  name="Rentals" groups="make_invisible_rental"/>-->
 
 		<record id="make_invisible_telecom" model="res.groups">
             <field name="name">Visible telecom Menu</field>
