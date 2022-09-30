@@ -20,7 +20,7 @@
 			model="ir.ui.view">
 			<field name="name">res.partner.form.mou.contractor</field>
 			<field name="model">res.partner</field>
-			<field eval="1" name="priority" />
+			<field eval="2" name="priority" />
 			<field name="inherit_id" ref="base.view_partner_form" />
 			<field name="arch" type="xml">
 				<xpath expr="//sheet/div/div/field[@name='is_company']" position="attributes">
@@ -46,18 +46,18 @@
 					<attribute name="required">0</attribute>
 
 				</xpath>
-				<xpath expr="//sheet/group/group[2]/field[@name='phone']"
-					position="after">
-					<field name="phone2" />
-					<field name="fax1" />
-					<field name="fax2" />
-				</xpath>
-				<xpath expr="//sheet/group/group[2]/field[@name='email']"
-					position="after">
-					<field name="email2" />
-					<field name="vat" />
-					<field name="co_tax_no" />
-				</xpath>
+<!--				<xpath expr="//sheet/group/group[2]/field[@name='phone']"-->
+<!--					position="after">-->
+<!--					<field name="phone2" />-->
+<!--					<field name="fax1" />-->
+<!--					<field name="fax2" />-->
+<!--				</xpath>-->
+<!--				<xpath expr="//sheet/group/group[2]/field[@name='email']"-->
+<!--					position="after">-->
+<!--					<field name="email2" />-->
+<!--					<field name="vat" />-->
+<!--					<field name="co_tax_no" />-->
+<!--				</xpath>-->
 
 
 
@@ -71,25 +71,25 @@
    							<field name="branch1" style="width: 60%"/>
   							<field name="ifsc_code1" style="width: 60%"/>
 						</group>
-						<group String="Bank-2 Details">
-							<field name="account_name2" style="width: 60%"/>
-							<field name="i_ban_no2" style="width: 60%"/>
-							<field name="bank_name2" style="width: 60%"/>
-   							<field name="branch2" style="width: 60%"/>
-  							<field name="ifsc_code2" style="width: 60%"/>
-						</group>
-						<group String="Bank-3 Details">
-							<field name="account_name3" style="width: 60%"/>
-							<field name="i_ban_no3" style="width: 60%"/>
-							<field name="bank_name3" style="width: 60%"/>
-   							<field name="branch3" style="width: 60%"/>
-  							<field name="ifsc_code3" style="width: 60%"/>
-						</group>
+<!--						<group String="Bank-2 Details">-->
+<!--							<field name="account_name2" style="width: 60%"/>-->
+<!--							<field name="i_ban_no2" style="width: 60%"/>-->
+<!--							<field name="bank_name2" style="width: 60%"/>-->
+<!--   							<field name="branch2" style="width: 60%"/>-->
+<!--  							<field name="ifsc_code2" style="width: 60%"/>-->
+<!--						</group>-->
+<!--						<group String="Bank-3 Details">-->
+<!--							<field name="account_name3" style="width: 60%"/>-->
+<!--							<field name="i_ban_no3" style="width: 60%"/>-->
+<!--							<field name="bank_name3" style="width: 60%"/>-->
+<!--   							<field name="branch3" style="width: 60%"/>-->
+<!--  							<field name="ifsc_code3" style="width: 60%"/>-->
+<!--						</group>-->
 					</page>
 				</xpath>
-				<xpath expr="//sheet/notebook/page[4]" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
+<!--				<xpath expr="//sheet/notebook/page[4]" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
 			</field>
 		</record>
 		<record id="action_view_partner_form_mou_contractor" model="ir.actions.act_window">

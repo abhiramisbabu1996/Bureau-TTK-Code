@@ -58,6 +58,7 @@
                            <field name="site_purchase_item_line_ids" nolabel="1" attrs="{'readonly':[('state','in',['approved1','approved2','order','received'])]}">
                               <tree editable="bottom">
                                   <field name="item_id" required="1" />
+                                  <field name="brand_name" string="Brand"/>
                                     <field name="desc" required="1" />
                                 <field name="unit" required="1" />
                                 <field name="quantity" widget="char" required="1" sum="Total" />
@@ -212,6 +213,7 @@
                           <field name="site_purchase_item_line_ids" nolabel="1" attrs="{'readonly':[('state','in',['order','received'])]}">
                               <tree editable="bottom">
                                   <field name="item_id" required="1" />
+                                  <field name="brand_name" string="Brand"/>
                                     <field name="desc" required="1" />
                                 <field name="unit" required="1" />
                                 <field name="quantity" widget="char" required="1" />
@@ -346,6 +348,7 @@
                           <field name="site_purchase_item_line_ids" attrs="{'readonly':[('state','in',['order','received'])]}" nolabel="1">
                               <tree editable="bottom">
                                   <field name="item_id" required="1" />
+                                  <field name="brand_name" string="Brand"/>
                                     <field name="desc" required="1" />
                                 <field name="unit" required="1" />
                                 <field name="quantity" widget="char" required="1" />
@@ -467,6 +470,7 @@
                           <field name="site_purchase_item_line_ids" nolabel="1">
                               <tree editable="bottom">
                                   <field name="item_id" required="1" />
+                                  <field name="brand_name" string="Brand"/>
                                     <field name="desc" required="1" />
                                 <field name="unit" required="1" />
                                 <field name="quantity" widget="char" required="1" />
@@ -590,6 +594,7 @@
                           <field name="site_purchase_item_line_ids" attrs="{'readonly':[('state','in',['order','received'])]}" nolabel="1">
                               <tree editable="bottom">
                                   <field name="item_id" required="1" />
+                                  <field name="brand_name" string="Brand"/>
                                     <field name="desc" required="1" />
                                 <field name="unit" required="1" />
                                 <field name="quantity" widget="char" required="1" />
@@ -717,6 +722,7 @@
                           <field name="site_purchase_item_line_ids" attrs="{'readonly':[('state','in',['order','received'])]}" nolabel="1">
                               <tree editable="bottom">
                                   <field name="item_id" required="1" />
+                                  <field name="brand_name" string="Brand"/>
                                     <field name="desc" required="1" />
                                 <field name="unit" required="1" />
                                 <field name="quantity" widget="char" required="1" />
@@ -1175,6 +1181,7 @@ Orders will only be merged if: &#10;
 
 							   <tree editable="bottom" delete="false" create="false">
                                   <field name="item_id" readonly="1" required="1" />
+                                  <field name="brand_name" readonly="1" string="Brand"/>
                                     <field name="desc" required="1" />
                                 <field name="unit_id" readonly="1" required="1" />
                                    <field name="tax_ids" readonly="1" widget='many2many_tags'/>

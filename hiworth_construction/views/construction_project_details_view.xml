@@ -788,10 +788,16 @@
 					<newline />
 					<div class="oe_title" style="width: 150px;">
 						<label for="categ_id" string="Resource Category" />
+
 						<h1>
 							<field name="categ_id" class="oe_inline" />
 
 						</h1>
+						<label for="brand_name" string="Brand" />
+						<h3>
+							<field name="brand_name" string="Brand"/>
+						</h3>
+
 					</div>
 				</xpath>
 			</field>
@@ -995,6 +1001,10 @@
 					position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
+				<xpath expr="//notebook/page/field/tree/field[@name='product_id']"
+					position="after">
+					<field name="brand_name" string="Brand"/>
+				</xpath>
 				
 
 				<xpath expr="//notebook/page/field/tree/field[@name='product_qty']"
@@ -1107,7 +1117,10 @@
 				<xpath expr="//notebook/page/field[@name='notes']"
 					position="before">
 					<group>
-					<field name="payment_term_id"/>
+						<group>
+							<field name="payment_term_id"/>
+						</group>
+						<group></group>
 					</group>
 					<group>
 						<group>
@@ -1127,8 +1140,16 @@
 				</xpath>
 				<xpath expr="//notebook/page/field[@name='notes']"
 					position="attributes">
-					<attribute name="attrs">{'readonly':[('state','in', ['approved','done','paid','cancel'])]}</attribute>
+					<attribute name="attrs">{'readonly':[('state','in', ['done','paid','cancel'])]}</attribute>
+					<attribute name="string">Terms &amp; Conditions</attribute>
 				</xpath>
+				<xpath expr="//notebook/page/field[@name='notes']"
+					position="after">
+					<div class="oe_clear"/>
+					<label for="additional_terms" string="Additional terms &amp; Conditions"/>
+							<field name="additional_terms" attrs="{'readonly':[('state','in', ['done','paid','cancel'])]}"/>
+				</xpath>
+
 
 				<xpath expr="//group/group/field[@name='company_id']" position="replace">
 					<field name="company_contractor_id" readonly="1"/>
@@ -2831,6 +2852,9 @@ same stock location, same pricelist,same GST Rate calculation and same currency 
         <menuitem
             action="product.product_template_action" id="stock.menu_product_template_config_stock"
             parent="stock.menu_stock_configuration" sequence="47"/>
+
+
+
 
 
 

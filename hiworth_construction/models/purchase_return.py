@@ -221,6 +221,7 @@ class PurchaseReturnLine(models.Model):
             if rec.item_id:
                 rec.desc = rec.item_id.name
                 rec.unit_id = rec.item_id.uom_id.id
+                rec.brand_name = rec.item_id.brand_name.id
 
     @api.onchange('tax_ids')
     def onchange_tax_ids(self):
@@ -300,6 +301,8 @@ class PurchaseReturnLine(models.Model):
 
     move_id = fields.Many2one('stock.move', "Move")
     prev_goods_recieve_report_id = fields.Many2one('purchase.return', string="Goods Recieve Report")
+    brand_name = fields.Many2one('material.brand')
+
 
     class OtherChargeDetails(models.Model):
         _name = 'other.charge.details.purchase'

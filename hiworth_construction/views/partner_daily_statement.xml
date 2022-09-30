@@ -255,19 +255,31 @@
 <!--								</field>-->
 <!--							</group>-->
 						</page>
-						<page string="Approvers" invisible="1">
-							<field name="approvers" nolabel="1">
+						<page string="Details Of Received Items">
+							<field name="products_received_lines" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}">
 								<tree editable="bottom">
-									<field name="date"/>
-									<field name="approver" />
-									<field name="status" />
+									<field name="stock_transfer_id" string="Stock Transfer Reference No"/>
+									<field name="type_of_good_transfer"/>
+									<field name="po_no" domain="[('state','=','order')]"/>
+									<field name="product_id" string="Product"/>
+									<field name="unit"/>
+									<field name="received_qty"/>
+									<field name="stock_qty" string="Total Stock Quantity"/>
+									<field name="vehicle_id" string="Vehicle No"/>
 								</tree>
 							</field>
-
 						</page>
-<!--					</notebook>-->
-
-<!--					<notebook>-->
+						<page string="Details Of Used Items">
+							<field name="products_used_lines" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}">
+								<tree editable="bottom">
+									<field name="product_id" string="Product"/>
+									<field name="unit"/>
+									<field name="stock_qty" string="Stock Quantity"/>
+									<field name="used_qty" string="Used Quantity"/>
+									<field name="balance_qty" string="Balance Quantity"/>
+								</tree>
+							</field>
+						</page>
 						<page string="Expenses">
 							<group>
 								<newline />
@@ -314,25 +326,6 @@
 								</field>
 							</group>
 						</page>
-<!--					</notebook>-->
-
-<!--					<notebook>-->
-						<page string="MOU Expenses">
-							<group >
-								<newline />
-								<field name="mou_expense_line_ids" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" context="{'location_id':location_ids}">
-									<tree editable="bottom">
-										<field name="partner_id" required="True" string="To"/>
-										<field name="mou_id" required="True" string="MOU"/>
-										<field name="amount" required="1" sum="Total"/>
-										<field name="remarks"/>
-									</tree>
-								</field>
-							</group>
-						</page>
-<!--					</notebook>-->
-
-<!--					<notebook>-->
 						<page string="Rent Vehicle Statements">
 							<group>
 								<field name="rent_vehicle_stmts" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" context="{'default_site_id': location_ids}">
@@ -421,35 +414,213 @@
 								</field>
 							</group>
 						</page>
+						<page string="Details Of Required Items">
+							<field name="details_rqrd_item" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" context="{'default_general_purchase':True,'default_date':date}">
+								 <tree>
+									<field name="name" />
+									<field name="supervisor_id" />
+							  	 	<field name="responsible" invisible="1"/>
+									<field name="order_date" />
+									<field name="min_expected_date" />
+									<field name="max_expected_date" />
+									<field name="received_date"   />
+									 <field name="item_ids" widget="many2many_tags"/>
+									<field name="estimated_amt"/>
+									<field name="state"/>
+								  </tree>
+							</field>
+						</page>
 
 
-					<page string="Details Of Reception">
-						<!-- <label for="item_usage_lines" string="Details Of Item"/> -->
-						<field name="received_ids" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}">
-							<tree editable="bottom" delete="false">
-								<field name="vehicle_id" />
-								<field name="from_id2" />
-								<field name="item_expense2" />
-								<field name="qty" sum="Total" readonly="1"/>
-								<field name="rate" sum="Total" readonly="1"/>
-								<field name="total" sum="Total" readonly="1"/>
-								<field name="voucher_no" string="Bill No" readonly="1"/>
-								<field name="rate" readonly="1"/>
-								<field name="start_km" readonly="1"/>
-								<field name="end_km" readonly="1"/>
-								<field name="total_km" sum="Total" readonly="1"/>
-								<field name="rent" sum="Total" readonly="1"/>
-								<field name="contractor_id" readonly="1"/>
-								<field name="remarks" />
-								<field name="status" readonly="1" />
-								<field name="driver_stmt_id" invisible="1" readonly="1" />
-								<field name="recept_temp" invisible="1" readonly="1" />
-								<field name="rejection_remarks" />
-								<button name="approve_line" icon="gtk-apply" type="object" class="oe_highlight" help="Line Approve" attrs="{'invisible':[('status','=','accepted')]}"/>
-								<button name="reject_line" icon="gtk-cancel" type="object" class="oe_highlight" help="Line Reject" attrs="{'invisible':[('status','=','rejected')]}"/>
-							</tree>
-						</field>
-					</page>
+
+
+
+
+<!--					</notebook>-->
+
+<!--					<notebook>-->
+<!--						<page string="Expenses">-->
+<!--							<group>-->
+<!--								<newline />-->
+<!--								<field name="expense_line_ids" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" context="{'default_expense': True}">-->
+<!--									<tree>-->
+<!--										<field name="expense_char"/>-->
+<!--										&lt;!&ndash;<field name="account_id"  string="Expenses" attrs="{'required':[('expense_other','=',False)]}"/>&ndash;&gt;-->
+<!--										<field name="desc"/>-->
+
+
+<!--										<field name="quantity" sum="Total" widget="char"/>-->
+<!--										<field name="rate" widget="char"/>-->
+<!--										<field name="total" sum="Total" widget="char"/>-->
+<!--&lt;!&ndash;										<field name="expense_payment" sum="Total" widget="char"/>&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="vr_no" />&ndash;&gt;-->
+
+<!--										<field name="remarks" />-->
+<!--									</tree>-->
+<!--									<form>-->
+<!--										<sheet>-->
+<!--											<group>-->
+<!--												<group>-->
+<!--													<field name="account_id"  string="Expenses" attrs="{'required':[('expense_other','=',False)],'readonly':[('expense_other','=',True)]}" domain="[('is_overhead','=',True)]"/>-->
+
+<!--													<field name="expense_other" />-->
+<!--										<field name="expense_char" attrs="{'invisible':[('expense_other','=',False)]}"/>-->
+<!--										&lt;!&ndash;<field name="exp_account_id" attrs="{'invisible':[('expense_other','=',False)],'required':[('expense_other','=',True)]}" readonly="1"/>-->
+<!--										&ndash;&gt;</group>-->
+<!--												<group>-->
+<!--													<field name="quantity" widget="char"/>-->
+<!--													<field name="rate" widget="char"/>-->
+<!--													<field name="total"  widget="char" />-->
+<!--													<field name="expense_payment" widget="char" />-->
+
+<!--												</group>-->
+<!--											</group>-->
+<!--											<group>-->
+<!--												<field name="vr_no" />-->
+<!--												<field name="desc"/>-->
+<!--												<field name="remarks" />-->
+<!--											</group>-->
+<!--										</sheet>-->
+<!--									</form>-->
+<!--								</field>-->
+<!--							</group>-->
+<!--						</page>-->
+<!--&lt;!&ndash;					</notebook>&ndash;&gt;-->
+
+<!--&lt;!&ndash;					<notebook>&ndash;&gt;-->
+<!--						<page string="MOU Expenses">-->
+<!--							<group >-->
+<!--								<newline />-->
+<!--								<field name="mou_expense_line_ids" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" context="{'location_id':location_ids}">-->
+<!--									<tree editable="bottom">-->
+<!--										<field name="partner_id" required="True" string="To"/>-->
+<!--										<field name="mou_id" required="True" string="MOU"/>-->
+<!--										<field name="amount" required="1" sum="Total"/>-->
+<!--										<field name="remarks"/>-->
+<!--									</tree>-->
+<!--								</field>-->
+<!--							</group>-->
+<!--						</page>-->
+<!--&lt;!&ndash;					</notebook>&ndash;&gt;-->
+
+<!--&lt;!&ndash;					<notebook>&ndash;&gt;-->
+<!--						<page string="Rent Vehicle Statements">-->
+<!--							<group>-->
+<!--								<field name="rent_vehicle_stmts" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" context="{'default_site_id': location_ids}">-->
+<!--									<tree delete="false">-->
+<!--										<field name="date" invisible="1" />-->
+<!--										<field name="vehicle_owner" />-->
+<!--										<field name="vehicle_no" />-->
+<!--&lt;!&ndash;										<field name="mou" required="1"/>&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="crusher" />&ndash;&gt;-->
+<!--										<field name="supervisor" invisible="1" />-->
+<!--										<field name="site_id"/>-->
+<!--&lt;!&ndash;										<field name="full_supply" />&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="fullsupply_qty" widget="char" sum="Total" />&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="fullsupply_rate" widget="char" />&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="full_cost" widget="char" sum="Total"/>&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="direct_crusher" />&ndash;&gt;-->
+<!--										<field name="item" />-->
+<!--										<field name="qty" widget="char" sum="Total"/>-->
+<!--&lt;!&ndash;										<field name="rate" widget="char" />&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="material_cost" widget="char" sum="Total"/>&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="based_on" />&ndash;&gt;-->
+<!--										<field name="km" widget="char" sum="Total"/>-->
+<!--&lt;!&ndash;										<field name="trip" widget="char" invisible="1" />&ndash;&gt;-->
+<!--										<field name="rent" widget="char" sum="Total"/>-->
+<!--&lt;!&ndash;										<field name="diesel_pump" />&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="diesel" widget="char" sum="Total"/>&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="advance" widget="char" sum="Total"/>&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="other_expenses" widget="char" sum="Total"/>&ndash;&gt;-->
+<!--										<field name="remarks" />-->
+<!--&lt;!&ndash;										<field name="bill_no" />&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="state" />&ndash;&gt;-->
+<!--									</tree>-->
+<!--									<form>-->
+<!--										<group>-->
+<!--											<group>-->
+<!--												<field name="date" invisible="1" />-->
+<!--												<field name="vehicle_owner" options="{'no_create': True, 'no_create_edit':True}" required="1" domain="[('is_rent_vehicle','=',True)]"/>-->
+<!--												<field name="vehicle_no" required="1" domain="[('rent_vehicle','=',True)]" options="{'no_create': True, 'no_create_edit':True}" attrs="{'readonly':[('vehicle_owner','=',False)]}" />-->
+<!--												<field name="mou" required="1"/>-->
+<!--												<field name="supervisor" invisible="1" />-->
+<!--												<field name="site_id" required="1" options="{'no_create': True, 'no_create_edit':True}"/>-->
+<!--												<field name="item" options="{'no_create': True, 'no_create_edit':True}" required="1" />-->
+<!--												<field name="full_supply" />-->
+
+<!--												<field name="fullsupply_qty" widget="char" attrs="{'invisible':[('full_supply','=',False)],'required':[('full_supply','=',True)]}" />-->
+<!--												<field name="fullsupply_rate" widget="char" attrs="{'invisible':[('full_supply','=',False)],'required':[('full_supply','=',True)]}" />-->
+
+<!--												<field name="full_cost" widget="char" attrs="{'invisible':[('full_supply','=',False)],'required':[('full_supply','=',True)]}" />-->
+<!--												<field name="direct_crusher" />-->
+
+<!--												<field name="contractor_id" options="{'no_create': True, 'no_create_edit':True}" />-->
+<!--												<field name="bill_no" />-->
+<!--												<field name="crusher" attrs="{'required':[('direct_crusher','=',True)],'invisible':[('direct_crusher','=',False)]}" options="{'no_create': True, 'no_create_edit':True}" domain="[('crusher_bool','=',True)]" />-->
+
+<!--												<field name="qty" widget="char" attrs="{'invisible':[('direct_crusher','=',False)],'required':[('direct_crusher','=',True)]}" />-->
+<!--												<field name="rate" widget="char" attrs="{'invisible':[('direct_crusher','=',False)],'required':[('direct_crusher','=',True)]}" />-->
+
+
+<!--												<field name="material_cost" widget="char" />-->
+<!--												<field name="tax_ids" widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True}" attrs="{'invisible':[('direct_crusher','=',False)]}" />-->
+<!--												<field name="tax_amount" attrs="{'invisible':[('direct_crusher','=',False)]}" />-->
+<!--												<field name="sub_total" attrs="{'invisible':[('direct_crusher','=',False)]}" />-->
+<!--												<field name="total" attrs="{'invisible':[('direct_crusher','=',False)]}" />-->
+<!--												<field name="round_off" attrs="{'invisible':[('direct_crusher','=',False)]}" />-->
+<!--												<field name="invoice_value" attrs="{'invisible':[('direct_crusher','=',False)]}" />-->
+
+<!--												<field name="based_on" attrs="{'invisible':[('full_supply','=',True)]}" />-->
+<!--												<field name="km" attrs="{'invisible':['|',('based_on','=','per_day'),('full_supply','=',True)],'required':[('based_on','=','per_km')]}" widget="char" />-->
+<!--												&lt;!&ndash; <field name="trip" attrs="{'invisible':[('based_on','=','per_day')],'required':[('based_on','=','per_km')]}" widget="char" /> &ndash;&gt;-->
+<!--												<field name="rent" widget="char" />-->
+<!--												<field name="fuel_item"/>-->
+<!--												<field name="diesel_pump" attrs="{'required':[('diesel','!=',False)]}" options="{'no_create': True, 'no_create_edit':True}" domain="[('diesel_pump_bool','=',True)]" />-->
+<!--												<field name="diesel_litre" attrs="{'required':[('diesel_pump','!=',False)]}" widget="char"  />-->
+<!--												<field name="diesel_rate" attrs="{'required':[('diesel_pump','!=',False)]}" widget="char"  />-->
+<!--												<field name="diesel" attrs="{'required':[('diesel_pump','!=',False)]}" widget="char"  />-->
+<!--												<field name="pump_bill_no"/>-->
+<!--												<field name="advance" widget="char" />-->
+<!--												<field name="other_expenses"/>-->
+<!--												<field name="other_account_id"/>-->
+<!--												<field name="remarks" />-->
+<!--												<field name="state" invisible="1" />-->
+<!--											</group>-->
+<!--											<group></group>-->
+<!--										</group>-->
+<!--									</form>-->
+<!--								</field>-->
+<!--							</group>-->
+<!--						</page>-->
+
+
+<!--					<page string="Details Of Reception">-->
+<!--						&lt;!&ndash; <label for="item_usage_lines" string="Details Of Item"/> &ndash;&gt;-->
+<!--						<field name="received_ids" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}">-->
+<!--							<tree editable="bottom" delete="false">-->
+<!--								<field name="vehicle_id" />-->
+<!--								<field name="from_id2" />-->
+<!--								<field name="item_expense2" />-->
+<!--								<field name="qty" sum="Total" readonly="1"/>-->
+<!--								<field name="rate" sum="Total" readonly="1"/>-->
+<!--								<field name="total" sum="Total" readonly="1"/>-->
+<!--								<field name="voucher_no" string="Bill No" readonly="1"/>-->
+<!--								<field name="rate" readonly="1"/>-->
+<!--								<field name="start_km" readonly="1"/>-->
+<!--								<field name="end_km" readonly="1"/>-->
+<!--								<field name="total_km" sum="Total" readonly="1"/>-->
+<!--								<field name="rent" sum="Total" readonly="1"/>-->
+<!--								<field name="contractor_id" readonly="1"/>-->
+<!--								<field name="remarks" />-->
+<!--								<field name="status" readonly="1" />-->
+<!--								<field name="driver_stmt_id" invisible="1" readonly="1" />-->
+<!--								<field name="recept_temp" invisible="1" readonly="1" />-->
+<!--								<field name="rejection_remarks" />-->
+<!--								<button name="approve_line" icon="gtk-apply" type="object" class="oe_highlight" help="Line Approve" attrs="{'invisible':[('status','=','accepted')]}"/>-->
+<!--								<button name="reject_line" icon="gtk-cancel" type="object" class="oe_highlight" help="Line Reject" attrs="{'invisible':[('status','=','rejected')]}"/>-->
+<!--							</tree>-->
+<!--						</field>-->
+<!--					</page>-->
 
 					<!-- <group>
                         <group>
@@ -499,63 +670,63 @@
              </group> -->
 <!--					<group>-->
 
-						<page string="Details Of Items">
-							<!-- <label for="item_usage_lines" string="Details Of Item"/> -->
-							<field name="item_usage_lines" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" context="{'default_date':date}">
-								<tree delete="false">
-									<field name="date" />
-									<field name="product_id" required="1" options="{'no_create': True, 'no_create_edit':True}" />
-									<field name="pre_qty" widget="char" sum="Total"/>
-									<field name="receipts" widget="char" />
-									<field name="total" widget="char" sum="Total"/>
-									<field name="usage" widget="char" />
-									<field name="balance" widget="char" sum="Total"/>
-								</tree>
+<!--						<page string="Details Of Items">-->
+<!--							&lt;!&ndash; <label for="item_usage_lines" string="Details Of Item"/> &ndash;&gt;-->
+<!--							<field name="item_usage_lines" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" context="{'default_date':date}">-->
+<!--								<tree delete="false">-->
+<!--									<field name="date" />-->
+<!--									<field name="product_id" required="1" options="{'no_create': True, 'no_create_edit':True}" />-->
+<!--									<field name="pre_qty" widget="char" sum="Total"/>-->
+<!--									<field name="receipts" widget="char" />-->
+<!--									<field name="total" widget="char" sum="Total"/>-->
+<!--									<field name="usage" widget="char" />-->
+<!--									<field name="balance" widget="char" sum="Total"/>-->
+<!--								</tree>-->
 
-<!--								<form>-->
-<!--									<group>-->
-<!--										<field name="date" />-->
-<!--										<field name="product_id" required="1" options="{'no_create': True, 'no_create_edit':True}" />-->
-<!--										<field name="pre_qty" widget="char" />-->
-<!--										<field name="receipts" widget="char" />-->
-<!--										<field name="total" widget="char" />-->
-<!--										<field name="usage" widget="char" />-->
-<!--										<field name="balance" widget="char" />-->
-<!--									</group>-->
-<!--								</form>-->
-							</field>
-						</page>
-						<page string="Details Of Required Items">
-							<field name="details_rqrd_item" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" context="{'default_general_purchase':True,'default_date':date}">
-								 <tree>
-									<field name="name" />
-									<field name="supervisor_id" />
-							  	 	<field name="responsible" invisible="1"/>
-									<field name="order_date" />
-									<field name="min_expected_date" />
-									<field name="max_expected_date" />
-									<field name="received_date"   />
-									 <field name="item_ids" widget="many2many_tags"/>
-									<field name="estimated_amt"/>
-									<field name="state"/>
-								  </tree>
-							</field>
-						</page>
+<!--&lt;!&ndash;								<form>&ndash;&gt;-->
+<!--&lt;!&ndash;									<group>&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="date" />&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="product_id" required="1" options="{'no_create': True, 'no_create_edit':True}" />&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="pre_qty" widget="char" />&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="receipts" widget="char" />&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="total" widget="char" />&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="usage" widget="char" />&ndash;&gt;-->
+<!--&lt;!&ndash;										<field name="balance" widget="char" />&ndash;&gt;-->
+<!--&lt;!&ndash;									</group>&ndash;&gt;-->
+<!--&lt;!&ndash;								</form>&ndash;&gt;-->
+<!--							</field>-->
+<!--						</page>-->
+<!--						<page string="Details Of Required Items">-->
+<!--							<field name="details_rqrd_item" nolabel="1" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" context="{'default_general_purchase':True,'default_date':date}">-->
+<!--								 <tree>-->
+<!--									<field name="name" />-->
+<!--									<field name="supervisor_id" />-->
+<!--							  	 	<field name="responsible" invisible="1"/>-->
+<!--									<field name="order_date" />-->
+<!--									<field name="min_expected_date" />-->
+<!--									<field name="max_expected_date" />-->
+<!--									<field name="received_date"   />-->
+<!--									 <field name="item_ids" widget="many2many_tags"/>-->
+<!--									<field name="estimated_amt"/>-->
+<!--									<field name="state"/>-->
+<!--								  </tree>-->
+<!--							</field>-->
+<!--						</page>-->
 
-<!--					</notebook>-->
+<!--&lt;!&ndash;					</notebook>&ndash;&gt;-->
 
-						<!-- <group string="Details Of Work Done At Site">
-                            <field name="work_details" nolabel="1" attrs="{'readonly':[('state','in',('approved','checked','cancelled'))]}" />
-                        </group> -->
+<!--						&lt;!&ndash; <group string="Details Of Work Done At Site">-->
+<!--                            <field name="work_details" nolabel="1" attrs="{'readonly':[('state','in',('approved','checked','cancelled'))]}" />-->
+<!--                        </group> &ndash;&gt;-->
 
-<!--					</group>-->
-						<page string="Details Of Received Items">
-							<field name="details_received_item_ids" nolabel="1" context="{'default_Date':date}">
+<!--&lt;!&ndash;					</group>&ndash;&gt;-->
+<!--						<page string="Details Of Received Items">-->
+<!--							<field name="details_received_item_ids" nolabel="1" context="{'default_Date':date}">-->
 
 
 
-							</field>
-						</page>
+<!--							</field>-->
+<!--						</page>-->
 
 						</notebook>
 					</group>
@@ -2037,6 +2208,50 @@
 					context="{'employee_ids': active_ids}"/>
 
 
+		<record id="view_partner_form" model="ir.ui.view">
+			<field name="name">res.partner.form</field>
+			<field name="model">res.partner</field>
+			<field eval="1" name="priority" />
+			<field name="inherit_id" ref="base.view_partner_form" />
+			<field name="arch" type="xml">
+
+				<xpath expr="//sheet/group/group[2]/field[@name='phone']"
+					position="replace">
+					<field name="owner_name" string="Owner Name"/>
+				</xpath>
+				<xpath expr="//sheet/group/group[2]/field[@name='email']"
+					position="after">
+					<field name="responsible_name" />
+					<field name="responsible_mobile"/>
+					<field name="responsible_email"/>
+					<field name="vat_no"/>
+					<field name="trn_no"/>
+				</xpath>
+<!--				<xpath expr="//sheet/group/group[2]/field[@name='email2']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//sheet/group/group[2]/field[@name='co_tax_no']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//sheet/group/group[2]/field[@name='phone2']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//sheet/group/group[2]/field[@name='fax2']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//sheet/group/group[2]/field[@name='fax1']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+<!--				</xpath>-->
+
+
+			</field>
+		</record>
+
+
 
 	</data>
+
+
+
+
 </openerp>

@@ -342,6 +342,7 @@
                             <field name="order_line">
                                 <tree string="Purchase Order Lines" delete="false" create="0">
                                     <field name="product_id" />
+                                    <field name="brand_name" string="Brand"/>
                                     <field name="name"/>
                                    <field name="product_qty" />
                                     <field name="product_uom" groups="product.group_uom" />
@@ -350,12 +351,15 @@
                                 </tree>
                             </field>
 
-                            <div class="oe_clear"/>
-                            <field name="notes" class="oe_inline" placeholder="Terms and conditions..."/>
-                        </page>
+						</page>
 
                     </notebook>
-                </sheet>
+					<group>
+						<group>
+							<field name="notes" placeholder="Terms and conditions..." string="Terms &amp; Conditions"/>
+						</group>
+					</group>
+					</sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
                     <field name="message_ids" widget="mail_thread"/>

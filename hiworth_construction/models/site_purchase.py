@@ -179,7 +179,7 @@ class SitePurchaseItemLine(models.Model):
             if rec.received_qty != 0:
                 rec.received_rate = rec.invoiced_amount / rec.received_qty
             
-            
+    brand_name = fields.Many2one('material.brand')
     item_id = fields.Many2one('product.product', 'Item')
     quantity = fields.Float('Quantity')
     unit = fields.Many2one('product.uom', 'Unit')
@@ -192,7 +192,7 @@ class SitePurchaseItemLine(models.Model):
     sub_total = fields.Float('Sub Total', compute="get_tax_amount")
     total_amount = fields.Float('Total', compute="get_tax_amount")
     received_rate = fields.Float('Received Rate',compute='get_received_total',)
-    invoiced_amount = fields.Float( string='Invoiced Amount')
+    invoiced_amount = fields.Float(string='Invoiced Amount')
     received_total = fields.Float(string="Total Received Qty")
     received_bool = fields.Boolean(string="Received Bool")
     state = fields.Selection(related='site_purchase_id.state', string="Status")
@@ -200,6 +200,11 @@ class SitePurchaseItemLine(models.Model):
     project_approved_qty = fields.Float("Approved Quantity")
     processed_qty = fields.Float("Processed Quantity")
 
+
+class MaterialBrand(models.Model):
+    _name = 'material.brand'
+
+    name = fields.Char()
 
 
 
@@ -375,7 +380,7 @@ class SitePurchase(models.Model):
                                    'invoice_id', string="Invoices")
     order_by = fields.Char('Order By')
     mode_of_order =fields.Char('Mode of Order')
-    quotation_id = fields.Many2one('purchase.order',"Request for Quotation")
+    quotation_id = fields.Many2one('purchase.order', "Request for Quotation")
 
     @api.multi
     def cancel_purchase(self):
@@ -426,7 +431,7 @@ class SitePurchase(models.Model):
                   'order_line':value_list,
                   'origin':self.name,
                   'project_id':self.project_id.id,
-                'state':'confirmed',
+                  'state':'confirmed',
                   'vehicle_agent_id':self.vehicle_agent.id,
                   'company_contractor_id':self.project_id.company_contractor_id.id,
                   }

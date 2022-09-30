@@ -370,6 +370,9 @@ class PartnerDailyStatement(models.Model):
 	project_id = fields.Many2one('project.project',string="Project")
 	item_received_lines = fields.One2many('items.received', 'product_id', 'Materials Used')
 	labour_details_ids = fields.One2many('labour.employee.details', 'supervisor_statement_id')
+	products_received_lines = fields.One2many('partner.received.products', 'partner_id')
+	products_used_lines = fields.One2many('partner.used.products', 'partner_id')
+
 
 	# @api.onchange('location_ids')
 	# def _onchange_date(self):
@@ -543,6 +546,19 @@ class PartnerDailyStatement(models.Model):
 
 		# if self.theoretical_balance != self.balance:
 		# 	raise except_orm(_('Warning'),_('Actual Balance And Theoretical Balance Must Be Same'))
+
+		for line in self.products_used_lines:
+			location = self.env['stock.location'].search([('usage', '=', 'customer')], limit=1).id
+			move_out = self.env['stock.move'].create({'name': line.product_id.id,
+													  'product_id': line.product_id.id,
+													  'product_uom_qty': line.used_qty,
+													  'product_uom': line.product_id.uom_id.id,
+													  'location_id': line.partner_id.location_ids.id,
+													  'location_dest_id': location,
+													  'partner_stmt_id': line.partner_id.id
+													  })
+			move_out.action_done()
+
 
 		for lines in self.received_ids:
 			lines.recept_temp.unlink()
@@ -2914,3 +2930,90 @@ class AttendanceEntryWizardLine(models.TransientModel):
 								('absent','Absent')
 								], default='full', string='Attendance')
 	wizard_id = fields.Many2one('attendance.entry.wizard.new', string='Wizard')
+
+
+class ReceivedProducts(models.Model):
+	_name = 'partner.received.products'
+
+	# goods_receive_report_id = fields.Many2one('goods.recieve.report', string="Goods Receive Report No")
+	# goods_receive_report_line_id = fields.Many2one('goods.recieve.report.line', string="Product", _rec_name="item_id")
+	po_no = fields.Many2one('purchase.order', string="Purchase Order")
+	stock_transfer_id = fields.Char()
+	type_of_good_transfer = fields.Selection([
+		('store_to_site', 'Store to site'), ('site_to_site', 'Site to Site'), ('other_stock_move', 'Other stock Move'),
+		('goods_receive_through_po', 'Goods received through Purchase Order')])
+	unit = fields.Many2one('product.uom', readonly=True)
+	stock_qty = fields.Float(readonly=True, compute="compute_quantity", store=True)
+	product_id = fields.Many2one('product.product')
+	po_qty = fields.Float()
+	received_qty = fields.Float()
+	vehicle_id = fields.Many2one('fleet.vehicle')
+	partner_id = fields.Many2one('partner.daily.statement')
+
+	@api.onchange('product_id')
+	def onchange_product_id(self):
+		for record in self:
+			if record.product_id:
+				record.unit = record.product_id.uom_id.id
+			if record.product_id and record.partner_id.location_ids:
+				current_qty = sum(self.env['stock.quant'].search([('product_id', '=', record.product_id.id),
+																  ('location_id', '=',
+																   record.partner_id.location_ids.id)]).mapped('qty'))
+				record.stock_qty = current_qty
+
+	@api.depends('product_id')
+	def compute_quantity(self):
+		for record in self:
+			if record.product_id and record.partner_id.location_ids:
+				current_qty = sum(self.env['stock.quant'].search([('product_id', '=', record.product_id.id),
+																  ('location_id', '=',
+																   record.partner_id.location_ids.id)]).mapped('qty'))
+				record.stock_qty = current_qty
+
+
+class UsedProducts(models.Model):
+	_name = 'partner.used.products'
+
+	product_id = fields.Many2one('product.product')
+	stock_qty = fields.Float(readonly=True, compute="compute_quantity", store=True)
+	used_qty = fields.Float()
+	balance_qty = fields.Float(readonly=True, compute="compute_quantity", store=True)
+	unit = fields.Many2one('product.uom', readonly=True)
+	partner_id = fields.Many2one('partner.daily.statement')
+
+	@api.onchange('product_id', 'used_qty')
+	def onchange_product_id(self):
+		for record in self:
+			if record.product_id:
+				record.unit = record.product_id.uom_id.id
+			if record.product_id and record.partner_id.location_ids:
+				current_qty = sum(self.env['stock.quant'].search([('product_id', '=', record.product_id.id),
+																  ('location_id', '=',
+																   record.partner_id.location_ids.id)]).mapped('qty'))
+				record.stock_qty = current_qty
+				if record.used_qty:
+					if record.stock_qty < record.used_qty:
+						raise osv.except_osv(('Warning!'),
+											 ('%s stock quantity is less than used quantity' % record.product_id.name))
+					record.balance_qty = record.stock_qty - record.used_qty
+
+	@api.depends('product_id', 'used_qty')
+	def compute_quantity(self):
+		for record in self:
+			if record.product_id and record.partner_id.location_ids:
+				current_qty = sum(self.env['stock.quant'].search([('product_id', '=', record.product_id.id),
+																  ('location_id', '=',
+																   record.partner_id.location_ids.id)]).mapped('qty'))
+				record.stock_qty = current_qty
+				if record.used_qty:
+					if record.stock_qty < record.used_qty:
+						raise osv.except_osv(('Warning!'),
+											 ('%s stock quantity is less than used quantity' % record.product_id.name))
+					record.balance_qty = record.stock_qty - record.used_qty
+
+	@api.multi
+	def unlink(self, cr, uid, ids, context=None):
+		for rec in self:
+			if rec.partner_id.state != 'draft':
+				raise osv.except_osv(('Warning!'), ('Records in the %s state cannot be deleted' % rec.partner_id.state))
+			super(UsedProducts, self).unlink(cr, uid, ids, context)

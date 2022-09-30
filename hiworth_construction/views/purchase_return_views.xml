@@ -54,6 +54,7 @@
 
 							   <tree editable="bottom" delete="false" create="false">
                                   <field name="item_id" readonly="1" required="1" />
+                                   <field name="brand_name" string="Brand" readonly="1"/>
                                     <field name="desc" required="1" />
                                 <field name="unit_id" readonly="1" required="1" />
                                    <field name="tax_ids" readonly="1" widget='many2many_tags'/>

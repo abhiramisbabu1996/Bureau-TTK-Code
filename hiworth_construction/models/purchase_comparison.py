@@ -20,42 +20,45 @@ class PurchaseComparison(models.Model):
     @api.multi
     def write(self,vals):
         partner_id1 = ''
-        partner_id2 =''
+        partner_id2 = ''
         partner_id3 = ''
+        partner_id4 = ''
+        partner_id5 = ''
+        partner_id1 = vals.get('partner_id1', False) and vals.get('partner_id1') or self.partner_id1.id
+        partner_id2 = vals.get('partner_id2', False) and vals.get('partner_id2') or self.partner_id2.id
+        partner_id3 = vals.get('partner_id3', False) and vals.get('partner_id3') or self.partner_id3.id
+        partner_id4 = vals.get('partner_id4', False) and vals.get('partner_id4') or self.partner_id4.id
+        partner_id5 = vals.get('partner_id5', False) and vals.get('partner_id5') or self.partner_id5.id
 
-    
         if vals.get('partner_id1'):
-            partner_id1 = vals.get('partner_id1',False) and vals.get('partner_id1') or self.partner_id1.id
-            partner_id2 = vals.get('partner_id2',False) and vals.get('partner_id2') or self.partner_id2.id
-            partner_id3 = vals.get('partner_id3',False) and vals.get('partner_id3') or self.partner_id3.id
-            if (partner_id1 == partner_id2 or partner_id1 == partner_id3):
+            if (partner_id1 == partner_id2 or partner_id1 == partner_id3 or partner_id1 == partner_id4 or partner_id1 == partner_id5):
                 raise Warning(_('You have already selected this supplier'))
-            if partner_id2 == partner_id3 != False:
-                if (partner_id2 == partner_id3 or partner_id1 == partner_id3):
-                    raise Warning(_('You have already selected this supplier'))
+            # if partner_id2 == partner_id3 != False:
+            #     if (partner_id2 == partner_id3 or partner_id1 == partner_id3):
+            #         raise Warning(_('You have already selected this supplier'))
 
         if vals.get('partner_id2'):
-
-            partner_id1 = vals.get('partner_id1', False) and vals.get('partner_id1') or self.partner_id1.id
-            partner_id2 = vals.get('partner_id2', False) and vals.get('partner_id2') or self.partner_id2.id
-            partner_id3 = vals.get('partner_id3', False) and vals.get('partner_id3') or self.partner_id3.id
-            if (partner_id1 == partner_id2 or partner_id1 == partner_id3):
+            if (partner_id2 == partner_id1 or partner_id2 == partner_id3 or partner_id2 == partner_id4 or partner_id2 == partner_id5):
                 raise Warning(_('You have already selected this supplier'))
-            if partner_id1 == partner_id3 != False:
-                if (partner_id2 == partner_id3 or partner_id1 == partner_id3):
-                    raise Warning(_('You have already selected this supplier'))
+            # if partner_id1 == partner_id3 != False:
+            #     if (partner_id2 == partner_id3 or partner_id1 == partner_id3):
+            #         raise Warning(_('You have already selected this supplier'))
+
         if vals.get('partner_id3'):
-
-            partner_id1 = vals.get('partner_id1', False) and vals.get('partner_id1') or self.partner_id1.id
-            partner_id2 = vals.get('partner_id2', False) and vals.get('partner_id2') or self.partner_id2.id
-            partner_id3 = vals.get('partner_id3', False) and vals.get('partner_id3') or self.partner_id3.id
-            if (partner_id1 == partner_id2 or partner_id1 == partner_id3):
+            if (partner_id3 == partner_id2 or partner_id1 == partner_id3 or partner_id3 == partner_id4 or partner_id3 == partner_id5):
                 raise Warning(_('You have already selected this supplier'))
-            if partner_id1 == partner_id2 != False:
-                if (partner_id2 == partner_id3 or partner_id1 == partner_id3):
-                    raise Warning(_('You have already selected this supplier'))
 
+        if vals.get('partner_id4'):
+            if (partner_id4 == partner_id2 or partner_id4 == partner_id3 or partner_id1 == partner_id4 or partner_id4 == partner_id5):
+                raise Warning(_('You have already selected this supplier'))
 
+        if vals.get('partner_id5'):
+            if (partner_id5 == partner_id2 or partner_id5 == partner_id3 or partner_id5 == partner_id4 or partner_id1 == partner_id5):
+                raise Warning(_('You have already selected this supplier'))
+
+            # if partner_id1 == partner_id2 != False:
+            #     if (partner_id2 == partner_id3 or partner_id1 == partner_id3):
+            #         raise Warning(_('You have already selected this supplier'))
 
         res = super(PurchaseComparison, self).write(vals)
         return res
@@ -78,28 +81,32 @@ class PurchaseComparison(models.Model):
                 'domain':{'partner_id1':[('id','in',partner_list)],
                           'partner_id2':[('id','in',partner_list)],
                           'partner_id3':[('id','in',partner_list)],
+                          'partner_id4':[('id','in',partner_list)],
+                          'partner_id5':[('id','in',partner_list)],
                           'partner_selected':[('id','in',partner_list)]}
             }
 
 
 
-
-
-    @api.onchange('supplier_ids')
-    def onchange_partner_selected(self):
-        for rec in self:
-
-            partner_list = rec.supplier_ids.ids
-            if partner_list == []:
-                partner_list.append(self.partner_id1.id)
-                partner_list.append(self.partner_id2.id)
-                partner_list.append(self.partner_id3.id)
-            return{
-                'domain':{'partner_id1':[('id','in',partner_list)],
-                          'partner_id2':[('id','in',partner_list)],
-                          'partner_id3':[('id','in',partner_list)],
-                          'partner_selected':[('id','in',partner_list)]}
-            }
+    # @api.onchange('supplier_ids')
+    # def onchange_partner_selected(self):
+    #     for rec in self:
+    #
+    #         partner_list = rec.supplier_ids.ids
+    #         if partner_list == []:
+    #             partner_list.append(self.partner_id1.id)
+    #             partner_list.append(self.partner_id2.id)
+    #             partner_list.append(self.partner_id3.id)
+    #             partner_list.append(self.partner_id4.id)
+    #             partner_list.append(self.partner_id5.id)
+    #         return{
+    #             'domain':{'partner_id1':[('id','in',partner_list)],
+    #                       'partner_id2':[('id','in',partner_list)],
+    #                       'partner_id3':[('id','in',partner_list)],
+    #                       'partner_id4':[('id','in',partner_list)],
+    #                       'partner_id5':[('id','in',partner_list)],
+    #                       'partner_selected':[('id','in',partner_list)]}
+    #         }
 
     @api.one
     def button_request(self):
@@ -115,23 +122,45 @@ class PurchaseComparison(models.Model):
 
     @api.one
     def button_approve2(self):
-        if self.partner_selected.id == self.partner_id1.id:
-            if self.total_amt1 > 1000:
-                if self.env.user.has_group('hiworth_construction.group_warehouse_user') and not self.env.user.has_group('base.group_erp_manager'):
-                    raise Warning(_('You have not access to approve this comparison.'))
-        if self.partner_selected.id == self.partner_id2.id:
-            if self.total_amt2 > 1000:
-                if self.env.user.has_group('hiworth_construction.group_warehouse_user') and not self.env.user.has_group(
-                        'base.group_erp_manager'):
-                    raise Warning(_('You have not access to approve this comparison.'))
-        if self.partner_selected.id == self.partner_id3.id:
-            if self.total_amt3 > 1000:
-                if self.env.user.has_group('hiworth_construction.group_warehouse_user') and not self.env.user.has_group(
-                        'base.group_erp_manager'):
-                    raise Warning(_('You have not access to approve this comparison.'))
+        # if self.partner_selected.id == self.partner_id1.id:
+        #     if self.total_amt1 > 1000:
+        #         if self.env.user.has_group('hiworth_construction.group_warehouse_user') and not self.env.user.has_group('base.group_erp_manager'):
+        #             raise Warning(_('You have not access to approve this comparison.'))
+        # if self.partner_selected.id == self.partner_id2.id:
+        #     if self.total_amt2 > 1000:
+        #         if self.env.user.has_group('hiworth_construction.group_warehouse_user') and not self.env.user.has_group(
+        #                 'base.group_erp_manager'):
+        #             raise Warning(_('You have not access to approve this comparison.'))
+        # if self.partner_selected.id == self.partner_id3.id:
+        #     if self.total_amt3 > 1000:
+        #         if self.env.user.has_group('hiworth_construction.group_warehouse_user') and not self.env.user.has_group(
+        #                 'base.group_erp_manager'):
+        #             raise Warning(_('You have not access to approve this comparison.'))
+        # if self.partner_selected.id == self.partner_id3.id:
+        #     if self.total_amt3 > 1000:
+        #         if self.env.user.has_group('hiworth_construction.group_warehouse_user') and not self.env.user.has_group(
+        #                 'base.group_erp_manager'):
+        #             raise Warning(_('You have not access to approve this comparison.'))
+        # if self.partner_selected.id == self.partner_id3.id:
+        #     if self.total_amt3 > 1000:
+        #         if self.env.user.has_group('hiworth_construction.group_warehouse_user') and not self.env.user.has_group(
+        #                 'base.group_erp_manager'):
+        #             raise Warning(_('You have not access to approve this comparison.'))
+        if self.env.user.has_group('hiworth_construction.group_warehouse_user') and not self.env.user.has_group(
+                'base.group_erp_manager'):
+            raise Warning(_('You have not access to approve this comparison.'))
 
         self.user_id2 = self.env.user.id
         self.state = 'validated2'
+    @api.one
+    def button_approve3(self):
+        if self.env.user.has_group('hiworth_construction.group_warehouse_user') and not self.env.user.has_group(
+                'base.group_erp_manager'):
+            raise Warning(_('You have not access to approve this comparison.'))
+
+        self.user_id1 = self.env.user.id
+        self.state = 'ceo_approval'
+
 
     # @api.onchange('partner_id')
     # def onchange_partner_id2
@@ -145,11 +174,11 @@ class PurchaseComparison(models.Model):
     def button_po_create(self):
 
         list = []
+        purchase_ids = []
 
         vals = {
             'state':'approved',
             'site_purchase_id':self.mpr_id.id,
-            'partner_id': self.partner_selected.id,
             'pricelist_id': self.partner_selected.property_product_pricelist_purchase.id,
             'minimum_plann_date': self.mpr_id.min_expected_date,
             'maximum_planned_date':self.mpr_id.max_expected_date,
@@ -164,83 +193,191 @@ class PurchaseComparison(models.Model):
             'vehicle_agent_id': self.mpr_id.vehicle_agent.id,
             'vehicle_id':self.vehicle_id.id,
             'currency_id':self.quotation_id.currency_id.id,
+            'notes': self.remark,
 
         }
-       
-        for l in self.comparison_line:
-            dictionary = {
-                'product_id': l.product_id.id,
-                'name': l.product_id.name,
-                'required_qty': l.qty,
-                'product_uom': l.product_id.uom_id.id,
-                'price_unit': 0.0,
-                'taxes_id':l.tax_id and [(6,0,[l.tax_id.id])] or [],
-                'account_id': self.env['account.account'].search([('name', '=', 'Purchase')]).id,
-            }
+
+        partner1_lines = self.comparison_line.filtered(lambda l: l.vendor_select_id == self.partner_id1)
+        partner2_lines = self.comparison_line.filtered(lambda l: l.vendor_select_id == self.partner_id2)
+        partner3_lines = self.comparison_line.filtered(lambda l: l.vendor_select_id == self.partner_id3)
+        partner4_lines = self.comparison_line.filtered(lambda l: l.vendor_select_id == self.partner_id4)
+        partner5_lines = self.comparison_line.filtered(lambda l: l.vendor_select_id == self.partner_id5)
+        
+        if partner1_lines:
+            for l in partner1_lines:
+                dictionary = {
+                    'product_id': l.product_id.id,
+                    'name': l.product_id.name,
+                    'required_qty': l.qty,
+                    'brand_name':l.brand_name.id,
+                    'product_uom': l.product_id.uom_id.id,
+                    'price_unit': 0.0,
+                    'taxes_id':l.tax_id and [(6,0,[l.tax_id.id])] or [],
+                    'account_id': self.env['account.account'].search([('name', '=', 'Purchase')]).id,
+                }
+                dictionary['expected_rate'] = l.rate1
+                dictionary['price_unit'] = l.rate1
+                l.product_id.standard_price = l.rate1
+                list.append((0, 0, dictionary))
+
+            vals['partner_id'] = self.partner_id1.id
+            vals['payment_term_id'] = self.payment_term1.id
+            vals['notes'] = str(self.remark)
+            vals['packing_charge'] = self.p_n_f1
+            vals['packing_tax_id'] = self.p_n_f1_tax_id.id
+            vals['loading_tax'] = self.loading_charge1
+            vals['loading_tax_id'] = self.loading1_tax_id.id
+            vals['transport_cost'] = self.transport_cost1
+            vals['transport_cost_tax_id'] = self.transport1_tax_id.id
+            vals['other_charge'] = self.other_charge1
+
+            if len(list) > 0:
+                vals['order_line'] = list
+                purchase_id = self.env['purchase.order'].create(vals)
+                purchase_id.state = 'approved'
+                purchase_ids.append(purchase_id.id)
+        list = []
+
+        if partner2_lines:
+            vals['partner_id'] = self.partner_id2.id
+            vals['payment_term_id'] = self.payment_term2.id
+            vals['notes'] = str(self.remark) + " " +str(self.remark2) or ''
+            vals['packing_charge'] = self.p_n_f2
+            vals['packing_tax_id'] = self.p_n_f2_tax_id.id
+            vals['loading_tax'] = self.loading_charge2
+            vals['loading_tax_id'] = self.loading2_tax_id.id
+            vals['transport_cost'] = self.transport_cost2
+            vals['transport_cost_tax_id'] = self.transport2_tax_id.id
+            vals['other_charge'] = self.other_charge2
+
+            for l in partner2_lines:
+
+                dictionary = {
+                    'product_id': l.product_id.id,
+                    'name': l.product_id.name,
+                    'required_qty': l.qty,
+                    'brand_name': l.brand_name.id,
+                    'product_uom': l.product_id.uom_id.id,
+                    'price_unit': 0.0,
+                    'taxes_id': l.tax_id and [(6, 0, [l.tax_id.id])] or [],
+                    'account_id': self.env['account.account'].search([('name', '=', 'Purchase')]).id,
+                }
+                dictionary['expected_rate'] = l.rate2
+                dictionary['price_unit'] = l.rate2
+                l.product_id.standard_price = l.rate2
+                list.append((0, 0, dictionary))
+
+            # if self.partner_selected.id == self.partner_id2.id:
+            #     flag = 2
+            #     if flag == 2:
+
+            if len(list) > 0:
+                vals['order_line'] = list
+                purchase_id = self.env['purchase.order'].create(vals)
+                purchase_id.state = 'approved'
+                purchase_ids.append(purchase_id.id)
+                
+        if partner3_lines:
+            vals['partner_id'] = self.partner_id3.id
+            vals['payment_term_id'] = self.payment_term3.id
+            vals['notes'] = str(self.remark) + " " +str(self.remark3) or ''
+            vals['packing_charge'] = self.p_n_f3
+            vals['packing_tax_id'] = self.p_n_f3_tax_id.id
+            vals['loading_tax'] = self.loading_charge3
+            vals['loading_tax_id'] = self.loading3_tax_id.id
+            vals['transport_cost'] = self.transport_cost3
+            vals['transport_cost_tax_id'] = self.transport3_tax_id.id
             
-
-            if self.partner_selected.id == self.partner_id1.id:
-                flag = 1
-                if flag == 1:
-                    vals['payment_term_id'] = self.payment_term1.id
-                    vals['notes'] = str(self.remark)
-                    vals['packing_charge'] = self.p_n_f1
-                    vals['packing_tax_id'] = self.p_n_f1_tax_id.id
-                    vals['loading_tax'] = self.loading_charge1
-                    vals['loading_tax_id'] = self.loading1_tax_id.id
-                    vals['transport_cost'] = self.transport_cost1
-                    vals['transport_cost_tax_id'] = self.transport1_tax_id.id
-                    vals['other_charge'] = self.other_charge1
-                    dictionary['expected_rate'] = l.rate1
-                    dictionary['price_unit'] = l.rate1
-                    l.product_id.standard_price = l.rate1
+            for l in partner3_lines:
+                dictionary = {
+                    'product_id': l.product_id.id,
+                    'name': l.product_id.name,
+                    'required_qty': l.qty,
+                    'brand_name': l.brand_name.id,
+                    'product_uom': l.product_id.uom_id.id,
+                    'price_unit': 0.0,
+                    'taxes_id': l.tax_id and [(6, 0, [l.tax_id.id])] or [],
+                    'account_id': self.env['account.account'].search([('name', '=', 'Purchase')]).id,
+                }
+                dictionary['expected_rate'] = l.rate3
+                dictionary['price_unit'] = l.rate3
+                l.product_id.standard_price = l.rate3
                 list.append((0, 0, dictionary))
                 
+            if len(list) > 0:
+                vals['order_line'] = list
+                purchase_id = self.env['purchase.order'].create(vals)
+                purchase_id.state = 'approved'
+                purchase_ids.append(purchase_id.id)
                 
-                
-                
-            if self.partner_selected.id == self.partner_id2.id:
-                flag = 2
-                if flag == 2:
-                    vals['payment_term_id'] = self.payment_term2.id
-                    vals['notes'] = str(self.remark) + " " +str(self.remark2) or ''
-                    dictionary['expected_rate'] = l.rate2
-                    dictionary['price_unit'] = l.rate2
-                    vals['packing_charge'] = self.p_n_f2
-                    vals['packing_tax_id'] = self.p_n_f2_tax_id.id
-                    vals['loading_tax'] = self.loading_charge2
-                    vals['loading_tax_id'] = self.loading2_tax_id.id
-                    vals['transport_cost'] = self.transport_cost2
-                    vals['transport_cost_tax_id'] = self.transport2_tax_id.id
-                    vals['other_charge'] = self.other_charge2
-                    l.product_id.standard_price = l.rate2
+        if partner4_lines:
+            vals['partner_id'] = self.partner_id4.id
+            vals['payment_term_id'] = self.payment_term4.id
+            vals['notes'] = str(self.remark) + " " + str(self.remark4) or ''
+            vals['packing_charge'] = self.p_n_f4
+            vals['packing_tax_id'] = self.p_n_f4_tax_id.id
+            vals['loading_tax'] = self.loading_charge4
+            vals['loading_tax_id'] = self.loading4_tax_id.id
+            vals['transport_cost'] = self.transport_cost4
+            vals['transport_cost_tax_id'] = self.transport4_tax_id.id
+
+            for l in partner4_lines:
+                dictionary = {
+                    'product_id': l.product_id.id,
+                    'name': l.product_id.name,
+                    'required_qty': l.qty,
+                    'brand_name': l.brand_name.id,
+                    'product_uom': l.product_id.uom_id.id,
+                    'price_unit': 0.0,
+                    'taxes_id': l.tax_id and [(6, 0, [l.tax_id.id])] or [],
+                    'account_id': self.env['account.account'].search([('name', '=', 'Purchase')]).id,
+                }
+                dictionary['expected_rate'] = l.rate4
+                dictionary['price_unit'] = l.rate4
+                l.product_id.standard_price = l.rate4
                 list.append((0, 0, dictionary))
 
-                    
-                
-            if self.partner_selected.id == self.partner_id3.id:
-                flag = 3
-                if flag == 3:
-                    vals['payment_term_id'] = self.payment_term3.id
-                    vals['notes'] = str(self.remark) + " " +str(self.remark3) or ''
-                    dictionary['expected_rate'] = l.rate3
-                    dictionary['price_unit'] = l.rate3
-                    l.product_id.standard_price = l.rate3
-                    vals['packing_charge'] = self.p_n_f3
-                    vals['packing_tax_id'] = self.p_n_f3_tax_id.id
-                    vals['loading_tax'] = self.loading_charge3
-                    vals['loading_tax_id'] = self.loading3_tax_id.id
-                    vals['transport_cost'] = self.transport_cost3
-                    vals['transport_cost_tax_id'] = self.transport3_tax_id.id
+ 
+            if len(list) > 0:
+                vals['order_line'] = list
+                purchase_id = self.env['purchase.order'].create(vals)
+                purchase_id.state = 'approved'
+                purchase_ids.append(purchase_id.id)
+        
+        if partner5_lines:
+            vals['partner_id'] = self.partner_id5.id
+            vals['payment_term_id'] = self.payment_term5.id
+            vals['notes'] = str(self.remark) + " " + str(self.remark5) or ''
+            vals['packing_charge'] = self.p_n_f5
+            vals['packing_tax_id'] = self.p_n_f5_tax_id.id
+            vals['loading_tax'] = self.loading_charge5
+            vals['loading_tax_id'] = self.loading5_tax_id.id
+            vals['transport_cost'] = self.transport_cost5
+            vals['transport_cost_tax_id'] = self.transport5_tax_id.id
+
+            for l in partner5_lines:
+                dictionary = {
+                    'product_id': l.product_id.id,
+                    'name': l.product_id.name,
+                    'required_qty': l.qty,
+                    'brand_name': l.brand_name.id,
+                    'product_uom': l.product_id.uom_id.id,
+                    'price_unit': 0.0,
+                    'taxes_id': l.tax_id and [(6, 0, [l.tax_id.id])] or [],
+                    'account_id': self.env['account.account'].search([('name', '=', 'Purchase')]).id,
+                }
+                dictionary['expected_rate'] = l.rate5
+                dictionary['price_unit'] = l.rate5
+                l.product_id.standard_price = l.rate5
                 list.append((0, 0, dictionary))
 
+            if len(list) > 0:
+                vals['order_line'] = list
+                purchase_id = self.env['purchase.order'].create(vals)
+                purchase_id.state = 'approved'
+                purchase_ids.append(purchase_id.id)
 
-        vals['order_line'] = list
-
-        purchase_id = self.env['purchase.order'].create(vals)
-
-        self.purchase_id = purchase_id.id
-        self.purchase_id.state = 'approved'
+        self.purchase_ids = purchase_ids
         self.state = 'po'
         self.mpr_id.state = 'order'
 
@@ -253,7 +390,7 @@ class PurchaseComparison(models.Model):
             'view_type': 'form',
             'view_mode': 'tree,form',
             'target': 'current',
-            'domain': [('id', '=', self.purchase_id.id)]
+            'domain': [('id', '=', self.purchase_ids.ids)]
         }
 
         return res
@@ -271,17 +408,27 @@ class PurchaseComparison(models.Model):
             t1 = 0.0
             t2 = 0.0
             t3 = 0.0
+            t4 = 0.0
+            t5 = 0.0
+
             nt1 = 0.0
             nt2 = 0.0
             nt3 = 0.0
+            nt4 = 0.0
+            nt5 = 0.0
+
             tax1 = 0.0
             tax2 = 0.0
-            tax3 =0.0
+            tax3 = 0.0
+            tax4 = 0.0
+            tax5 = 0.0
+
             igst1 = 0.0
             igst2 = 0.0
-            igst3 =0.0
-            # t4 = 0.0
-            # t5 = 0.0
+            igst3 = 0.0
+            igst4 = 0.0
+            igst5 = 0.0
+
            
             for l in s.comparison_line:
                 if l.non_tax_charge1==0:
@@ -296,20 +443,32 @@ class PurchaseComparison(models.Model):
                     t3 += l.sub_total3
                 else:
                     nt3 += l.non_tax_charge3
-                # t4 += l.sub_total4
-                # t5 += l.sub_total5
-                if l.tax_id.tax_type =='gst':
+                # if l.non_tax_charge4==0:
+                #     t4 += l.sub_total4
+                # else:
+                #     nt4 += l.non_tax_charge4
+                # if l.non_tax_charge5==0:
+                #     t5 += l.sub_total5
+                # else:
+                #     nt5 += l.non_tax_charge5
+                t4 += l.sub_total4
+                t5 += l.sub_total5
+                if l.tax_id.tax_type == 'gst':
                     tax1 += l.sub_total1 * l.tax_id.amount
                     tax2 += l.sub_total2 * l.tax_id.amount
                     tax3 += l.sub_total3 * l.tax_id.amount
-                if l.tax_id.tax_type =='igst':
-                    igst1 +=l.sub_total1 *l.tax_id.amount
-                    igst2 +=l.sub_total2 *l.tax_id.amount
-                    igst3 +=l.sub_total3*l.tax_id.amount
-                # if not s.tax_id1.price_include:
-                #     t4 = t4 + t4 * s.tax_id1.amount
-                # if not s.tax_id1.price_include:
-                #     t5 = t5 + t5 * s.tax_id1.amount
+                    tax4 += l.sub_total4 * l.tax_id.amount
+                    tax5 += l.sub_total5 * l.tax_id.amount
+                if l.tax_id.tax_type == 'igst':
+                    igst1 += l.sub_total1 * l.tax_id.amount
+                    igst2 += l.sub_total2 * l.tax_id.amount
+                    igst3 += l.sub_total3 * l.tax_id.amount
+                    igst4 += l.sub_total4 * l.tax_id.amount
+                    igst5 += l.sub_total5 * l.tax_id.amount
+                if not s.tax_id1.price_include:
+                    t4 = t4 + t4 * s.tax_id1.amount
+                if not s.tax_id1.price_include:
+                    t5 = t5 + t5 * s.tax_id1.amount
             loading_charge1 = 0.0
             other_charge1=0
             other_charge2=0
@@ -507,6 +666,9 @@ class PurchaseComparison(models.Model):
             s.taxable1 = t1 +loading_charge1 + transport_cost1 + p_n_f1
             s.taxable2 = t2+loading_charge2 +transport_cost2 + p_n_f2
             s.taxable3 = t3+loading_charge3 + transport_cost3 + p_n_f3
+            # s.taxable4 = t4+loading_charge4 + transport_cost4 + p_n_f4
+            # s.taxable5 = t5+loading_charge5 + transport_cost5 + p_n_f5
+
             s.cgst_id1 = tax1/2 + gtax_loading_charge1/2  + gtax_transport_cost1/2 + gtax_p_n_f1/2
             s.cgst_id2 =tax2/2  + gtax_loading_charge2/2 +gtax_transport_cost2/2 + gtax_p_n_f2/2
             s.cgst_id3 = tax3/2 + gtax_loading_charge3/2 + gtax_transport_cost3/2 + gtax_p_n_f3/2
@@ -523,14 +685,14 @@ class PurchaseComparison(models.Model):
             s.non_tax_charge2 = nt2
             s.non_tax_charge3 = nt3
             s.total_amt1 = s.taxable1 + s.non_tax_charge1 + s.cgst_id1+s.igst_id1+s.sgst_id1 + s.other_charge1
-            s.total_amt2 =  s.taxable2 + s.non_tax_charge2 + s.cgst_id2+s.igst_id2+s.sgst_id2+ s.other_charge2
-            s.total_amt3 =  s.taxable3 + s.non_tax_charge3 + s.cgst_id3+s.igst_id3+s.sgst_id3+ s.other_charge3
-
-                  
+            s.total_amt2 = s.taxable2 + s.non_tax_charge2 + s.cgst_id2+s.igst_id2+s.sgst_id2 + s.other_charge2
+            s.total_amt3 = s.taxable3 + s.non_tax_charge3 + s.cgst_id3+s.igst_id3+s.sgst_id3 + s.other_charge3
+            # s.total_amt4 = s.taxable4 + s.non_tax_charge4 + s.cgst_id3+s.igst_id3+s.sgst_id4 + s.other_charge4
+            # s.total_amt5 = s.taxable5 + s.non_tax_charge5 + s.cgst_id3+s.igst_id3+s.sgst_id5 + s.other_charge5
                  
 
-            # s.total_amt4 = t4 + s.loading_charge4 + s.transport_cost5 + s.p_n_f4
-            # s.total_amt5 = t5 + s.loading_charge5 + s.transport_cost5 + s.p_n_f5
+            s.total_amt4 = t4 + s.loading_charge4 + s.transport_cost5 + s.p_n_f4
+            s.total_amt5 = t5 + s.loading_charge5 + s.transport_cost5 + s.p_n_f5
 
 
     @api.depends('quotation_id')
@@ -563,7 +725,6 @@ class PurchaseComparison(models.Model):
                                                   rec.partner_id3.property_account_receivable.balance) + "Dr"}))
 
                 rec.debit_balance_ids = value_list
-
 
     @api.onchange('partner_id2')
     def onchnage_partner_id2(self):
@@ -613,12 +774,22 @@ class PurchaseComparison(models.Model):
                                               'balance': rec.partner_id3.property_account_receivable.balance >= 0 and str(
                                                   rec.partner_id3.property_account_receivable.balance) + "Cr" or str(
                                                   rec.partner_id3.property_account_receivable.balance) + "Dr"}))
+                if rec.partner_id4:
+                    value_list.append((0, 0, {'supplier_id': rec.partner_id4.id,
+                                              'balance': rec.partner_id4.property_account_receivable.balance >= 0 and str(
+                                                  rec.partner_id4.property_account_receivable.balance) + "Cr" or str(
+                                                  rec.partner_id4.property_account_receivable.balance) + "Dr"}))
+                if rec.partner_id5:
+                    value_list.append((0, 0, {'supplier_id': rec.partner_id5.id,
+                                              'balance': rec.partner_id5.property_account_receivable.balance >= 0 and str(
+                                                  rec.partner_id5.property_account_receivable.balance) + "Cr" or str(
+                                                  rec.partner_id5.property_account_receivable.balance) + "Dr"}))
+
+
 
                 rec.debit_balance_ids = value_list
 
-
-
-
+    notes = fields.Text()
     project_id = fields.Many2one('project.project', 'Project')
     number = fields.Char('Comparison No')
     mpr_id = fields.Many2one('site.purchase',string="P.R No")
@@ -630,20 +801,22 @@ class PurchaseComparison(models.Model):
     partner_id3 = fields.Many2one('res.partner', 'Supplier')
     remark3 = fields.Char('Remark')
     vehicle_id = fields.Many2one('fleet.vehicle',string="Vehicle")
-    # partner_id4 = fields.Many2one('res.partner', 'Supplier')
-    # remark4 = fields.Char('Remark')
-    # partner_id5 = fields.Many2one('res.partner', 'Supplier')
-    # remark5 = fields.Char('Remark')
+    partner_id4 = fields.Many2one('res.partner', 'Supplier')
+    remark4 = fields.Char('Remark')
+    partner_id5 = fields.Many2one('res.partner', 'Supplier')
+    remark5 = fields.Char('Remark')
     state = fields.Selection([('draft', 'Draft'),
                               ('requested', 'Requested'),
-                              ('first_approve','First Approval'),
-                              ('validated2', 'Second Approval'),
+                              ('first_approve','PM Approval'),
+                              ('validated2', 'Com. Dept. Approval'),
+                              ('ceo_approval', 'Accounts/CEO approval'),
                               ('po', 'Purchase Order'),
                               ('cancel',"Cancel")],default='draft',string="Status")
     comparison_line = fields.One2many('purchase.comparison.line', 'res_id', 'Comparison Line')
     purchase_id = fields.Many2one('purchase.order', 'Purchase Order')
+    purchase_ids = fields.Many2many('purchase.order', 'purchase_comparison_new_id', 'purchase_relation_id', 'comparison_id')
     quotation_id = fields.Many2one('purchase.order',"RFQ No")
-    approved_date = fields.Datetime('Approved Date' ,default=datetime.now())
+    approved_date = fields.Datetime('Approved Date', default=datetime.now())
 
     tax_id1 = fields.Many2one('account.tax', 'GST')
     # tax_id2 = fields.Many2one('account.tax', 'GST')
@@ -654,45 +827,53 @@ class PurchaseComparison(models.Model):
     p_n_f1 =fields.Float('P&F')
     p_n_f2 =fields.Float('P&F')
     p_n_f3 =fields.Float('P&F')
+    p_n_f4 =fields.Float('P&F')
+    p_n_f5 =fields.Float('P&F')
+
     p_n_f1_tax_id = fields.Many2one('account.tax',"Taxes",domain="[('parent_id','=',False)]")
     p_n_f2_tax_id = fields.Many2one('account.tax', "Taxes",domain="[('parent_id','=',False)]")
     p_n_f3_tax_id = fields.Many2one('account.tax',"Taxes",domain="[('parent_id','=',False)]")
-    # p_n_f4 =fields.Float('P&F')
-    # p_n_f5 =fields.Float('P&F')
+    p_n_f4_tax_id = fields.Many2one('account.tax',"Taxes",domain="[('parent_id','=',False)]")
+    p_n_f5_tax_id = fields.Many2one('account.tax',"Taxes",domain="[('parent_id','=',False)]")
 
     loading_charge1 = fields.Float('Loading Charge')
     loading_charge2 = fields.Float('Loading Charge')
     loading_charge3 = fields.Float('Loading Charge')
+    loading_charge4 = fields.Float('Loading Charge')
+    loading_charge5 = fields.Float('Loading Charge')
+
     loading1_tax_id = fields.Many2one('account.tax',"Taxes",domain="[('parent_id','=',False)]")
     loading2_tax_id = fields.Many2one('account.tax', "Taxes",domain="[('parent_id','=',False)]")
     loading3_tax_id = fields.Many2one('account.tax',"Taxes",domain="[('parent_id','=',False)]")
-    # loading_charge4 = fields.Float('Loading Charge')
-    # loading_charge5 = fields.Float('Loading Charge')
+    loading4_tax_id = fields.Many2one('account.tax',"Taxes",domain="[('parent_id','=',False)]")
+    loading5_tax_id = fields.Many2one('account.tax',"Taxes",domain="[('parent_id','=',False)]")
 
     transport_cost1 = fields.Float('Transport Cost')
     transport_cost2 = fields.Float('Transport Cost')
     transport_cost3 = fields.Float('Transport Cost')
+    transport_cost4 = fields.Float('Transport Cost')
+    transport_cost5 = fields.Float('Transport Cost')
+
     transport1_tax_id = fields.Many2one('account.tax',  "Taxes",domain="[('parent_id','=',False)]")
     transport2_tax_id = fields.Many2one('account.tax',"Taxes",domain="[('parent_id','=',False)]")
     transport3_tax_id = fields.Many2one('account.tax',  "Taxes",domain="[('parent_id','=',False)]")
-
-    # transport_cost4 = fields.Float('Transport Cost')
-    # transport_cost5 = fields.Float('Transport Cost')
+    transport4_tax_id = fields.Many2one('account.tax',  "Taxes",domain="[('parent_id','=',False)]")
+    transport5_tax_id = fields.Many2one('account.tax',  "Taxes",domain="[('parent_id','=',False)]")
 
     delivery_period1 = fields.Char('Ready To Stock')
     delivery_period2 = fields.Char('Ready To Stock')
     delivery_period3 = fields.Char('Ready To Stock')
-    # delivery_period4 = fields.Char('Ready To Stock')
-    # delivery_period5 = fields.Char('Ready To Stock')
+    delivery_period4 = fields.Char('Ready To Stock')
+    delivery_period5 = fields.Char('Ready To Stock')
 
     payment_term1 = fields.Many2one('account.payment.term', 'Term Of Payment')
     payment_term2 = fields.Many2one('account.payment.term', 'Term Of Payment')
     payment_term3 = fields.Many2one('account.payment.term', 'Term Of Payment')
-    # payment_term4 = fields.Many2one('account.payment.term', 'Term Of Payment')
-    # payment_term5 = fields.Many2one('account.payment.term', 'Term Of Payment')
+    payment_term4 = fields.Many2one('account.payment.term', 'Term Of Payment')
+    payment_term5 = fields.Many2one('account.payment.term', 'Term Of Payment')
 
-    # total_amt5 = fields.Float('Total Amount', compute='get_total')
-    # total_amt4 = fields.Float('Total Amount', compute='get_total')
+    total_amt5 = fields.Float('Total Amount', compute='get_total',store=True)
+    total_amt4 = fields.Float('Total Amount', compute='get_total',store=True)
     total_amt3 = fields.Float('Total Amount', compute='get_total',store=True)
     total_amt2 = fields.Float('Total Amount', compute='get_total',store=True)
     total_amt1 = fields.Float('Total Amount', compute='get_total',store=True)
@@ -701,9 +882,13 @@ class PurchaseComparison(models.Model):
     remark = fields.Text('Note')
     user_id1 = fields.Many2one('res.users', 'First approval')
     user_id2 = fields.Many2one('res.users', 'Second approval')
+
     taxable1= fields.Float(compute="get_total",store=True)
     taxable2= fields.Float(compute="get_total",store=True)
     taxable3= fields.Float(compute="get_total",store=True)
+    taxable4= fields.Float(compute="get_total",store=True)
+    taxable5= fields.Float(compute="get_total",store=True)
+
     cgst_id1 = fields.Float(compute="get_total",store=True)
     cgst_id2 = fields.Float(compute="get_total",store=True)
     cgst_id3 = fields.Float(compute="get_total",store=True)
@@ -714,19 +899,40 @@ class PurchaseComparison(models.Model):
     igst_id1 = fields.Float(compute="get_total",store=True)
     igst_id2 = fields.Float(compute="get_total",store=True)
     igst_id3 = fields.Float(compute="get_total",store=True)
+
     other_charge1 = fields.Float(compute="get_total", store=True)
     other_charge2 = fields.Float(compute="get_total", store=True)
     other_charge3 = fields.Float(compute="get_total", store=True)
+    other_charge4 = fields.Float(compute="get_total", store=True)
+    other_charge5 = fields.Float(compute="get_total", store=True)
+
     non_tax_charge1 = fields.Float(compute="get_total", store=True)
     non_tax_charge2 = fields.Float(compute="get_total", store=True)
     non_tax_charge3 = fields.Float(compute="get_total", store=True)
+    non_tax_charge4 = fields.Float(compute="get_total", store=True)
+    non_tax_charge5 = fields.Float(compute="get_total", store=True)
+
     read_boolean = fields.Boolean("Read and understood the approval points")
     supplier_ids = fields.Many2many('res.partner','comparison_partner_rel','comparison_id','partner_id',compute='compute_supplier_ids')
     location_id = fields.Many2one('stock.location',"Location")
     debit_balance_ids = fields.One2many('debit.balance','comparison_id',"Debit Balance")
+    # attachment1 = fields.Many2many('ir.attachment', 'attach_rel', 'doc_id', 'attach_id3', string="Supplier1 Quatation",)
+    # attachment2 = fields.Many2many('ir.attachment', 'attach_rel', 'doc_id', 'attach_id3', string="Supplier2 Quatation",)
+    # attachment3 = fields.Many2many('ir.attachment', 'attach_rel', 'doc_id', 'attach_id3', string="Supplier3 Quatation",)
+    # attachment4 = fields.Many2many('ir.attachment', 'attach_rel', 'doc_id', 'attach_id3', string="Supplier4 Quatation",)
+    # attachment5 = fields.Many2many('ir.attachment', 'attach_rel', 'doc_id', 'attach_id3', string="Supplier5 Quatation",)
+    # field_name = fields.Binary(string='Name of field')
+
+
+    # binary_field = fields.Binary('File')
+    # file_name = fields.Char('Filename')
+
+
     # tax_ids = fields.Many2many('account.tax','comparison_line_account_tax_rel','comparison_line_id','tax_id','GST')
-   
-        
+
+
+
+
 class PurchaseComparisonLine(models.Model):
 
     _name = 'purchase.comparison.line'
@@ -743,6 +949,8 @@ class PurchaseComparisonLine(models.Model):
         non_tax1= 0
         non_tax2 = 0
         non_tax3 = 0
+        non_tax4 = 0
+        non_tax5 = 0
         for s in self:
             if s.tax_id:
                 for taxes in s.tax_id:
@@ -752,40 +960,63 @@ class PurchaseComparisonLine(models.Model):
                 non_tax1 += s.rate1 * s.qty
                 non_tax2 += s.rate2 * s.qty
                 non_tax3 += s.rate3 * s.qty
-        
+                non_tax4 += s.rate4 * s.qty
+                non_tax5 += s.rate5 * s.qty
         
             if tax==0:
                 tax=1
             s.sub_total1 = (s.rate1/tax) * s.qty
-            s.sub_total2 =(s.rate2/tax) * s.qty
+            s.sub_total2 = (s.rate2/tax) * s.qty
             s.sub_total3 = (s.rate3/tax) * s.qty
+            s.sub_total4 = (s.rate4/tax) * s.qty
+            s.sub_total5 = (s.rate5/tax) * s.qty
+
             s.non_tax_charge1 = non_tax1
             s.non_tax_charge2 = non_tax2
             s.non_tax_charge3 = non_tax3
-         
-    vendor_select_id = fields.Many2one('res.partner', 'Vendor Selected',domain="[('supplier','=',True)]")
+            s.non_tax_charge4 = non_tax4
+            s.non_tax_charge5 = non_tax5
+
+    @api.onchange('product_id','vendor_select_id')
+    def onchange_vendor_select_id(self):
+        vendor_ids = []
+        if self.res_id:
+            vendor_ids.append(self.res_id.partner_id1.id) if self.res_id.partner_id1 else vendor_ids
+            vendor_ids.append(self.res_id.partner_id2.id) if self.res_id.partner_id2 else vendor_ids
+            vendor_ids.append(self.res_id.partner_id3.id) if self.res_id.partneri_d3 else vendor_ids
+            vendor_ids.append(self.res_id.partner_id4.id) if self.res_id.partner_id4 else vendor_ids
+            vendor_ids.append(self.res_id.partner_id5.id) if self.res_id.partner_id5 else vendor_ids
+
+        return {
+            'domain': {'vendor_select_id': [('id', 'in', vendor_ids)]}
+        }
+
+    vendor_select_id = fields.Many2one('res.partner', 'Selected Supplier',domain="[('supplier','=',True)]")
     res_id = fields.Many2one('purchase.comparison', 'Purchase Comparison')
     product_id = fields.Many2one('product.product', 'Description',size=10)
     qty = fields.Float('Quantity',size=10)
     uom = fields.Many2one('product.uom', 'Unit')
     tax_id = fields.Many2one('account.tax',string="Tax",domain="[('parent_id','=',False)]")
-  
-   
-    
-    rate1 = fields.Float('Rate ')
-    rate2 = fields.Float('Rate')
-    rate3 = fields.Float('Rate')
+    brand_name = fields.Many2one('material.brand')
 
-    # rate4 = fields.Float('Unit Rate')
-    # rate5 = fields.Float('Unit Rate')
+    rate1 = fields.Float('Supplier1 Rate ')
+    rate2 = fields.Float('Supplier2 Rate')
+    rate3 = fields.Float('Supplier3 Rate')
+    rate4 = fields.Float('Supplier4 Rate')
+    rate5 = fields.Float('Supplier5 Rate')
+
     sub_total1 = fields.Float('Subtotal ', compute="get_total")
     sub_total2 = fields.Float('Subtotal ', compute="get_total")
     sub_total3 = fields.Float('Subtotal', compute="get_total")
+    sub_total4 = fields.Float('Subtotal', compute="get_total")
+    sub_total5 = fields.Float('Subtotal', compute="get_total")
+
     non_tax_charge1 = fields.Float(compute="get_total", store=True)
     non_tax_charge2 = fields.Float(compute="get_total", store=True)
     non_tax_charge3 = fields.Float(compute="get_total", store=True)
-    # sub_total4 = fields.Float('Value', compute="get_total")
-    # sub_total5 = fields.Float('Value', compute="get_total")
+    non_tax_charge4 = fields.Float(compute="get_total", store=True)
+    non_tax_charge5 = fields.Float(compute="get_total", store=True)
+
 
 class DebitBalance(models.Model):
     _name = 'debit.balance'

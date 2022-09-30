@@ -737,6 +737,8 @@ class GoodsRecieveReportLine(models.Model):
     battery_id = fields.Many2one('vehicle.battery',"Battery")
     retread_tyre_id = fields.Many2one('retreading.tyre.line',"Retread")
     gps_id = fields.Many2one('vehicle.gps',"GPS")
+    brand_name = fields.Many2one('material.brand')
+
 
     @api.multi
     def button_entry_created(self):

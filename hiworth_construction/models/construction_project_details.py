@@ -654,6 +654,7 @@ class EstimationEstimation(models.Model):
 
 class EstimationLine(models.Model):
     _name = "estimation.line"
+    _rec_name = 'plan_line_id'
 
     plan_line_id = fields.Many2one('master.plan.line')
     no_of_floors = fields.Integer()
@@ -1852,6 +1853,7 @@ class purchase_order(models.Model):
     vehicle_agent_id = fields.Many2one('res.partner', 'Vehicle Agent')
     merged_po = fields.Boolean("Merged PO",default=False)
     site_purchase_ids = fields.Many2many('site.purchase','purase_order_site_purchase_rel','order_id','site_purchase_id',"Purchase Request No/s")
+    additional_terms = fields.Text()
 
 
     @api.multi
@@ -1867,6 +1869,7 @@ class purchase_order(models.Model):
                                     req_list.quantity = li[2].get('required_qty')
                     if li[0]==0:
                         values = {'item_id':li[2].get('product_id'),
+                                  'brand_name':li[2].get('brand_name'),
                                   'desc':li[2].get('name'),
                                   'unit':li[2].get('product_uom'),
                                   'quantity':li[2].get('required_qty'),
@@ -1913,6 +1916,7 @@ class purchase_order(models.Model):
 
             value_list.append((0, 0, {'item_id': line.product_id.id,
                                   'desc': line.name,
+                                      'brand_name':line.brand_name.id,
                                   'tax_ids': [(6, 0, line.taxes_id.ids)],
                                   'po_quantity': line.required_qty - line.received_qty,
                                   'rate': line.expected_rate,
@@ -1921,6 +1925,7 @@ class purchase_order(models.Model):
                                   }))
             prev_list.append((0, 0, {'item_id': line.product_id.id,
                                      'desc': line.name,
+                                     'brand_name': line.brand_name.id,
                                      'tax_ids': [(6, 0, line.taxes_id.ids)],
                                      'po_quantity': line.required_qty,
                                      'quantity_accept': line.received_qty,
@@ -1969,6 +1974,7 @@ class purchase_order(models.Model):
         value_list = []
         for line in self.order_line:
             value_list.append((0,0,{'product_id':line.product_id.id,
+                                    'brand_name':line.brand_name.id,
                                     'qty':line.product_qty,
                                     'uom':line.product_uom.id}))
         values = {'mpr_id':self.site_purchase_id.id,
@@ -1977,6 +1983,7 @@ class purchase_order(models.Model):
                   'project_id':self.site_purchase_id.project_id.id,
                   'location_id':self.location_id.id,
                   'comparison_line':value_list,
+                  'remark':self.notes,
                   }
 
         comparison = self.env['purchase.comparison'].create(values)
@@ -2025,6 +2032,7 @@ class purchase_order(models.Model):
                                           'name':mpr_line.item_id.name,
                                           'product_qty': mpr_line.quantity,
                                           'product_uom': mpr_line.unit.id,
+                                          'brand_name': mpr_line.brand_name.id,
                                           'state':'draft'}))
                 rec.order_line = values
 
@@ -2811,6 +2819,7 @@ class product_template(models.Model):
                 for move in moves:
                     line.qty_in += move.product_uom_qty
 
+    brand_name = fields.Many2one('material.brand')
     show_cost_variation = fields.Boolean('Show Cost Variations', default=False)
     cost_table_id = fields.One2many('product.cost.table','product_id', 'Cost Variations')
     old_price = fields.Float('Old Price')
@@ -2824,6 +2833,7 @@ class product_template(models.Model):
     tyre = fields.Boolean("Tyre", default=False)
     tyre_retread = fields.Boolean("Retread", default=False)
     gps = fields.Boolean("GPS",default=False)
+
 
 
 
@@ -3039,7 +3049,7 @@ class purchase_order_line(models.Model):
 
 
 
-
+    brand_name = fields.Many2one('material.brand')
     pro_old_price = fields.Float(related='product_id.standard_price', store=True, string='Previous Unit Price')
     task_id = fields.Many2one('project.task', 'Task')
     location_id = fields.Many2one(related='task_id.project_id.location_id', store=True, string='Location')
@@ -4107,4 +4117,14 @@ class stock_inventory_line(osv.osv):
             'location_dest_id': location_dest_id,
         }
 
+
+class ResPartner(models.Model):
+    _inherit = "res.partner"
+
+    responsible_name = fields.Char()
+    responsible_mobile = fields.Char()
+    responsible_email = fields.Char()
+    owner_name = fields.Char()
+    vat_no = fields.Char()
+    trn_no = fields.Char()
 
