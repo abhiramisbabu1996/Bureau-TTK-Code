@@ -42,7 +42,7 @@ class MasterPlanLine(models.Model):
 	veh_categ_id = fields.Many2many('vehicle.category.type', string='Machinery')
 	products_id = fields.Many2many('product.product', string='Products')
 	estimate_cost = fields.Float('Estimate Cost')
-	sqft = fields.Float('Square Feet')
+	sqft = fields.Float('Area')
 	pre_qty = fields.Float('Previous Qty')
 	remarks = fields.Text()
 	upto_date_qty = fields.Float(store=True, string='Balance Qty')

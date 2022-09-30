@@ -97,14 +97,14 @@
 								<field name="master_plan_line" nolabel="1">
 									<tree>
 										<field name="work_id"/>
-										<field name="employee_id"/>
-										<field name="products_id" options="{'no_create':1}" widget="many2many_tags"/>
-										<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
-										<field name="no_labours" string="No of workers"/>
-										<field name="sqft" />
 										<field name="start_date" />
 										<field name="finish_date" string="Approximate Finish Date"/>
 										<field name="duration"/>
+										<field name="employee_id"/>
+<!--										<field name="products_id" options="{'no_create':1}" widget="many2many_tags"/>-->
+										<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
+										<field name="no_labours" string="No of workers"/>
+										<field name="sqft" />
 										<field name="subcontractor"/>
 										<field name="remarks"/>
 									</tree>
