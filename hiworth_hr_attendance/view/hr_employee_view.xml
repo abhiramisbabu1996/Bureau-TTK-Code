@@ -726,12 +726,13 @@
                           <field name="licence" attrs="{'invisible':[('type_of_card','!=','license')]}"/>
                           <field name="vehicle_no"/>
                       </group>
-                        <group string="House Details" attrs="{'invisible':[('user_category','=','labour')]}">
-                        <field name="house_ownership"/>
-                        <field name="house_area"/>
-                        <field name="building_roof"/>
-                        <field name="is_truss_house"/>
-                    </group>
+                        <group></group>
+<!--                        <group string="House Details" attrs="{'invisible':[('user_category','=','labour')]}">-->
+<!--                        <field name="house_ownership"/>-->
+<!--                        <field name="house_area"/>-->
+<!--                        <field name="building_roof"/>-->
+<!--                        <field name="is_truss_house"/>-->
+<!--                    </group>-->
 
                     </group>
                     <group>

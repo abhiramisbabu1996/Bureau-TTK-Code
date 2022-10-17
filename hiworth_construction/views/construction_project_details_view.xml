@@ -797,6 +797,10 @@
 						<h3>
 							<field name="brand_name" string="Brand"/>
 						</h3>
+						<label for="model_name" string="Model" />
+						<h3>
+							<field name="model_name" string="Model"/>
+						</h3>
 
 					</div>
 				</xpath>
@@ -1301,8 +1305,12 @@
 			<field name="model">product.product</field>
 			<field name="inherit_id" ref="product.product_product_tree_view"/>
 			<field name="arch" type="xml">
-				<xpath expr="//field[@name='default_code']" position="before">
+				<xpath expr="//field[@name='name']" position="before">
 					<field name="categ_id"/>
+					<field name="model_name"/>
+				</xpath>
+				<xpath expr="//field[@name='default_code']" position="attributes">
+					<attribute name="invisible">1</attribute>
 				</xpath>
 			</field>
 		</record>
@@ -1421,7 +1429,7 @@
 					<field name="account_invoice_ids"/>
 					<field name="project_id" string="Project" />
 					<field name="contractor_id"/>
-					<field name="district"/>
+<!--					<field name="district"/>-->
 
 
 
@@ -1947,9 +1955,9 @@ same stock location, same pricelist,same GST Rate calculation and same currency 
 					<field name="tin_no" attrs="{'invisible':[('supplier','!=',True)]}" />
 					<field name="kara" attrs="{'invisible':[('customer','!=',True)]}" />
 					<field name="desam" attrs="{'invisible':[('customer','!=',True)]}" />
-					<field name="village" attrs="{'invisible':[('customer','!=',True)]}" />
-					<field name="Municipality" attrs="{'invisible':[('customer','!=',True)]}" />
-					<field name="taluk" attrs="{'invisible':[('customer','!=',True)]}" />
+<!--					<field name="village" attrs="{'invisible':[('customer','!=',True)]}" />-->
+<!--					<field name="Municipality" attrs="{'invisible':[('customer','!=',True)]}" />-->
+<!--					<field name="taluk" attrs="{'invisible':[('customer','!=',True)]}" />-->
 					<field name="account_receivable" invisible="1"/>
 					<field name="account_payable"  invisible="1"/>
 					<!-- <field name="dist" attrs="{'invisible':[('customer','!=',True)]}"
@@ -2479,6 +2487,7 @@ same stock location, same pricelist,same GST Rate calculation and same currency 
 					<field name="inventory_value" />
 				</field>
 				<field name="type" position="after">
+					<field name="model_name" />
 					<field name="allocation_no" />
 				</field>
 

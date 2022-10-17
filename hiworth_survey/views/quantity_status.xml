@@ -30,7 +30,7 @@
                                 <field name="final" invisible="1"/>
                             </group>
                             <group>
-                                <field name="district"/>
+<!--                                <field name="district"/>-->
                                 <field name="length"/>
                                 <field name="date"/>
                             </group>

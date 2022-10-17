@@ -67,6 +67,13 @@
 			parent="stock.menu_stock_inventory_control" sequence="4"
 			action="action_product_to_location_wizard" />
 
+		<menuitem id="menu_site_product" name="Site wise Stock report"
+			parent="root_activity_reports_menu" sequence="20"
+			/>
+		<menuitem id="menu_site_stock" name="Site wise Stock report"
+			parent="menu_site_product" sequence="4"
+			action="action_product_to_location_wizard" />
+
 		<report id="report_product_to_location" string="Product To Location"
 			model="product.to.location.report" report_type="qweb-pdf"
 			name="hiworth_construction.report_product_to_location_template" />

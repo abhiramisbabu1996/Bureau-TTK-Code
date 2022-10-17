@@ -373,6 +373,17 @@ class PartnerDailyStatement(models.Model):
 	products_received_lines = fields.One2many('partner.received.products', 'partner_id')
 	products_used_lines = fields.One2many('partner.used.products', 'partner_id')
 
+	@api.onchange('project_id','location_ids')
+	def onchange_partner_line_ids(self):
+		partner_line_ids = self.partner_line_ids.ids
+		for rec in self:
+			if rec.project_id and rec.location_ids:
+				statements_ids = self.search([('project_id', '=', rec.project_id.id),('location_ids', '=', rec.location_ids.id)])
+				for statement in statements_ids:
+					new_partner_line_ids = statement.partner_line_ids.copy()
+					partner_line_ids += new_partner_line_ids.ids
+				rec.partner_line_ids = partner_line_ids
+
 
 	# @api.onchange('location_ids')
 	# def _onchange_date(self):
@@ -2362,6 +2373,7 @@ class PartnerDailyStatementLine(models.Model):
 	expense_other = fields.Boolean(String="other expense")
 	expense_char = fields.Char("Expense")
 	exp_account_id = fields.Many2one('account.account',"Account")
+	date = fields.Date()
 
 
 
@@ -2949,6 +2961,7 @@ class ReceivedProducts(models.Model):
 	received_qty = fields.Float()
 	vehicle_id = fields.Many2one('fleet.vehicle')
 	partner_id = fields.Many2one('partner.daily.statement')
+	bill_no = fields.Char()
 
 	@api.onchange('product_id')
 	def onchange_product_id(self):

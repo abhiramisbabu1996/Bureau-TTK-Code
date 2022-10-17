@@ -64,7 +64,7 @@
 							<field name="total_received_amt"/>
 						</group>
 						<group>
-							<field name="district"/>
+<!--							<field name="district"/>-->
 							<field name="work_allotted_date"/>
 							<field name="site_supervisor"/>
 							<field name="sub_contractor"/>

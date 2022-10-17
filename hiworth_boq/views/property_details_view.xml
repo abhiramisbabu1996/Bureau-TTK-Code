@@ -46,12 +46,12 @@
 								<field name="sqm"/>
 								<field name="total_cents"/>
 								<field name="block"/>
-								<field name="district"/>
+<!--								<field name="district"/>-->
 								<field name="sub_district"/>
-								<field name="thaluk"/>
-								<field name="village"/>
+<!--								<field name="thaluk"/>-->
+<!--								<field name="village"/>-->
 								<field name="muri"/>
-								<field name="panchayath"/>		
+<!--								<field name="panchayath"/>		-->
 								<field name="sub_registrar_office"/>	
 								<field name="pledge_bank"/>				
 								<field name="type_id" readonly="1"/>
@@ -137,10 +137,10 @@
 					<field name="block"/>
 					<field name="district"/>
 					<field name="sub_district"/>
-					<field name="thaluk"/>
-					<field name="village"/>
+<!--					<field name="thaluk"/>-->
+<!--					<field name="village"/>-->
 					<field name="muri"/>
-					<field name="panchayath"/>		
+<!--					<field name="panchayath"/>		-->
 					<field name="sub_registrar_office"/>	
 					<field name="pledge_bank"/>				
 					<field name="type_id"/>				

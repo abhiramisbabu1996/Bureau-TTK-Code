@@ -39,11 +39,11 @@
 					</group>
 					<group>
 						<group col="8">
-							<field name="village"/>
+<!--							<field name="village"/>-->
 							<newline />
-							<field name="taluk"/>
+<!--							<field name="taluk"/>-->
 							<newline />
-							<field name="district"/>
+<!--							<field name="district"/>-->
 							<newline />
 <!--							<field name="length"/>							-->
 						</group>

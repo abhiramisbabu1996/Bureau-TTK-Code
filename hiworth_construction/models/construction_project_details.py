@@ -2820,6 +2820,7 @@ class product_template(models.Model):
                     line.qty_in += move.product_uom_qty
 
     brand_name = fields.Many2one('material.brand')
+    model_name = fields.Many2one('material.model')
     show_cost_variation = fields.Boolean('Show Cost Variations', default=False)
     cost_table_id = fields.One2many('product.cost.table','product_id', 'Cost Variations')
     old_price = fields.Float('Old Price')

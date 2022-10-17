@@ -62,8 +62,8 @@
                                     <field name="desc" required="1" />
                                 <field name="unit" required="1" />
                                 <field name="quantity" widget="char" required="1" sum="Total" />
-                               <field name="project_approved_qty" readonly="1"/>
-                                  <field name="processed_qty" readonly="1"/>
+                               <field name="project_approved_qty" readonly="1" invisible="1"/>
+                                  <field name="processed_qty" readonly="1" invisible="1"/>
                               </tree>
 
 
@@ -152,7 +152,7 @@
         <menuitem id="menu_site_purchase" 
           parent="departmentwise_purchase_requisitions"
           action="action_site_purchase2" 
-          name="General - Purchase"
+          name="Office Purchase"
           sequence="0" 
           groups="base.group_erp_manager,hiworth_hr_attendance.group_admin,hiworth_hr_attendance.group_supervisor"/>
 
@@ -217,8 +217,8 @@
                                     <field name="desc" required="1" />
                                 <field name="unit" required="1" />
                                 <field name="quantity" widget="char" required="1" />
-                                 <field name="project_approved_qty" readonly="1"/>
-                                  <field name="processed_qty" readonly="1"/>
+                                 <field name="project_approved_qty" readonly="1" invisible="1"/>
+                                  <field name="processed_qty" readonly="1" invisible="1"/>
 
                               </tree>
 
@@ -264,7 +264,7 @@
             <field name="view_mode">tree</field>
             <field name="view_id" ref="tree_site_purchase_statements" />
             <field name="act_window_id" ref="action_bitumen_purchase2" />
-              <field name="sequence">1</field>
+              <field name=" ">1</field>
         </record>
 
         <record id="action_view_general_purchase_form" model="ir.actions.act_window.view">
@@ -283,11 +283,11 @@
             sequence="0"/>
 
 
-     <menuitem name="Bitumen - Purchase"
-            id="BCPL_purchase_requisitions"
-            parent="hiworth_construction.departmentwise_purchase_requisitions"
-            action= "action_bitumen_purchase2"
-            sequence="1"/>
+<!--     <menuitem name="Bitumen - Purchase"-->
+<!--            id="BCPL_purchase_requisitions"-->
+<!--            parent="hiworth_construction.departmentwise_purchase_requisitions"-->
+<!--            action= "action_bitumen_purchase2"-->
+<!--            sequence="1"/>-->
 
          
 
@@ -349,11 +349,12 @@
                               <tree editable="bottom">
                                   <field name="item_id" required="1" />
                                   <field name="brand_name" string="Brand"/>
-                                    <field name="desc" required="1" />
-                                <field name="unit" required="1" />
+                                  <field name="model_name" string="Model"/>
+                                  <field name="desc" required="1" />
+                                  <field name="unit" required="1" />
                                 <field name="quantity" widget="char" required="1" />
-                              <field name="project_approved_qty" readonly="1"/>
-                                  <field name="processed_qty" readonly="1"/>
+                              <field name="project_approved_qty" readonly="1" invisible="1"/>
+                                  <field name="processed_qty" readonly="1" invisible="1"/>
 
                               </tree>
 
@@ -412,12 +413,12 @@
         </record>
 
 
-    <menuitem id="menu_vehicle_dept_purchase" 
-          parent="departmentwise_purchase_requisitions"
-          action="action_vehicle_dept" 
-          name="Vehicle &amp; Spare Purchase"
-          sequence="3" 
-          groups="base.group_erp_manager,hiworth_hr_attendance.group_admin,hiworth_hr_attendance.group_supervisor"/>
+<!--    <menuitem id="menu_vehicle_dept_purchase" -->
+<!--          parent="departmentwise_purchase_requisitions"-->
+<!--          action="action_vehicle_dept" -->
+<!--          name="Vehicle &amp; Spare Purchase"-->
+<!--          sequence="3" -->
+<!--          groups="base.group_erp_manager,hiworth_hr_attendance.group_admin,hiworth_hr_attendance.group_supervisor"/>-->
 
 <!-- Teleco department -->
 
@@ -474,8 +475,8 @@
                                     <field name="desc" required="1" />
                                 <field name="unit" required="1" />
                                 <field name="quantity" widget="char" required="1" />
-                                <field name="project_approved_qty" readonly="1"/>
-                                  <field name="processed_qty" readonly="1"/>
+                                <field name="project_approved_qty" readonly="1" invisible="1"/>
+                                  <field name="processed_qty" readonly="1" invisible="1"/>
 
                               </tree>
 
@@ -598,8 +599,8 @@
                                     <field name="desc" required="1" />
                                 <field name="unit" required="1" />
                                 <field name="quantity" widget="char" required="1" />
-                                 <field name="project_approved_qty" readonly="1"/>
-                                  <field name="processed_qty" readonly="1"/>
+                                 <field name="project_approved_qty" readonly="1" invisible="1"/>
+                                  <field name="processed_qty" readonly="1" invisible="1"/>
 
                               </tree>
 
@@ -656,12 +657,12 @@
         </record>
 
 
-    <menuitem id="menu_interlocks_dept_purchase" 
-          parent="departmentwise_purchase_requisitions"
-          action="action_interlocks_dept" 
-          name="Interlocks - Purchase"
-          sequence="3" 
-          groups="base.group_erp_manager,hiworth_hr_attendance.group_admin,hiworth_hr_attendance.group_supervisor"/>
+<!--    <menuitem id="menu_interlocks_dept_purchase" -->
+<!--          parent="departmentwise_purchase_requisitions"-->
+<!--          action="action_interlocks_dept" -->
+<!--          name="Interlocks - Purchase"-->
+<!--          sequence="3" -->
+<!--          groups="base.group_erp_manager,hiworth_hr_attendance.group_admin,hiworth_hr_attendance.group_supervisor"/>-->
 
 
 
@@ -723,15 +724,13 @@
                               <tree editable="bottom">
                                   <field name="item_id" required="1" />
                                   <field name="brand_name" string="Brand"/>
+                                  <field name="model_name" string="Model"/>
                                     <field name="desc" required="1" />
                                 <field name="unit" required="1" />
                                 <field name="quantity" widget="char" required="1" />
-                             <field name="project_approved_qty" readonly="1"/>
-                                  <field name="processed_qty" readonly="1"/>
-
+                             <field name="project_approved_qty" readonly="1" invisible="1"/>
+                                  <field name="processed_qty" readonly="1" invisible="1"/>
                               </tree>
-
-
                           </field>
 
                       </group>
@@ -863,7 +862,7 @@
     <menuitem id="menu_workshop_dept_purchase" 
           parent="departmentwise_purchase_requisitions"
           action="action_all_depts" 
-          name="Material Procurement Requisition"
+          name="Site Purchase Request"
           sequence="18" 
           groups="base.group_erp_manager"/>
 

@@ -271,7 +271,7 @@ class HrEmployee(models.Model):
     # user_category = fields.Selection([('driver','Driver'),('supervisor','Supervisor'),('project_manager','Project Nanager'),('district_manager','District Manager')],string='User Category',required=True)
     reset_pswd = fields.Boolean(default=False)
     cost_type = fields.Selection([('permanent', 'Permanent'),
-                                  ('wages', 'Daily Wage')], 'Wage Type')
+                                  ('wages', 'Daily Wage'), ('probation', 'Probationary Period')], 'Wage Type')
     leave_ids = fields.One2many('employee.leave', 'employee_id', 'Leaves')
 
     driver_ok = fields.Boolean('Driver Ok')

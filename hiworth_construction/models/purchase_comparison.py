@@ -701,12 +701,25 @@ class PurchaseComparison(models.Model):
             if rec.quotation_id:
                 rec.supplier_ids = [(6,0,rec.quotation_id.supplier_ids.ids)]
 
-    @api.onchange('partner_id1')
+    @api.onchange('partner_id1', 'partner_id2','partner_id3','partner_id4','partner_id5')
     def onchnage_partner_id1(self):
         for rec in self:
             if rec.partner_id1:
-                if rec.partner_id1.id == rec.partner_id2.id or rec.partner_id1.id == rec.partner_id3.id:
+                if rec.partner_id1 == rec.partner_id2 or rec.partner_id1 == rec.partner_id3 or rec.partner_id1 == rec.partner_id4 or rec.partner_id1 == rec.partner_id5:
                     raise Warning(_('You have already selected this supplier'))
+            if rec.partner_id2:
+                if rec.partner_id2 == rec.partner_id1 or rec.partner_id2 == rec.partner_id3 or rec.partner_id2 == rec.partner_id4 or rec.partner_id2 == rec.partner_id5:
+                    raise Warning(_('You have already selected this supplier'))
+            if rec.partner_id3:
+                if rec.partner_id3 == rec.partner_id1 or rec.partner_id3 == rec.partner_id2 or rec.partner_id3 == rec.partner_id4 or rec.partner_id3 == rec.partner_id5:
+                    raise Warning(_('You have already selected this supplier'))
+            if rec.partner_id4:
+                if rec.partner_id4 == rec.partner_id1 or rec.partner_id4 == rec.partner_id2 or rec.partner_id4 == rec.partner_id3 or rec.partner_id1 == rec.partner_id5:
+                    raise Warning(_('You have already selected this supplier'))
+            if rec.partner_id5:
+                if rec.partner_id5 == rec.partner_id1 or rec.partner_id5 == rec.partner_id2 or rec.partner_id5 == rec.partner_id3 or rec.partner_id5 == rec.partner_id4:
+                    raise Warning(_('You have already selected this supplier'))
+
                 value_list = []
                 if rec.partner_id1:
                     value_list.append((0, 0, {'supplier_id': rec.partner_id1.id,
@@ -723,6 +736,16 @@ class PurchaseComparison(models.Model):
                                               'balance': rec.partner_id3.property_account_receivable.balance >= 0 and str(
                                                   rec.partner_id3.property_account_receivable.balance) + "Cr" or str(
                                                   rec.partner_id3.property_account_receivable.balance) + "Dr"}))
+                if rec.partner_id4:
+                    value_list.append((0, 0, {'supplier_id': rec.partner_id4.id,
+                                              'balance': rec.partner_id4.property_account_receivable.balance >= 0 and str(
+                                                  rec.partner_id4.property_account_receivable.balance) + "Cr" or str(
+                                                  rec.partner_id4.property_account_receivable.balance) + "Dr"}))
+                if rec.partner_id5:
+                    value_list.append((0, 0, {'supplier_id': rec.partner_id5.id,
+                                              'balance': rec.partner_id5.property_account_receivable.balance >= 0 and str(
+                                                  rec.partner_id5.property_account_receivable.balance) + "Cr" or str(
+                                                  rec.partner_id5.property_account_receivable.balance) + "Dr"}))
 
                 rec.debit_balance_ids = value_list
 
@@ -784,8 +807,6 @@ class PurchaseComparison(models.Model):
                                               'balance': rec.partner_id5.property_account_receivable.balance >= 0 and str(
                                                   rec.partner_id5.property_account_receivable.balance) + "Cr" or str(
                                                   rec.partner_id5.property_account_receivable.balance) + "Dr"}))
-
-
 
                 rec.debit_balance_ids = value_list
 

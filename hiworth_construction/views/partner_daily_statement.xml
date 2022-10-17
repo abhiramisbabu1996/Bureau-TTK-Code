@@ -110,11 +110,12 @@
 						<page string="Output Summary">
 							<field name="partner_line_ids" nolabel="1">
 								<tree editable="bottom">
+									<field name="date"/>
 									<field name="estimation_line_id" options="{'no_create':True, 'no_create_edit':True}" string="Item of work"/>
 									<field name="work_id"/>
 									<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
 									<field name="no_labours"/>
-									<field name="product_id" options="{'no_create':1}" widget="many2many_tags"/>
+									<field name="product_id" string="Items Used" options="{'no_create':1}" widget="many2many_tags"/>
 									<field name="unit"/>
 <!--									<field name="qty_estimate"/>-->
 									<field name="quantity"/>
@@ -260,7 +261,8 @@
 								<tree editable="bottom">
 									<field name="stock_transfer_id" string="Stock Transfer Reference No"/>
 									<field name="type_of_good_transfer"/>
-									<field name="po_no" domain="[('state','=','order')]"/>
+									<field name="po_no" domain="[('state','not in',['draft','sent','bid'])]"/>
+									<field name="bill_no"/>
 									<field name="product_id" string="Product"/>
 									<field name="unit"/>
 									<field name="received_qty"/>

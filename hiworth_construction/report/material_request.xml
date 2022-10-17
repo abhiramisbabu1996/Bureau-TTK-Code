@@ -82,7 +82,6 @@
 												<th>Unit Price</th>
 												<th>Destination location</th>
 												<th>Inventory Value</th>
-												
 											</tr>
 										</thead>
 										<t t-set="sl_no2" t-value="1" />

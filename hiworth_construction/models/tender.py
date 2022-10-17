@@ -208,6 +208,7 @@ class HiworthTender(models.Model):
 	# remark = fields.Text('Remarks')
 	line_ids = fields.One2many('unattended.tender.line','hiworth_tender_id')
 	s_check = fields.Boolean('Status Check')
+	district_loc = fields.Char()
 
 	emd_number = fields.Char('EMD Reference')
 

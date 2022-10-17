@@ -180,6 +180,7 @@ class SitePurchaseItemLine(models.Model):
                 rec.received_rate = rec.invoiced_amount / rec.received_qty
             
     brand_name = fields.Many2one('material.brand')
+    model_name = fields.Many2one('material.model')
     item_id = fields.Many2one('product.product', 'Item')
     quantity = fields.Float('Quantity')
     unit = fields.Many2one('product.uom', 'Unit')
@@ -206,6 +207,11 @@ class MaterialBrand(models.Model):
 
     name = fields.Char()
 
+
+class MaterialModel(models.Model):
+    _name = 'material.model'
+
+    name = fields.Char()
 
 
 
