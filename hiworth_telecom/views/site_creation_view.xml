@@ -59,7 +59,7 @@
 							<field name="anchor_opco"/>										
 						</group>
 						<group>
-<!--							<field name="district"/>										-->
+							<field name="district"/>
 							<field name="work_allotted_date" required="1"/>							
 							<field name="dg"/>												
 							<field name="stabilizer"/>										
