@@ -166,7 +166,7 @@ class TaskCategoryWork(models.Model):
 
 class TaskDetails(models.Model):
     _name = "task.details"
-    _rec_name = "category_id"
+    # _rec_name = "category_id"
 #
 #     # work_description = fields.Many2one('work.descri','Work Description')
 #     work_description = fields.Char('Work Description')
@@ -182,8 +182,9 @@ class TaskDetails(models.Model):
 #     work_id = fields.Many2one('project.task')
     plan_line_id = fields.Many2one('master.plan.line')
     task_id = fields.Many2one('project.task')
-    estimation_line_id = fields.Many2one('estimation.line')
-    work_id = fields.Many2one('project.work','Description Of Work')
+    # estimation_line_id = fields.Many2one('estimation.line')
+    estimation_line_id = fields.Many2one('line.estimation')
+    work_id = fields.Many2one('project.work', 'Description Of Work')
     chainage_from = fields.Float('Chainage From')
     chainage_to = fields.Float('Chainage To')
     side = fields.Selection([('lhs','LHS'),
@@ -197,7 +198,7 @@ class TaskDetails(models.Model):
     start_date = fields.Date('Start Date')
     finish_date = fields.Date('Finish Date')
     employee_id = fields.Many2one('hr.employee','Employee')
-    veh_categ_id = fields.Many2many('vehicle.category.type',string='Machinery')
+    veh_categ_id = fields.Many2many('vehicle.category.type','task_veh_categ_id','vehicle_categ_id',string='Machinery')
     estimate_cost = fields.Float('Estimate Cost')
     pre_qty = fields.Float('Previous Qty')
     upto_date_qty = fields.Float(store=True, string='Balance Qty')
@@ -209,6 +210,54 @@ class TaskDetails(models.Model):
     sqft = fields.Float()
     category_id = fields.Many2one("task.category.details")
     stage_id = fields.Many2one('project.stages', 'Project Stage')
+
+
+class TaskLine(models.Model):
+    _name = "task.line"
+
+    project_task_id = fields.Many2one('project.task')
+    work_loc = fields.Char("Work Location")
+    estimated_hrs = fields.Char('Time Allocated')
+    #     comments = fields.Char('Comments')
+    #     task_status = fields.Selection([
+    # 			('completed', 'Completed'),
+    # 			('partial', 'Partially Completed'),
+    # 			('inprogress', 'In Progress'),
+    # 			('not', 'Not Started')
+    # 		], default='not')
+    #     work_id = fields.Many2one('project.task')
+    plan_line_id = fields.Many2one('master.plan.line')
+    task_id = fields.Many2one('project.task')
+    # estimation_line_id = fields.Many2one('estimation.line')
+    estimation_line_id = fields.Many2one('line.estimation')
+    work_id = fields.Many2one('project.work', 'Description Of Work')
+    chainage_from = fields.Float('Chainage From')
+    chainage_to = fields.Float('Chainage To')
+    side = fields.Selection([('lhs', 'LHS'),
+                             ('rhs', 'RHS'),
+                             ('bhs', 'BHS')
+                             ], 'Side')
+    length = fields.Float('Length(M)')
+    qty_estimate = fields.Float('Quantity')
+    unit = fields.Many2one('product.uom', 'Unit')
+    duration = fields.Float('Duration(Days)')
+    start_date = fields.Date('Start Date')
+    finish_date = fields.Date('Finish Date')
+    employee_id = fields.Many2one('hr.employee', 'Employee')
+    veh_categ_id = fields.Many2many('vehicle.category.type', 'task_veh_id', 'id_vehicle_categ',
+                                    string='Machinery')
+    estimate_cost = fields.Float('Estimate Cost')
+    pre_qty = fields.Float('Previous Qty')
+    upto_date_qty = fields.Float(store=True, string='Balance Qty')
+    quantity = fields.Float(string='Work Order Qty')
+    subcontractor = fields.Many2one('project.task')
+    no_labours = fields.Integer()
+    no_floors = fields.Integer()
+    rate = fields.Float()
+    sqft = fields.Float()
+    category_id = fields.Many2one("task.category.details")
+    stage_id = fields.Many2one('project.stages', 'Project Stage')
+
 
 
 
@@ -256,6 +305,7 @@ class task(models.Model):
     usage_ids1 = fields.One2many('project.task.estimation','task_ids1',string='Items usage')
     work_list = fields.One2many('task.details','work_id',string='Work List')
     estimation_line_ids = fields.One2many("task.details", 'task_id')
+    task_line_ids = fields.One2many("task.line", 'project_task_id')
 
     # work_items = fields.One2many('task.details','work_id', string="Items")
 
@@ -486,6 +536,7 @@ class project(models.Model):
     tender_attachment_ids = fields.One2many('tender.attachments','project_id',"Attachments")
     estimation_id = fields.One2many('estimation.estimation', 'project_id')
     estimation_line_ids = fields.One2many('estimation.line', 'project_id')
+    plan_line_ids = fields.One2many('line.estimation', 'project_id')
     plan_id = fields.Many2one('master.plan')
 
     @api.depends('partner_id')
@@ -654,23 +705,25 @@ class EstimationEstimation(models.Model):
 
 class EstimationLine(models.Model):
     _name = "estimation.line"
-    _rec_name = 'plan_line_id'
+    _rec_name = "plan_line_id"
 
+    mep = fields.Selection([('mechanical', 'Mechanical'), ('electricel', 'Electrical'), ('plumbing', 'Plumbing')])
     plan_line_id = fields.Many2one('master.plan.line')
+    chart_plan_line_id = fields.Many2one('planning.chart.line')
     no_of_floors = fields.Integer()
     sqft = fields.Float()
     estimation_id = fields.Many2one('estimation.estimation')
     project_id = fields.Many2one('project.project')
     category_id = fields.Many2one("task.category.details")
-    work_id = fields.Many2one('project.work','Description Of Work')
+    work_id = fields.Many2one('project.work', 'Description Of Work')
     qty_estimate = fields.Float('Quantity')
-    unit = fields.Many2one('product.uom','Unit')
+    unit = fields.Many2one('product.uom', 'Unit')
     duration = fields.Float('Duration(Days)')
     start_date = fields.Date('Start Date')
     finish_date = fields.Date('Finish Date')
-    employee_id = fields.Many2one('hr.employee','Employee')
-    veh_categ_id = fields.Many2many('vehicle.category.type',string='Machinery')
-    material = fields.Many2many('product.product', string='Materials')
+    employee_id = fields.Many2one('hr.employee', 'Employee')
+    veh_categ_id = fields.Many2many('vehicle.category.type', 'veh_categ_id_lines','estimation_line_vehicle_id', string='Machinery')
+    material = fields.Many2many('product.product', 'material_ids_line','line_estimation_product_id', string='Materials')
     estimate_cost = fields.Float('Estimate Cost')
     pre_qty = fields.Float('Previous Qty')
     upto_date_qty = fields.Float(store=True, string='Balance Qty')
@@ -680,12 +733,32 @@ class EstimationLine(models.Model):
     rate = fields.Float()
 
 
-    # @api.onchange('plan_line_id')
-    # def onchange_plan_line_id(self):
-    #     if self.project_id:
-    #         if self.project_id.plan_id:
-    #             return {'domain': {'plan_line_id': [('vehicle_id', '=', rec.vehicle_id.id)]}}
+class LineEstimation(models.Model):
+    _name = "line.estimation"
+    # _inherits = {'planning.chart.line': "chart_plan_line_id"}
 
+    chart_plan_line_id = fields.Many2one('planning.chart.line')
+    no_of_floors = fields.Integer()
+    sqft = fields.Float()
+    estimation_id = fields.Many2one('estimation.estimation')
+    project_id = fields.Many2one('project.project')
+    category_id = fields.Many2one("task.category.details")
+    work_id = fields.Many2one('project.work', 'Description Of Work')
+    qty_estimate = fields.Float('Quantity')
+    unit = fields.Many2one('product.uom', 'Unit')
+    duration = fields.Float('Duration(Days)')
+    start_date = fields.Date('Start Date')
+    finish_date = fields.Date('Finish Date')
+    employee_id = fields.Many2one('hr.employee', 'Employee')
+    veh_categ_id = fields.Many2many('vehicle.category.type', 'veh_categ_id_lines','estimation_line_vehicle_id', string='Machinery')
+    material = fields.Many2many('product.product', 'material_ids_line','line_estimation_product_id', string='Materials')
+    estimate_cost = fields.Float('Estimate Cost')
+    pre_qty = fields.Float('Previous Qty')
+    upto_date_qty = fields.Float(store=True, string='Balance Qty')
+    quantity = fields.Float(string='Work Order Qty')
+    subcontractor = fields.Many2one('res.partner', domain=[('contractor', '=', True)])
+    no_labours = fields.Integer()
+    rate = fields.Float()
 
 
 

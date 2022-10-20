@@ -59,6 +59,6 @@ class MasterDataEstimation(models.Model):
     project_id = fields.Many2one('project.project',string="Project")
     no_of_labours = fields.Float(string="No of Labours")
     no_of_machines = fields.Float(string="NO of Machines")
-    veh_categ_id = fields.Many2many('vehicle.category.type', string='Machinery')
+    veh_categ_id = fields.Many2many('vehicle.category.type', 'veh_categ_id_master', 'master_data_veh_categ_id', string='Machinery')
     labour_wage = fields.Float(string="Labour Wage")
-    total_amount = fields.Float(string="Cost",compute = 'compute_cost')
+    total_amount = fields.Float(string="Cost", compute='compute_cost')

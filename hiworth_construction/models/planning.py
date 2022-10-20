@@ -143,34 +143,34 @@ class PlanningChartLine(models.Model):
 			if rec.line_id.site_id:
 				return {'domain': {'master_plan_line_id': [('line_id', '=', rec.line_id.site_id.id)]}}
 
-	@api.model
-	def create(self, vals):
-		res = super(PlanningChartLine, self).create(vals)
-		project_id = res.line_id.project_id or res.master_plan_line_id.line_id.project_name
-		lines=[]
-		if project_id:
-			lines = [(0, 0, {
-				'subcontractor': res.master_plan_line_id.subcontractor.id,
-				'quantity': res.qty,
-				'upto_date_qty': res.master_plan_line_id.upto_date_qty,
-				'sqft': res.sqft,
-				'estimate_cost': res.estimated_cost,
-				'employee_id': res.master_plan_line_id.employee_id.id,
-				'finish_date': res.master_plan_line_id.finish_date,
-				'start_date': res.master_plan_line_id.start_date,
-				'no_labours': res.labour,
-				'duration': res.working_hours,
-				'unit': res.uom_id.id,
-				'qty_estimate': res.material_qty,
-				'material': res.material.ids,
-				'veh_categ_id': res.master_plan_line_id.veh_categ_id.ids,
-				'mep': res.mep,
-				'chart_plan_line_id': res.id,
-				'plan_line_id': res.master_plan_line_id.id,
-				'project_id': project_id.id,
-			})]
-			project_id.update({'estimation_line_ids': lines})
-		return res
+	# @api.model
+	# def create(self, vals):
+	# 	res = super(PlanningChartLine, self).create(vals)
+	# 	project_id = res.line_id.project_id or res.master_plan_line_id.line_id.project_name
+	# 	lines=[]
+	# 	if project_id:
+	# 		lines = [(0, 0, {
+	# 			'subcontractor': res.master_plan_line_id.subcontractor.id,
+	# 			'quantity': res.qty,
+	# 			'upto_date_qty': res.master_plan_line_id.upto_date_qty,
+	# 			'sqft': res.sqft,
+	# 			'estimate_cost': res.estimated_cost,
+	# 			'employee_id': res.master_plan_line_id.employee_id.id,
+	# 			'finish_date': res.master_plan_line_id.finish_date,
+	# 			'start_date': res.master_plan_line_id.start_date,
+	# 			'no_labours': res.labour,
+	# 			'duration': res.working_hours,
+	# 			'unit': res.uom_id.id,
+	# 			'qty_estimate': res.material_qty,
+	# 			'material': res.material.ids,
+	# 			'veh_categ_id': res.master_plan_line_id.veh_categ_id.ids,
+	# 			'mep': res.mep,
+	# 			'chart_plan_line_id': res.id,
+	# 			'plan_line_id': res.master_plan_line_id.id,
+	# 			'project_id': project_id.id,
+	# 		})]
+	# 		project_id.update({'estimation_line_ids': lines})
+	# 	return res
 
 
 class MasterPlanChartLine(models.Model):

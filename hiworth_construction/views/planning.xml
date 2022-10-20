@@ -95,7 +95,7 @@
 						<notebook>
 							<page string="Master Plan">
 								<field name="master_plan_line" nolabel="1">
-									<tree>
+									<tree editable="bottom">
 										<field name="work_id"/>
 										<field name="start_date" />
 										<field name="finish_date" string="Approximate Finish Date"/>
