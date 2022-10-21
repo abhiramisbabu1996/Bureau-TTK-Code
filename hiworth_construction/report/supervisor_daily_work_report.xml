@@ -31,7 +31,7 @@
 
 		<record id="action_supervisor_daily_report" model="ir.actions.act_window">
 			<field name="name">Supervisor Daily reports</field>
-			<field name="res_model">supervisor.daily.re port</field>
+			<field name="res_model">supervisor.daily.report</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">form</field>
 			<field name="target">new</field>
