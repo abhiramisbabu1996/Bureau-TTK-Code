@@ -183,7 +183,7 @@ class TaskDetails(models.Model):
     plan_line_id = fields.Many2one('master.plan.line')
     task_id = fields.Many2one('project.task')
     # estimation_line_id = fields.Many2one('estimation.line')
-    estimation_line_id = fields.Many2one('line.estimation')
+    # estimation_line_id = fields.Many2one('line.estimation')
     work_id = fields.Many2one('project.work', 'Description Of Work')
     chainage_from = fields.Float('Chainage From')
     chainage_to = fields.Float('Chainage To')
@@ -250,7 +250,7 @@ class TaskLine(models.Model):
     pre_qty = fields.Float('Previous Qty')
     upto_date_qty = fields.Float(store=True, string='Balance Qty')
     quantity = fields.Float(string='Work Order Qty')
-    subcontractor = fields.Many2one('project.task')
+    subcontractor = fields.Many2one('res.partner', domain=[('contractor', '=', True)])
     no_labours = fields.Integer()
     no_floors = fields.Integer()
     rate = fields.Float()
@@ -306,6 +306,7 @@ class task(models.Model):
     work_list = fields.One2many('task.details','work_id',string='Work List')
     estimation_line_ids = fields.One2many("task.details", 'task_id')
     task_line_ids = fields.One2many("task.line", 'project_task_id')
+    partner_statement_id = fields.Many2one('partner.daily.statement')
 
     # work_items = fields.One2many('task.details','work_id', string="Items")
 
@@ -321,6 +322,8 @@ class task(models.Model):
     civil_contractor = fields.Many2one('res.partner', 'Civil Contractor', domain = [('contractor','=',True)])
     labour_report_ids = fields.One2many('project.labour.report', 'task_id')
     task_id2 = fields.Many2one('project.project', 'Project')
+    assigned_to = fields.Many2one('hr.employee')
+    assigned_by = fields.Many2one('hr.employee')
 
 
     @api.multi
@@ -750,8 +753,8 @@ class LineEstimation(models.Model):
     start_date = fields.Date('Start Date')
     finish_date = fields.Date('Finish Date')
     employee_id = fields.Many2one('hr.employee', 'Employee')
-    veh_categ_id = fields.Many2many('vehicle.category.type', 'veh_categ_id_lines','estimation_line_vehicle_id', string='Machinery')
-    material = fields.Many2many('product.product', 'material_ids_line','line_estimation_product_id', string='Materials')
+    veh_categ_id = fields.Many2many('vehicle.category.type', 'veh_categ_mlines','estimation_line_vehicle', string='Machinery')
+    material = fields.Many2many('product.product', 'material_line','line_product_id', string='Materials')
     estimate_cost = fields.Float('Estimate Cost')
     pre_qty = fields.Float('Previous Qty')
     upto_date_qty = fields.Float(store=True, string='Balance Qty')

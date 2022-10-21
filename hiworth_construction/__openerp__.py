@@ -95,6 +95,7 @@
         'views/material_cost_transfer_views.xml',
         'views/disposable_product_view.xml',
         'views/tracker_project_views.xml',
+        'report/supervisor_daily_work_report.xml',
 
     ],
 

@@ -221,17 +221,17 @@ class PartnerDailyStatement(models.Model):
 			rent_vehicle = 0
 			for rent_lines in rec.rent_vehicle_stmts:
 				rent_vehicle += rent_lines.advance + rent_lines.other_expenses
-				
+
 			# print "rent_vehiclepartner..................",rec.rent_vehicle
 			for lines in rec.line_ids:
 				expense += lines.payment_total
 			for exp_lines in rec.expense_line_ids:
-				
+
 				expense2 += exp_lines.expense_payment
 			for mou_exp_lines in rec.mou_expense_line_ids:
-				
+
 				expense2 += mou_exp_lines.amount
-			
+
 			if rec.operator_daily_stmts:
 				for exp in rec.operator_daily_stmts:
 					operator_expense += exp.other_expenses
@@ -246,7 +246,7 @@ class PartnerDailyStatement(models.Model):
 	# 			expense += lines.payment_total
 	# 		for line in rec.payment_line:
 	# 			expense += line.amount
-	# 		rec.expense = expense 
+	# 		rec.expense = expense
 
 	@api.one
 	def get_transferred_amount1(self):
@@ -297,16 +297,16 @@ class PartnerDailyStatement(models.Model):
 		# statement = self.env['partner.daily.statement'].search([('state','=','draft'),('employee_id','=',user.employee_id.id)])
 		# if statement:
 		# 	raise osv.except_osv(_('Error!'),_("You have old statement to confirm."))
-		
+
 		if user:
 			if user.employee_id:
 
 				vals.update({'employee_id' : user.employee_id.id,
 							 'pre_balance':user.employee_id.petty_cash_account.balance,
 							 'account_id': user.employee_id.petty_cash_account.id,
-							
+
 							 })
-				
+
 			if not user.employee_id and user.id != 1:
 				raise osv.except_osv(_('Error!'),_("User and Employee is not linked."))
 
@@ -372,6 +372,8 @@ class PartnerDailyStatement(models.Model):
 	labour_details_ids = fields.One2many('labour.employee.details', 'supervisor_statement_id')
 	products_received_lines = fields.One2many('partner.received.products', 'partner_id')
 	products_used_lines = fields.One2many('partner.used.products', 'partner_id')
+	subcontractor_products_used_lines = fields.One2many('partner.used.products', 'partner_id')
+	project_task_ids = fields.One2many('project.task', 'partner_statement_id')
 
 	@api.onchange('project_id','location_ids')
 	def onchange_partner_line_ids(self):
@@ -383,6 +385,17 @@ class PartnerDailyStatement(models.Model):
 					new_partner_line_ids = statement.partner_line_ids.copy()
 					partner_line_ids += new_partner_line_ids.ids
 				rec.partner_line_ids = partner_line_ids
+
+	@api.onchange('project_id')
+	def onchange_partner_line_ids(self):
+		for rec in self:
+			project_task_ids = rec.project_task_ids.ids
+			if rec.project_id:
+				statements_ids = self.env['project.task'].search([('project_id', '=', rec.project_id.id)])
+				if statements_ids:
+					new_partner_line_ids = statements_ids.copy()
+					project_task_ids += new_partner_line_ids.ids
+			rec.project_task_ids = project_task_ids
 
 
 	# @api.onchange('location_ids')
@@ -667,7 +680,7 @@ class PartnerDailyStatement(models.Model):
 														# 'picking_id': line.id
 														})
 				move_in.action_done()
-				
+
 				if self.project_id:
 					for task in self.project_id.task_ids:
 						for usage in task.usage_ids1:
@@ -690,7 +703,7 @@ class PartnerDailyStatement(models.Model):
 						for usage in task.usage_ids1:
 							if usage.pro_id.id == line.product_id.id:
 								usage.qty_used = line.usage
-			
+
 
 		for collect_id in self.machinery_fuel_collection:
 			location =  self.env['stock.location'].search([('usage','=', 'supplier')], limit=1)
@@ -722,8 +735,8 @@ class PartnerDailyStatement(models.Model):
 			stock_move.action_done()
 
 
-			
-			
+
+
 		for received in self.details_received_item_ids:
 			location_supplier = self.env['stock.location'].search([('usage','=','supplier')])
 			stock = self.env['stock.picking'].create({
@@ -745,7 +758,7 @@ class PartnerDailyStatement(models.Model):
 															'location_dest_id': received.site.id,
 															'partner_stmt_id': received.partner_daily_statement_id.id,
 															'picking_id':stock.id
-															
+
 															})
 				stock_move.action_done()
 			stock.action_done()
@@ -907,7 +920,7 @@ class PartnerDailyStatement(models.Model):
 									}
 							line_id4 = move_line.create(values4)
 							print "vallues 4", values4
-							
+
 							move.button_validate()
 							# move.state = 'posted'
 
@@ -1523,7 +1536,7 @@ class PartnerDailyStatement(models.Model):
 									'debit':0,
 									'credit':expenses,
 									})
-					
+
 					move_expense.button_validate()
 					# move_expense.state = 'posted'
 
@@ -2071,7 +2084,7 @@ class PartnerDailyStatementMouLine(models.Model):
 class PartnerDailyStatementExpense(models.Model):
 	_name = 'partner.daily.statement.expense'
 
-	
+
 
 		# return {'value': {'total': total}}
 	@api.onchange('account_id')
@@ -2079,16 +2092,16 @@ class PartnerDailyStatementExpense(models.Model):
 		for rec in self:
 			if rec.account_id:
 				rec.expense_char = rec.account_id.name
-				
+
 	@api.depends('rate','quantity')
 	def compute_total(self):
-		
+
 		for rec in self:
 			total = 0
 			if rec.quantity != 0 and rec.rate !=0:
 				total = int(rec.rate) * int(rec.quantity)
 			rec.total = total
-		
+
 		# return {'value': {'total': total}}
 
 	account_id = fields.Many2one('account.account', 'Account')
@@ -2322,7 +2335,8 @@ class PartnerDailyStatementLine(models.Model):
 		return res
 
 	task_category_id = fields.Many2one("task.category.details")
-	estimation_line_id = fields.Many2one('estimation.line')
+	# estimation_line_id = fields.Many2one('estimation.line')
+	estimation_line_id = fields.Many2one('line.estimation')
 	no_labours = fields.Integer('No of Labours')
 	work_id = fields.Many2one('project.work', 'Description Of Work')
 	qty_estimate = fields.Float('Quantity')
@@ -2437,7 +2451,7 @@ class OperatorDailyStatement(models.Model):
 	other_account_id = fields.Many2one('account.account', 'Other Expense Account')
 	running_km = fields.Float('Running Km')
 
-	
+
 
 
 	@api.onchange('running_km','start_reading','end_reading','machinery_id')
@@ -2861,7 +2875,7 @@ class LabourEmployeeDetails(models.Model):
 	mep = fields.Selection([('mechanical', 'Mechanical'), ('electricel', 'Electrical'), ('plumbing', 'Plumbing')], string="Work Category")
 	site_id = fields.Many2one('stock.location',string='Site', related='supervisor_statement_id.location_ids')
 	project_id = fields.Many2one('project.project', related='supervisor_statement_id.project_id')
-	
+
 	@api.model
 	def create(self, vals):
 		res = super(LabourEmployeeDetails, self).create(vals)
@@ -2874,8 +2888,8 @@ class LabourEmployeeDetails(models.Model):
 					'start_time':res.start_time,}
 			res.details_ids.create(lines)
 		return res
-			
-	
+
+
 class LaboursDetails(models.Model):
 	_name = 'labours.details'
 
@@ -3030,3 +3044,9 @@ class UsedProducts(models.Model):
 			if rec.partner_id.state != 'draft':
 				raise osv.except_osv(('Warning!'), ('Records in the %s state cannot be deleted' % rec.partner_id.state))
 			super(UsedProducts, self).unlink(cr, uid, ids, context)
+
+
+class SubcontractorDailywork(models.Model):
+	_name="subcontractor.daily.work"
+
+
