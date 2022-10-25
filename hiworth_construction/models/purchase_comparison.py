@@ -1004,7 +1004,7 @@ class PurchaseComparisonLine(models.Model):
         if self.res_id:
             vendor_ids.append(self.res_id.partner_id1.id) if self.res_id.partner_id1 else vendor_ids
             vendor_ids.append(self.res_id.partner_id2.id) if self.res_id.partner_id2 else vendor_ids
-            vendor_ids.append(self.res_id.partner_id3.id) if self.res_id.partneri_d3 else vendor_ids
+            vendor_ids.append(self.res_id.partner_id3.id) if self.res_id.partner_id3 else vendor_ids
             vendor_ids.append(self.res_id.partner_id4.id) if self.res_id.partner_id4 else vendor_ids
             vendor_ids.append(self.res_id.partner_id5.id) if self.res_id.partner_id5 else vendor_ids
 

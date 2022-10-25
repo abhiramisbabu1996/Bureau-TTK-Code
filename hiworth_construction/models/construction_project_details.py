@@ -216,6 +216,7 @@ class TaskLine(models.Model):
     _name = "task.line"
 
     project_task_id = fields.Many2one('project.task')
+    remarks_new = fields.Char('Remarks')
     work_loc = fields.Char("Work Location")
     estimated_hrs = fields.Char('Time Allocated')
     #     comments = fields.Char('Comments')
@@ -306,6 +307,7 @@ class task(models.Model):
     work_list = fields.One2many('task.details','work_id',string='Work List')
     estimation_line_ids = fields.One2many("task.details", 'task_id')
     task_line_ids = fields.One2many("task.line", 'project_task_id')
+
     partner_statement_id = fields.Many2one('partner.daily.statement')
 
     # work_items = fields.One2many('task.details','work_id', string="Items")

@@ -114,6 +114,7 @@
 								<field name="start_date"/>
 								<field name="finish_date"/>
 								<field name="subcontractor"/>
+								<field name="remarks_new"/>
 							</tree>
 						</field>
 					</page>
