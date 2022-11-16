@@ -16,6 +16,9 @@
 				
 				<xpath expr="//sheet//div[@name='buttons']" position="inside">
 					 <button class="oe_inline oe_stat_button" name="reopen_project" type="object" string="Add Extra Work" confirm="Are You Sure To Reopen This Project??" groups="base.group_erp_manager,hiworth_project_management.group_manager" states="close"/>
+
+<!--					<button name="button_delete" type="object" class="oe_highlight"  string="Delete"/>-->
+
 				</xpath>
 
 				<xpath expr="//group[1]" position="after">

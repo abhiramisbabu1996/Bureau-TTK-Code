@@ -414,7 +414,7 @@
 										<field name="date_today"/>
 										<field name="project_id" invisible="1"/>
 										<field name="user_id" options="{'no_quick_create': True, 'no_create_edit' : True, 'no_open':True}"/>
-										<field name="assigned_by" invisible="1"/>
+										<field name="assigned_by"/>
 										<field name="name" tring="Description"/>
 										<field name="status"/>
 										
@@ -423,7 +423,7 @@
 										<group>
 											<field name="date_today"/>
 											<field name="user_id"/>
-											<field name="assigned_by" invisible="1"/>
+											<field name="assigned_by"/>
 										<field name="name" string="Description"/>
 										<field name="status"/>
 										

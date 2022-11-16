@@ -847,7 +847,8 @@ class PartnerDailyStatement(models.Model):
 		move = self.env['account.move']
 		journal = self.env['account.journal'].sudo().search([('name','=','CASH')])
 		if not journal:
-			raise except_orm(_('Warning'),_('Please Create Journal With name Miscellaneous Journal'))
+			pass
+			# raise except_orm(_('Warning'),_('Please Create Journal With name Miscellaneous Journal'))
 		if len(journal) > 1:
 			raise except_orm(_('Warning'),_('Multiple Journal with same name Miscellaneous Journal'))
 		for rec in self:
@@ -1760,7 +1761,8 @@ class PartnerDailyStatement(models.Model):
 					move_line = self.env['account.move.line']
 					journal = self.env['account.journal'].sudo().search([('name','=','Miscellaneous Journal')])
 					if not journal:
-						raise except_orm(_('Warning'),_('Please Create Journal With name Miscellaneous Journal'))
+						pass
+						# raise except_orm(_('Warning'),_('Please Create Journal With name Miscellaneous Journal'))
 					if len(journal) > 1:
 						raise except_orm(_('Warning'),_('Multiple Journal with same name(Miscellaneous Journal)'))
 					values = {
@@ -1828,7 +1830,8 @@ class PartnerDailyStatement(models.Model):
 					move_line = self.env['account.move.line']
 					journal = self.env['account.journal'].sudo().search([('name','=','Miscellaneous Journal')])
 					if not journal:
-						raise except_orm(_('Warning'),_('Please Create Journal With name Miscellaneous Journal'))
+						pass
+						# raise except_orm(_('Warning'),_('Please Create Journal With name Miscellaneous Journal'))
 					if len(journal) > 1:
 						raise except_orm(_('Warning'),_('Multiple Journal with same name(Miscellaneous Journal)'))
 					values = {
@@ -1875,7 +1878,8 @@ class PartnerDailyStatement(models.Model):
 					move_line = self.env['account.move.line']
 					journal = self.env['account.journal'].sudo().search([('name','=','Miscellaneous Journal')])
 					if not journal:
-						raise except_orm(_('Warning'),_('Please Create Journal With name Miscellaneous Journal'))
+						pass
+						# raise except_orm(_('Warning'),_('Please Create Journal With name Miscellaneous Journal'))
 					if len(journal) > 1:
 						raise except_orm(_('Warning'),_('Multiple Journal with same name(Miscellaneous Journal)'))
 					values = {

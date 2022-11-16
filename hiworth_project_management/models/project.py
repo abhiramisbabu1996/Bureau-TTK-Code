@@ -173,6 +173,21 @@ class ProjectProject(models.Model):
 	_inherit = 'project.project'
 	_order = 'id desc'
 
+	# @api.multi
+	# def button_delete(self):
+	#
+	# 		# obj = self.env['hr.contract'].search([])
+	# 		obj = self.env[' fleet.vehicle.cost'].search([])
+	# 		if obj:
+	# 			for item in obj:
+	# 				print("inside ifffffffffffff")
+	# 				item.unlink()
+	# 				print("delete button works")
+	# 		else:
+	# 			print("no records")
+
+
+
 	@api.model
 	def create(self, vals):
 		result = super(ProjectProject, self).create(vals)
@@ -230,7 +245,6 @@ class ProjectProject(models.Model):
 	   }
 	 
 		return res
-
 
 	event = fields.One2many('event.event','project_id',string='Tasks')
 	no_story = fields.Char('No Of Stories')
@@ -759,9 +773,9 @@ class ProjectTasks(models.Model):
 	status1 = fields.Selection([('shown', 'shown'), ('draft', 'draft')], default='draft')
 	state = fields.Selection([('draft','Draft'),('complete','Completed')],default="draft")
 
-	_defaults = {
-		'assigned_by': lambda obj, cr, uid, ctx=None: uid,
-		}
+	# _defaults = {
+	# 	'assigned_by': lambda obj, cr, uid, ctx=None: uid,
+	# 	}
 
 	
 	@api.multi
@@ -813,11 +827,11 @@ class ProjectTasks(models.Model):
 		for obj in self:
 			result.append({
 				'title': obj.name,
-				'user':obj.assigned_by.name,
+				# 'user':obj.assigned_by.name,
 				'status': obj.status1,
 				'assigned_to':obj.user_id.name,
 				'id': obj.id,
-				'id1':obj.assigned_by.id
+				# 'id1':obj.assigned_by.id
 			})
 		return result
 

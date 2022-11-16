@@ -298,6 +298,8 @@ class task(models.Model):
                 line_num += 1
 
     line_no = fields.Integer(compute='_get_line_numbers', string='Sl.No',readonly=False, default=False)
+    assigned_by = fields.Many2one('hr.employee')
+    partner_statement_id = fields.Many2one('partner.daily.statement')
     estimated_cost = fields.Float(compute='_compute_estimated_cost', string='Estimated Cost')
     estimate_ids = fields.One2many('project.task.estimation', 'task_id', 'Estimation')
     is_extra_work = fields.Boolean('Extra Work', default=False)
@@ -308,7 +310,7 @@ class task(models.Model):
     estimation_line_ids = fields.One2many("task.details", 'task_id')
     task_line_ids = fields.One2many("task.line", 'project_task_id')
 
-    partner_statement_id = fields.Many2one('partner.daily.statement')
+    # partner_statement_id = fields.Many2one('partner.daily.statement')
 
     # work_items = fields.One2many('task.details','work_id', string="Items")
 

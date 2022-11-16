@@ -803,27 +803,27 @@ class HREmployee1(models.Model):
 		if esi_payment_date:
 			print 'abs((esi_payment_date - today).days)----------------', abs((esi_payment_date - today).days)
 			esi = self.env['hr.esi.payment'].search([('month','=',month),('year','=',today.year),('state','=', 'paid')])
-			if esi_payment_date and abs((esi_payment_date - today).days) <= 15 and not esi:
-				self.env['popup.notifications'].sudo().create({
-													  'name':self.env.user.id,
-													  'status':'draft',
-													  'pf_esi':True,
-													  'message':'Last date of ESI payment is on' + ' ' + str(esi_payment_date),
-													  })
-
+			# if esi_payment_date and abs((esi_payment_date - today).days) <= 15 and not esi:
+			# 	self.env['popup.notifications'].sudo().create({
+			# 										  'name':self.env.user.id,
+			# 										  'status':'draft',
+			# 										  'pf_esi':True,
+			# 										  'message':'Last date of ESI payment is on' + ' ' + str(esi_payment_date),
+			# 										  })
+			#
 
 			
 
 		if pf_payment_date:
 			pf = self.env['pf.payment'].search([('month','=',month),('year','=',today.year),('state','=', 'paid')])
-			if pf_payment_date and abs((pf_payment_date - today).days) <= 15 and not pf:
-				self.env['popup.notifications'].sudo().create({
-													  'name':self.env.user.id,
-													  'status':'draft',
-													  'pf_esi':True,
-													  'message':'Last date of PF payment is on' + ' ' + str(pf_payment_date),
-													  })
-
+			# if pf_payment_date and abs((pf_payment_date - today).days) <= 15 and not pf:
+			# 	self.env['popup.notifications'].sudo().create({
+			# 										  'name':self.env.user.id,
+			# 										  'status':'draft',
+			# 										  'pf_esi':True,
+			# 										  'message':'Last date of PF payment is on' + ' ' + str(pf_payment_date),
+			# 										  })
+			#
 
 
 class FleetDocuments1(models.Model):
@@ -846,13 +846,13 @@ class FleetDocuments1(models.Model):
 				pollution_date = datetime.strptime(pollution.renewal_date,'%Y-%m-%d').date()
 				print 'chkkkk--------------------------', abs((pollution_date - today).days)
 
-				if pollution.renewal_date and abs((pollution_date - today).days) <= 15:
-					self.env['popup.notifications'].sudo().create({
-														  'name':self.env.user.id,
-														  'status':'draft',
-														  'veh_doc':True,
-														  'message':'Pollution renewal date of' + ' ' + str(veh_id.name) + ' ' + 'is on' + ' ' + str(pollution_date),
-														  })
+				# if pollution.renewal_date and abs((pollution_date - today).days) <= 15:
+				# 	self.env['popup.notifications'].sudo().create({
+				# 										  'name':self.env.user.id,
+				# 										  'status':'draft',
+				# 										  'veh_doc':True,
+				# 										  'message':'Pollution renewal date of' + ' ' + str(veh_id.name) + ' ' + 'is on' + ' ' + str(pollution_date),
+				# 										  })
 
 			road_tax = self.env['fleet.vehicle.documents'].search([('vehicle_id','=',veh_id.id),('document_type','=','road_tax')], limit=1)
 			if road_tax:
@@ -874,26 +874,26 @@ class FleetDocuments1(models.Model):
 					fitness_date = datetime.strptime(fitness.renewal_date,'%Y-%m-%d').date()
 				print 'chkkkk--------------------------', abs((fitness_date - today).days)
 
-				if fitness.renewal_date and abs((fitness_date - today).days) <= 15:
-					self.env['popup.notifications'].sudo().create({
-														  'name':self.env.user.id,
-														  'status':'draft',
-														  'veh_doc':True,
-														  'message':'Fitness renewal date of' + ' ' + str(veh_id.name) + ' ' + 'is on' + ' ' + str(fitness_date),
-														  })
+				# if fitness.renewal_date and abs((fitness_date - today).days) <= 15:
+				# 	self.env['popup.notifications'].sudo().create({
+				# 										  'name':self.env.user.id,
+				# 										  'status':'draft',
+				# 										  'veh_doc':True,
+				# 										  'message':'Fitness renewal date of' + ' ' + str(veh_id.name) + ' ' + 'is on' + ' ' + str(fitness_date),
+				# 										  })
 
 			insurance = self.env['fleet.vehicle.documents'].search([('vehicle_id','=',veh_id.id),('document_type','=','insurance')], limit=1)
 			if insurance:
 				insurance_date = datetime.strptime(insurance.renewal_date,'%Y-%m-%d').date()
 				print 'chkkkk--------------------------', abs((insurance_date - today).days)
 
-				if insurance.renewal_date and abs((insurance_date - today).days) <= 15:
-					self.env['popup.notifications'].sudo().create({
-														  'name':self.env.user.id,
-														  'status':'draft',
-														  'veh_doc':True,
-														  'message':'Insurance renewal date of' + ' ' + str(veh_id.name) + ' ' + 'is on' + ' ' + str(insurance_date),
-														  })
+				# if insurance.renewal_date and abs((insurance_date - today).days) <= 15:
+				# 	self.env['popup.notifications'].sudo().create({
+				# 										  'name':self.env.user.id,
+				# 										  'status':'draft',
+				# 										  'veh_doc':True,
+				# 										  'message':'Insurance renewal date of' + ' ' + str(veh_id.name) + ' ' + 'is on' + ' ' + str(insurance_date),
+				# 										  })
 
 
 class PostalForm(models.Model):

@@ -75,7 +75,8 @@ class CashConfirmTransfer(models.Model):
 		move_line = self.env['account.move.line']
 		journal = self.env['account.journal'].sudo().search([('name','=','Miscellaneous Journal')])
 		if not journal:
-			raise except_orm(_('Warning'),_('Please Create Journal With name Miscellaneous Journal'))
+			pass
+			# raise except_orm(_('Warning'),_('Please Create Journal With name Miscellaneous Journal'))
 		if len(journal) > 1:
 			raise except_orm(_('Warning'),_('Multiple Journal with same name(Miscellaneous Journal)'))
 		
@@ -982,7 +983,8 @@ class DriverDailyStatement(models.Model):
 							 _('You Have Some Cash Transfer Amount Which Is In Pending State'))
 		journal = self.env['account.journal'].sudo().search([('name','=','Miscellaneous Journal')])
 		if not journal:
-			raise except_orm(_('Warning'),_('Please Create Journal With name Miscellaneous Journal'))
+			pass
+			# raise except_orm(_('Warning'),_('Please Create Journal With name Miscellaneous Journal'))
 		if len(journal) > 1:
 			raise except_orm(_('Warning'),_('Multiple Journal with same name(Miscellaneous Journal)'))
 		

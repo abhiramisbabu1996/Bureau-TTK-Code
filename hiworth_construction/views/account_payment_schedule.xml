@@ -15,7 +15,7 @@
 							<field name="name" string="Project Name"/>
 						</h1>
 					</div>
-					
+
 					<field name="state" widget="statusbar" statusbar_visible="draft,open,approve,paid"
 						statusbar_colors='{"proforma":"blue","proforma2":"blue"}' invisible="1"/>
 					<group col="4">

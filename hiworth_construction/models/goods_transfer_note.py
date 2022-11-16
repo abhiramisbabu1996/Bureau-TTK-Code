@@ -399,7 +399,8 @@ class GoodsRecieveReport(models.Model):
                 quant = self.env['stock.quant'].search([('product_id', '=', material_issue.item_id.id),
                                                         ('qty', '=', material_issue.quantity_accept),
                                                         ('in_date', '>', rec.Date),
-                                                        ('location_id', '=', rec.project_location_id.id)],limit=1)
+                                                        ('location_id', '=', rec.project_location_id.id)
+                                                        ],limit=1)
                 quant.with_context({'force_unlink':True}).unlink()
         return super(GoodsRecieveReport, self).unlink()
 
