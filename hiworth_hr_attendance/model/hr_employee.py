@@ -446,11 +446,10 @@ class HrEmployee(models.Model):
         for record in self:
             if record.joining_date:
                 d1 = datetime.strptime(record.joining_date, "%Y-%m-%d")
-                date_today = fields.Date.today()
-                d2 = datetime.strptime(date_today, "%Y-%m-%d")
-                r = relativedelta(d2, d1)
-                record.no_mnth_job = r.months + (12 * (int(d2.year) - int(d1.year)))
-                record.year_service = ((r.months % 10) * 0.1) + (int(d2.year) - int(d1.year))
+                d2 = datetime.strptime(fields.Date.today(), "%Y-%m-%d")
+                time = relativedelta(d2, d1)
+                record.no_mnth_job = str(time.years)
+                record.year_service = str(time.years)+"."+str(time.months)
 
 
     @api.onchange('user_category')
