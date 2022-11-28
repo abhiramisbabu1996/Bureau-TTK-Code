@@ -225,8 +225,8 @@ class HrEmployee(models.Model):
                                       ('admin officer', 'Admin Officer'),
                                       ('others', 'Others'),
                                       # ('cheif_acc', 'Cheif Accountant'),
-                                      # ('sen_acc', 'Senior Accountant'),
-                                      # ('jun_acc', 'Junior Accountant'),
+                                      ('sen_acc', 'Senior Accountant'),
+                                      ('jun_acc', 'Accountant'),
                                       # ('cashier', 'Cashier'),
                                       #
                                       # ('technical_team', 'Technical Team'),
