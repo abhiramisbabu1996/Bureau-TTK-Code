@@ -448,7 +448,7 @@ class HrEmployee(models.Model):
                 d1 = datetime.strptime(record.joining_date, "%Y-%m-%d")
                 d2 = datetime.strptime(fields.Date.today(), "%Y-%m-%d")
                 time = relativedelta(d2, d1)
-                record.no_mnth_job = str(time.years)
+                record.no_mnth_job = str(time.months)
                 record.year_service = str(time.years)+"."+str(time.months)
 
 
