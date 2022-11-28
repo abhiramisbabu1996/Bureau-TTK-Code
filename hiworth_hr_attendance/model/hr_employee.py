@@ -439,8 +439,6 @@ class HrEmployee(models.Model):
                 # record.no_mnth_job = r.months + (12*(int(d2.year)-int(d1.year)))
                 record.age = (int(d2.year)-int(d1.year))
 
-
-    @api.multi
     @api.depends('joining_date')
     def _get_working_month_year(self):
         for record in self:
@@ -448,7 +446,7 @@ class HrEmployee(models.Model):
                 d1 = datetime.strptime(record.joining_date, "%Y-%m-%d")
                 d2 = datetime.strptime(fields.Date.today(), "%Y-%m-%d")
                 time = relativedelta(d2, d1)
-                record.no_mnth_job = str(time.months)
+                record.no_mnth_job = str((time.years*12)+time.months)
                 record.year_service = str(time.years)+"."+str(time.months)
 
 
