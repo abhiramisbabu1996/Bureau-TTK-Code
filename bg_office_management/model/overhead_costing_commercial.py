@@ -18,9 +18,9 @@ class OverheadCostingCommercial(models.Model):
     _rec_name = 'overhead_category'
 
 
-    overhead_category = fields.Many2one('overhead.category', 'Overhead Category')
-    overhead_sub_category = fields.Many2one('overhead.subcategory', 'Overhead Sub Category')
-    estimated_total_amount = fields.Float('Estimated Sub Category')
+    overhead_category = fields.Many2one('overhead.category', 'Category')
+    overhead_sub_category = fields.Many2one('overhead.subcategory', 'Sub Category')
+    estimated_total_amount = fields.Float('Estimated Total Amount')
     month_select = fields.Selection(
         [('january', 'January'), ('february', 'February'), ('march', 'March'), ('april', 'April'), ('may', 'May'),
          ('june', 'June'), ('july', 'July'), ('august', 'August'), ('september', 'September'), ('october', 'October'),

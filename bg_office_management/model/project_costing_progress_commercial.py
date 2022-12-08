@@ -12,3 +12,4 @@ class ProjectCostingProgressCommercial(models.Model):
     actual_man_hours = fields.Float('Actual Man Hours')
     estimated_material_cost = fields.Float('Estimated material Cost')
     purchase_material_cost = fields.Float('Purchased Material Cost')
+    date = fields.Date('Date')
