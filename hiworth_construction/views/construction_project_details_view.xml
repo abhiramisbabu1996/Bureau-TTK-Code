@@ -1148,16 +1148,26 @@
 						</group>
 					</group>
 				</xpath>
+<!--				<xpath expr="//notebook/page/field[@name='notes']"-->
+<!--					position="attributes">-->
+<!--					<attribute name="attrs">{'readonly':[('state','in', ['done','paid','cancel'])]}</attribute>-->
+<!--					<attribute name="string">Terms &amp; Conditions</attribute>-->
+<!--				</xpath>-->
 				<xpath expr="//notebook/page/field[@name='notes']"
-					position="attributes">
-					<attribute name="attrs">{'readonly':[('state','in', ['done','paid','cancel'])]}</attribute>
-					<attribute name="string">Terms &amp; Conditions</attribute>
-				</xpath>
-				<xpath expr="//notebook/page/field[@name='notes']"
-					position="after">
+					position="replace">
 					<div class="oe_clear"/>
 					<label for="additional_terms" string="Additional terms &amp; Conditions"/>
-							<field name="additional_terms" attrs="{'readonly':[('state','in', ['done','paid','cancel'])]}"/>
+							<field name="additional_terms" readonly="1"/>
+					1	Starting date will be 19-Jan 2021, site working timing is from 7AM to 6PM in-between 1 hour lunch break.
+					2	All workers to arrive with required PPE & proper uniform only safety jacket will be provided by us and to ware strictly.
+					3	No workers are entertained without our safety vast from Bureau Green.
+					4	Site performance check will be done to verify their category and if found unskilled then need to replace with skilled labours as per trade mention in LPO.
+					5	Any misbehaviour worker on site will be removed and will be marked absent for that day.
+					6	All workers to strictly follow our Engineer, Supervisor, Forman instruction.
+
+
+
+<!--							<field name="additional_terms" attrs="{'readonly':[('state','in', ['done','paid','cancel'])]}"/>-->
 				</xpath>
 
 
