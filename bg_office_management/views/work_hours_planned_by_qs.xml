@@ -6,6 +6,8 @@
             <field name="model">work.hours.qs</field>
             <field name="arch" type="xml">
                 <tree string="Work Hours Planned By Qs">
+                    <field name="project_id"/>
+                    <field name="date"/>
                     <field name="construction_activities"/>
                     <field name="overhead_category"/>
                     <field name="estimated_qty"/>
@@ -25,6 +27,8 @@
 					<h1><center>Work Hours Planned By Qs</center></h1><br></br><br></br>
 					<group col="2" string="Estimated">
 						<group>
+							<field name="project_id"/>
+                           <field name="date"/>
 						   <field name="construction_activities"/>
                            <field name="overhead_category"/>
                            <field name="estimated_qty"/>

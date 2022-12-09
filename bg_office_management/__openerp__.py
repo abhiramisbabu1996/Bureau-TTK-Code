@@ -18,6 +18,8 @@
         'report/report_recurring_expense.xml',
         'report/over_head_costing_report.xml',
         'report/costing_and_progress.xml',
+        'report/work_hours_planned.xml',
+        'report/boq_excess_order.xml',
 
     ],
     'installable': True

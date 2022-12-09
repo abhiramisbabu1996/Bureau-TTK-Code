@@ -11,6 +11,8 @@ class WorkHoursPlannedByQs(models.Model):
     _name = 'work.hours.qs'
     _rec_name = 'construction_activities'
 
+    project_id = fields.Many2one('project.project', 'Project Name')
+    date = fields.Date('Date')
     construction_activities = fields.Many2one('construction.activity', 'Construction Activitiy')
     overhead_category = fields.Many2one('overhead.category', 'Category')
     estimated_qty = fields.Integer('Estimated Quantity')

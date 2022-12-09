@@ -51,6 +51,10 @@ class CostingProgressReport(models.TransientModel):
         if self.project_id:
             domain += [('project_id', '=', self.project_id.id)]
         records = self.env['costprogress.commercial'].search(domain)
+        if self.date_from:
+            domain += [('date', '>=', self.date_from)]
+        if self.date_to:
+            domain += [('date', '<=', self.date_to)]
         for rec in records:
             pid = rec.project_id.id
             if pid not in projects:
