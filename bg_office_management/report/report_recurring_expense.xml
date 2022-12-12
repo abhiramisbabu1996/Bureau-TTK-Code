@@ -136,7 +136,7 @@
                   sequence="9" parent="hiworth_project_management.menu_office_management"/>
 		<menuitem action="action_expense_recurring_report" id="menu_recurring_expense_reports_child"
                               name="Recurring Expense Report"
-                              sequence="1" parent="menu_recurring_expense_reports"/>
+                              sequence="3" parent="menu_recurring_expense_reports"/>
 
 
 

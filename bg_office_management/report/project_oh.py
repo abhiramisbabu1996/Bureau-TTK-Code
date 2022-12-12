@@ -3,18 +3,17 @@ from openerp import tools, _
 from datetime import datetime, date, timedelta
 
 
-class OverheadCostingReport(models.TransientModel):
-    _name = 'overhead.costing.reports'
+class OverheadProjectReport(models.TransientModel):
+    _name = 'overhead.project'
 
-    overhead_category = fields.Many2one('overhead.category', 'Category')
-    overhead_sub_category = fields.Many2one('overhead.subcategory', 'Sub Category')
+    project_id = fields.Many2one('project.project', 'Project Name')
     month_select = fields.Selection(
         [('january', 'January'), ('february', 'February'), ('march', 'March'), ('april', 'April'), ('may', 'May'),
          ('june', 'June'), ('july', 'July'), ('august', 'August'), ('september', 'September'), ('october', 'October'),
          ('november', 'November'), ('december', 'December')], string="Month")
 
     @api.multi
-    def action_overhead_costing(self):
+    def action_overhead_project(self):
         datas = {
             'ids': self._ids,
             'model': self._name,
@@ -23,15 +22,15 @@ class OverheadCostingReport(models.TransientModel):
         }
 
         return {
-            'name': 'Overhead Costing By Commercial Report',
+            'name': 'Project Overhead Distribution Report',
             'type': 'ir.actions.report.xml',
-            'report_name': 'bg_office_management.report_overhead_costing_template',
+            'report_name': 'bg_office_management.report_overhead_project_template',
             'datas': datas,
             'report_type': 'qweb-pdf'
         }
 
     @api.multi
-    def action_overhead_costing_view(self):
+    def action_overhead_project_view(self):
         datas = {
             'ids': self._ids,
             'model': self._name,
@@ -39,9 +38,9 @@ class OverheadCostingReport(models.TransientModel):
             'context': self._context,
         }
         return {
-            'name': 'Overhead Costing By Commercial Report',
+            'name': 'Project Overhead Distribution Report',
             'type': 'ir.actions.report.xml',
-            'report_name': 'bg_office_management.report_overhead_costing_template',
+            'report_name': 'bg_office_management.report_overhead_project_template',
             'datas': datas,
             'report_type': 'qweb-html',
         }
@@ -51,18 +50,15 @@ class OverheadCostingReport(models.TransientModel):
         lst = []
         lst_dict = []
         domain = []
-        if self.overhead_category:
-            domain += [('overhead_category', '=', self.overhead_category.id)]
-        if self.overhead_sub_category:
-            domain += [('overhead_sub_category', '=', self.overhead_category.id)]
+        if self.project_id:
+            domain += [('project_id', '=', self.project_id.id)]
         if self.month_select:
             domain += [('month_select', '=', self.month_select)]
-        records = self.env['overheadcost.commercial'].search(domain)
+        records = self.env['projectoverhead.distribution'].search(domain)
         for rec in records:
             jan, feb, mar, apr, may, june, july, aug, sep, oct, nov, dec = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             vals_sample = {
-                'overhead_category': rec.overhead_category.name,
-                'overhead_sub_category': rec.overhead_sub_category.name,
+                'project_id': rec.project_id.id,
             }
             if vals_sample not in lst_dict:
                 # print("you there??")
@@ -92,10 +88,10 @@ class OverheadCostingReport(models.TransientModel):
                     dec = rec.actual_value
 
                 vals = {
-                    'overhead_category': rec.overhead_category.name,
-                    'overhead_sub_category': rec.overhead_sub_category.name,
-                    'e_total_amount': rec.estimated_total_amount,
-                    'e_amount_month': rec.estimated_total_amount_month,
+                    'pid': rec.project_id.id,
+                    'project_id': rec.project_id.name,
+                    'project_value': rec.project_value,
+                    'row_percentage': 0,
                     'jan': jan,
                     'feb': feb,
                     'mar': mar,
@@ -109,8 +105,8 @@ class OverheadCostingReport(models.TransientModel):
                     'nov': nov,
                     'dec': dec,
                     'total': 0,
-                    'e_total_amount_total': 0,
-                    'e_amount_month_total': 0,
+                    'e_total_project_val': 0,
+                    'per_total': 0,
                     'jan_total': 0,
                     'feb_total': 0,
                     'mar_total': 0,
@@ -122,46 +118,46 @@ class OverheadCostingReport(models.TransientModel):
                     'oct_total': 0,
                     'nov_total': 0,
                     'dec_total': 0,
-                    'grand_total':0,
+                    'grand_total': 0,
 
                 }
                 lst.append(vals)
                 lst_dict.append(vals_sample)
             else:
                 for dict in lst:
-                    if dict['overhead_category'] == rec.overhead_category.name:
-                        if dict['overhead_sub_category'] == rec.overhead_sub_category.name:
-                            if rec.month_select == 'january':
-                                dict['jan'] = rec.actual_value
-                            if rec.month_select == 'february':
-                                dict['feb'] = rec.actual_value
-                            if rec.month_select == 'march':
-                                dict['mar'] = rec.actual_value
-                            if rec.month_select == 'april':
-                                dict['apr'] = rec.actual_value
-                            if rec.month_select == 'may':
-                                dict['may'] = rec.actual_value
-                            if rec.month_select == 'june':
-                                dict['june'] = rec.actual_value
-                            if rec.month_select == 'july':
-                                dict['july'] = rec.actual_value
-                            if rec.month_select == 'august':
-                                dict['aug'] = rec.actual_value
-                            if rec.month_select == 'september':
-                                dict['sep'] = rec.actual_value
-                            if rec.month_select == 'october':
-                                dict['oct'] = rec.actual_value
-                            if rec.month_select == 'november':
-                                dict['nov'] = rec.actual_value
-                            if rec.month_select == 'december':
-                                dict['dec'] = rec.actual_value
-                            dict['total'] = jan + feb + mar + apr + may + june + july + aug + sep + oct + nov + dec
-        sum1, sum2, jan_total, feb_total, mar_total, apr_total, may_total, june_total, july_total, aug_total, sep_total, oct_total, nove_total, dec_total,grand_total = 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                    if dict['pid'] == rec.project_id.id:
+                        if rec.month_select == 'january':
+                            dict['jan'] = rec.actual_value
+                        if rec.month_select == 'february':
+                            dict['feb'] = rec.actual_value
+                        if rec.month_select == 'march':
+                            dict['mar'] = rec.actual_value
+                        if rec.month_select == 'april':
+                            dict['apr'] = rec.actual_value
+                        if rec.month_select == 'may':
+                            dict['may'] = rec.actual_value
+                        if rec.month_select == 'june':
+                            dict['june'] = rec.actual_value
+                        if rec.month_select == 'july':
+                            dict['july'] = rec.actual_value
+                        if rec.month_select == 'august':
+                            dict['aug'] = rec.actual_value
+                        if rec.month_select == 'september':
+                            dict['sep'] = rec.actual_value
+                        if rec.month_select == 'october':
+                            dict['oct'] = rec.actual_value
+                        if rec.month_select == 'november':
+                            dict['nov'] = rec.actual_value
+                        if rec.month_select == 'december':
+                            dict['dec'] = rec.actual_value
+                        dict['total'] = jan + feb + mar + apr + may + june + july + aug + sep + oct + nov + dec
+        sum1, row_percentage, jan_total, feb_total, mar_total, apr_total, may_total, june_total, july_total, aug_total, sep_total, oct_total, nove_total, dec_total, grand_total = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         for dict in lst:
             dict['total'] = dict['jan'] + dict['feb'] + dict['mar'] + dict['apr'] + dict['may'] + dict['june'] + dict[
                 'july'] + dict['aug'] + dict['sep'] + dict['oct'] + dict['nov'] + dict['dec']
-            sum1 = sum1 + dict['e_total_amount']
-            sum2 = sum2 + dict['e_amount_month']
+            sum1 = sum1 + dict['project_value']
+            dict['row_percentage'] = round(((dict['total']/dict['project_value'])*100),2)
+            # sum2 = sum2 + dict['e_amount_month']
             jan_total = jan_total + dict['jan']
             feb_total = feb_total + dict['feb']
             mar_total = mar_total + dict['mar']
@@ -174,24 +170,24 @@ class OverheadCostingReport(models.TransientModel):
             oct_total = oct_total + dict['oct']
             nove_total = nove_total + dict['nov']
             dec_total = dec_total + dict['dec']
-            grand_total = grand_total+dict['total']
+            grand_total = grand_total + dict['total']
 
         for dict in lst:
-            dict['e_total_amount_total']=sum1
-            dict['e_amount_month_total'] =sum2
-            dict['jan_total']=jan_total
-            dict['feb_total']=feb_total
-            dict['mar_total']=mar_total
-            dict['apr_total']=apr_total
-            dict['may_total']=may_total
-            dict['june_total']=june_total
-            dict['july_total']=july_total
-            dict['aug_total']=aug_total
-            dict['sep_total']=sep_total
-            dict['oct_total']=oct_total
-            dict['nove_total']=nove_total
-            dict['dec_total']=dec_total
-            dict['grand_total']= grand_total
-            print("wewrtewrew",dict['e_amount_month_total'])
-            print("qqqqqqqqqqqqqqq",dict['grand_total'])
+            dict['e_totalproject_value'] = sum1
+            dict['jan_total'] = jan_total
+            dict['feb_total'] = feb_total
+            dict['mar_total'] = mar_total
+            dict['apr_total'] = apr_total
+            dict['may_total'] = may_total
+            dict['june_total'] = june_total
+            dict['july_total'] = july_total
+            dict['aug_total'] = aug_total
+            dict['sep_total'] = sep_total
+            dict['oct_total'] = oct_total
+            dict['nove_total'] = nove_total
+            dict['dec_total'] = dec_total
+            dict['grand_total'] = grand_total
+            dict['per_total'] = round((dict['grand_total']/dict['e_totalproject_value'])*100,2)
+            # print("wewrtewrew", dict['e_amount_month_total'])
+            # print("qqqqqqqqqqqqqqq", dict['grand_total'])
         return lst

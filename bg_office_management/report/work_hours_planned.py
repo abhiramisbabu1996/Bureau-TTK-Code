@@ -57,7 +57,7 @@ class CostingProgressReport(models.TransientModel):
         print(records)
         for rec in records:
 
-            d = float(rec.total_manhours_required)/float(rec.estimated_manhours_required)
+            d = float((rec.total_manhours_required)/float(rec.estimated_manhours_required)*100)
 
             vals = {
                 'project_id': rec.project_id.name,

@@ -21,6 +21,7 @@
         'report/work_hours_planned.xml',
         'report/boq_excess_order.xml',
         'report/boq_estimated_by_qs.xml',
+        'report/project_oh.xml',
 
     ],
     'installable': True

@@ -68,7 +68,9 @@ class BoqEstimated(models.TransientModel):
                 'per_qty':float(rec.qty_actual)/float(rec.qty)*100,
                 'a_unit_cost':rec.unit_cost_actual,
                 'a_total_cost':rec.qty_actual*rec.unit_cost_actual,
-                'per_cost':(float(rec.qty_actual) / float(rec.unit_cost_actual))*100,
+                'per_cost':(float(rec.qty_actual*rec.unit_cost_actual) / float(rec.unit_cost*rec.qty))*100,
             }
+            # print(vals)
             lst.append(vals)
+
         return lst

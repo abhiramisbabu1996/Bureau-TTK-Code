@@ -9,6 +9,7 @@
                     <field name="overhead_category"/>
                     <field name="overhead_sub_category"/>
                     <field name="estimated_total_amount"/>
+                    <field name="estimated_total_amount_month"/>
                     <field name="month_select"/>
                     <field name="actual_value"/>
                 </tree>
@@ -26,6 +27,7 @@
 							<field name="overhead_category"/>
 							<field name="overhead_sub_category"/>
 							<field name="estimated_total_amount"/>
+							<field name="estimated_total_amount_month"/>
 						</group>
 						<group>
 

@@ -138,7 +138,7 @@
 
 		<menuitem action="action_boq_excess_report" id="menu_boq_excess_reports_child"
                               name="Boq Excess order"
-                              sequence="5" parent="menu_recurring_expense_reports"/>
+                              sequence="6" parent="menu_recurring_expense_reports"/>
 
     </data>
 </openerp>

@@ -146,7 +146,7 @@
 
 		<menuitem action="action_costing_commercial_report" id="menu_progress_costing_reports_child"
                               name="Project Costing-Progress Report"
-                              sequence="3" parent="menu_recurring_expense_reports"/>
+                              sequence="4" parent="menu_recurring_expense_reports"/>
 
     </data>
 </openerp>
