@@ -14,11 +14,14 @@
                         <button name="action_request_init" type="object" class="oe_highlight" string="Accept" states="confirm" groups="base.group_erp_manager,purchase.group_purchase_manager,purchase.group_purchase_user"/>
                      <button name="button_create_purchase" type="object" class="oe_highlight" string="Create Quotation" states="accept"  groups="base.group_erp_manager,purchase.group_purchase_manager,purchase.group_purchase_user"/>
                        <button name="button_create_comparison" type="object" class="oe_highlight" string="Create Direct PO" states="accept"  confirm="You are proceeding without a quotation and a comparison. Proceed Yes or No?" groups="base.group_erp_manager,purchase.group_purchase_manager,purchase.group_purchase_user"/>
+                        <button name="%(action_view_stock_history)d" states="confirm,accept"
+                            string="View Stock history" type="action" />
 
                        <button name="cancel_purchase" type="object" class="oe_highlight" string="Cancel"  />
                       <button name="set_draft" type="object" class="oe_highlight" string="Set Draft" states="cancel" />
                       <field name="state" widget="statusbar" />
-                    </header>
+
+                    </header>`
                     <sheet>
                       <!-- <div class="oe_right oe_button_box" name="buttons" >
                         <button class="oe_inline oe_stat_button" type="object" name="view_invoices" icon="fa-tasks" string="View Invoices" attrs="{'invisible':[('state','!=','invoice')]}"/>
@@ -683,6 +686,8 @@
                         <button name="action_request_init" type="object" class="oe_highlight" string="Accept" states="confirm" groups="base.group_erp_manager,purchase.group_purchase_manager,purchase.group_purchase_user"/>
                      <button name="button_create_purchase" type="object" class="oe_highlight" string="Create Quotation" states="accept"  groups="base.group_erp_manager,purchase.group_purchase_manager,purchase.group_purchase_user"/>
                        <button name="button_create_comparison" type="object" class="oe_highlight" string="Create Direct PO" states="accept" confirm="You are proceeding without a quotation and a comparison. Proceed Yes or No?" groups="base.group_erp_manager,purchase.group_purchase_manager,purchase.group_purchase_user"/>
+                                                <button name="%(action_view_stock_history)d" states="confirm,accept"
+                            string="View Stock history" type="action" />
 
                        <button name="cancel_purchase" type="object" class="oe_highlight" string="Cancel"  />
                       <button name="set_draft" type="object" class="oe_highlight" string="Set Draft" states="cancel" />

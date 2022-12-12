@@ -2257,8 +2257,8 @@
 					<field name="responsible_name" />
 					<field name="responsible_mobile"/>
 					<field name="responsible_email"/>
-					<field name="vat_no"/>
-					<field name="trn_no"/>
+<!--					<field name="vat_no"/>-->
+					<field name="trn_no" string="TRN NO"/>
 				</xpath>
 <!--				<xpath expr="//sheet/group/group[2]/field[@name='email2']" position="attributes">-->
 <!--					<attribute name="invisible">1</attribute>-->

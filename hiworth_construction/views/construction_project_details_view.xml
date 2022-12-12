@@ -672,6 +672,10 @@
 				</xpath>
 				<xpath expr="//div[1]" position="replace">
 					<div class="oe_title">
+						<label for="project_number" string="Project Number" />
+						<h1>
+							<field name="project_number" string="Project Number" colspan="2"/>
+						</h1>
 						<label for="name" string="Project Name" />
 						<h1>
 							<field name="name" string="Project Name" colspan="2"/>
@@ -966,11 +970,11 @@
 					position="replace">
 					<field name="product_qty" string="Nos"/>
 				</xpath> -->
-				<!-- <xpath expr="//notebook/page/field/tree/field[@name='product_uom']"
+				 <xpath expr="//notebook/page/field/tree/field[@name='product_uom']"
 					position="replace">
 					<field name="product_uom" groups="product.group_uom" string="Unit"
-						on_change="onchange_product_uom(parent.pricelist_id,product_id,product_qty,product_uom,parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,False,parent.state,context)" />
-				</xpath> -->
+						on_change="onchange_product_uom(parent.pricelist_id,product_id,required_qty,product_uom,parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,False,parent.state,context)" />
+				</xpath>
 				<!-- <xpath expr="//notebook/page/field/tree/field[@name='price_unit']"
 					position="replace">
 					<field name="price_unit" string="Rate" />
@@ -1037,10 +1041,12 @@
 				<xpath expr="//field[@name='order_line']" position="attributes">
 					<attribute name="attrs">{'readonly':[('state','in',['done','approved','cancel'])]}
 					</attribute>
+					<attribute name="create">0</attribute>
+					<attribute name="delete">0</attribute>
 				</xpath>
 				<xpath expr="//field[@name='order_line']/tree" position="attributes">
-					<attribute name="create">false</attribute>
-					<attribute name="delete">false</attribute>
+					<attribute name="create">0</attribute>
+					<attribute name="delete">0</attribute>
 				</xpath>
 
 				<xpath expr="//field[@name='order_line']/tree/field[@name='product_id']"
@@ -1076,11 +1082,11 @@
 					position="before">
 
 					<field name="packing_charge" attrs="{'readonly':[('state','in',['done','approved','cancel'])]}"/>
-					<field name="packing_tax_id" attrs="{'readonly':[('state','in',['done','approved','cancel'])]}"/>
+<!--					<field name="packing_tax_id" attrs="{'readonly':[('state','in',['done','approved','cancel'])]}"/>-->
 					<field name="loading_tax" attrs="{'readonly':[('state','in',['done','approved','cancel'])]}"/>
-					<field name="loading_tax_id" attrs="{'readonly':[('state','in',['done','approved','cancel'])]}"/>
+<!--					<field name="loading_tax_id" attrs="{'readonly':[('state','in',['done','approved','cancel'])]}"/>-->
 					<field name="transport_cost" attrs="{'readonly':[('state','in',['done','approved','cancel'])]}"/>
-					<field name="transport_cost_tax_id" attrs="{'readonly':[('state','in',['done','approved','cancel'])]}"/>
+<!--					<field name="transport_cost_tax_id" attrs="{'readonly':[('state','in',['done','approved','cancel'])]}"/>-->
 
 				</xpath>
 
@@ -1096,17 +1102,15 @@
 
 				<xpath expr="//notebook/page/group/field[@name='amount_tax']"
 					position="replace">
-					<!--<field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"
-						attrs="{'invisible':['|','|',('sgst_tax','!=',0),('cgst_tax','!=',0),
-						('igst_tax','!=',0)]}"/>-->
+					<field name="tax_amount" readonly="1" widget="monetary" string="Tax"/>
 
 
-					<field name="new_sgst_tax" widget="monetary"
-						attrs="{'invisible':[('new_sgst_tax','=',0)]}"/>
-					<field name="new_cgst_tax" widget="monetary"
-						attrs="{'invisible':[('new_cgst_tax','=',0)]}"/>
-					<field name="new_igst_tax" widget="monetary"
-						attrs="{'invisible':[('new_igst_tax','=',0)]}"/>
+<!--					<field name="new_sgst_tax" widget="monetary"-->
+<!--						attrs="{'invisible':[('new_sgst_tax','=',0)]}"/>-->
+<!--					<field name="new_cgst_tax" widget="monetary"-->
+<!--						attrs="{'invisible':[('new_cgst_tax','=',0)]}"/>-->
+<!--					<field name="new_igst_tax" widget="monetary"-->
+<!--						attrs="{'invisible':[('new_igst_tax','=',0)]}"/>-->
 
 					<field name="other_charge" widget="monetary" attrs="{'readonly':[('state','in',['done','approved','cancel'])]}"/>
 
@@ -1148,16 +1152,26 @@
 						</group>
 					</group>
 				</xpath>
+<!--				<xpath expr="//notebook/page/field[@name='notes']"-->
+<!--					position="attributes">-->
+<!--					<attribute name="attrs">{'readonly':[('state','in', ['done','paid','cancel'])]}</attribute>-->
+<!--					<attribute name="string">Terms &amp; Conditions</attribute>-->
+<!--				</xpath>-->
 				<xpath expr="//notebook/page/field[@name='notes']"
-					position="attributes">
-					<attribute name="attrs">{'readonly':[('state','in', ['done','paid','cancel'])]}</attribute>
-					<attribute name="string">Terms &amp; Conditions</attribute>
-				</xpath>
-				<xpath expr="//notebook/page/field[@name='notes']"
-					position="after">
+					position="replace">
 					<div class="oe_clear"/>
 					<label for="additional_terms" string="Additional terms &amp; Conditions"/>
-							<field name="additional_terms" attrs="{'readonly':[('state','in', ['done','paid','cancel'])]}"/>
+							<field name="additional_terms" readonly="1"/>
+<!--					1	Starting date will be 19-Jan 2021, site working timing is from 7AM to 6PM in-between 1 hour lunch break.-->
+<!--					2	All workers to arrive with required PPE & proper uniform only safety jacket will be provided by us and to ware strictly.-->
+<!--					3	No workers are entertained without our safety vast from Bureau Green.-->
+<!--					4	Site performance check will be done to verify their category and if found unskilled then need to replace with skilled labours as per trade mention in LPO.-->
+<!--					5	Any misbehaviour worker on site will be removed and will be marked absent for that day.-->
+<!--					6	All workers to strictly follow our Engineer, Supervisor, Forman instruction.-->
+
+
+
+<!--							<field name="additional_terms" attrs="{'readonly':[('state','in', ['done','paid','cancel'])]}"/>-->
 				</xpath>
 
 
@@ -1191,8 +1205,9 @@
 					position="replace">
 					new_sub_total
 					<field name="new_sub_total"/>
-					<field name="gst_tax"/>
-					<field name="igst_tax"/>
+<!--					<field name="gst_tax"/>-->
+<!--					<field name="igst_tax"/>-->
+					<field name="tax_amount"/>
 					<field name="total"/>
 				</xpath>
 
@@ -1957,8 +1972,11 @@ same stock location, same pricelist,same GST Rate calculation and same currency 
 
 				</xpath>
 				<xpath expr="//field[@name='website']" position="replace">
-					<field name="sp_code" attrs="{'invisible':[('supplier','!=',True)]}" />
-					<field name="tin_no" attrs="{'invisible':[('supplier','!=',True)]}" />
+					<field name="phone" string="Tel"/>
+					<field name="fax"/>
+
+					<field name="sp_code" string="Vendor ID" attrs="{'invisible':[('supplier','!=',True)]}" />
+<!--					<field name="tin_no" attrs="{'invisible':[('supplier','!=',True)]}" />-->
 					<field name="kara" attrs="{'invisible':[('customer','!=',True)]}" />
 					<field name="desam" attrs="{'invisible':[('customer','!=',True)]}" />
 <!--					<field name="village" attrs="{'invisible':[('customer','!=',True)]}" />-->

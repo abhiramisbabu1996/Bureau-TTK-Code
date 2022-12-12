@@ -1,109 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-		<template id="layout" inherit_id="web.layout" primary="True">
-			<!-- Add report attributes -->
-			<xpath expr="//html" position="attributes">
-				<attribute name="t-att-data-report-margin-top">data_report_margin_top if
-					data_report_margin_top else None
-				</attribute>
-				<attribute name="t-att-data-report-header-spacing">data_report_header_spacing if
-					data_report_header_spacing else None
-				</attribute>
-				<attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else
-					None
-				</attribute>
-			</xpath>
-			<!-- Add report style -->
-			<xpath expr="//head" position="inside">
-				<link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
-				<link href="/website/static/src/css/website.css" rel="stylesheet" />
-				<link href="/web/static/lib/fontawesome/css/font-awesome.css"
-					rel="stylesheet" />
-				<style type="text/css">
-					<t t-call="report.style" />
-				</style>
-			</xpath>
-			<!-- Remove conflicting style -->
-			<xpath expr="//head/link[@href='/web/static/src/css/full.css']"
-				position="replace"></xpath>
-		</template>
+<!--		<template id="layout" inherit_id="web.layout" primary="True">-->
+<!--			&lt;!&ndash; Add report attributes &ndash;&gt;-->
+<!--			<xpath expr="//html" position="attributes">-->
+<!--				<attribute name="t-att-data-report-margin-top">data_report_margin_top if-->
+<!--					data_report_margin_top else None-->
+<!--				</attribute>-->
+<!--				<attribute name="t-att-data-report-header-spacing">data_report_header_spacing if-->
+<!--					data_report_header_spacing else None-->
+<!--				</attribute>-->
+<!--				<attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else-->
+<!--					None-->
+<!--				</attribute>-->
+<!--			</xpath>-->
+<!--			&lt;!&ndash; Add report style &ndash;&gt;-->
+<!--			<xpath expr="//head" position="inside">-->
+<!--				<link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />-->
+<!--				<link href="/website/static/src/css/website.css" rel="stylesheet" />-->
+<!--				<link href="/web/static/lib/fontawesome/css/font-awesome.css"-->
+<!--					rel="stylesheet" />-->
+<!--				<style type="text/css">-->
+<!--					<t t-call="report.style" />-->
+<!--				</style>-->
+<!--			</xpath>-->
+<!--			&lt;!&ndash; Remove conflicting style &ndash;&gt;-->
+<!--			<xpath expr="//head/link[@href='/web/static/src/css/full.css']"-->
+<!--				position="replace"></xpath>-->
+<!--		</template>-->
 
-		<template id="html_container">
-			<t t-set="body_classname" t-value="'container'" />
-			<t t-call="report.layout">
-				<t t-raw="0" />
-			</t>
-		</template>
+<!--		<template id="html_container">-->
+<!--			<t t-set="body_classname" t-value="'container'" />-->
+<!--			<t t-call="report.layout">-->
+<!--				<t t-raw="0" />-->
+<!--			</t>-->
+<!--		</template>-->
 
-		<template id="style">
-			body {
-			color: #000 !important;
-			word-wrap:
-			break-word;
-			}
-			.border-black td {
-			border-top: 1px solid black !important;
-			}
-			.table-condensed > thead > tr > th {
-			border-bottom: 1px solid black
-			!important;
-			}
-			.table-condensed > tbody > tr {
-			page-break-inside: avoid
-			!important;
-			}
-			.zero_min_height {
-			min-height: 0px !important;
-			}
-		</template>
+<!--		<template id="style">-->
+<!--			body {-->
+<!--			color: #000 !important;-->
+<!--			word-wrap:-->
+<!--			break-word;-->
+<!--			}-->
+<!--			.border-black td {-->
+<!--			border-top: 1px solid black !important;-->
+<!--			}-->
+<!--			.table-condensed > thead > tr > th {-->
+<!--			border-bottom: 1px solid black-->
+<!--			!important;-->
+<!--			}-->
+<!--			.table-condensed > tbody > tr {-->
+<!--			page-break-inside: avoid-->
+<!--			!important;-->
+<!--			}-->
+<!--			.zero_min_height {-->
+<!--			min-height: 0px !important;-->
+<!--			}-->
+<!--		</template>-->
 
-		<template id="report.external_layout">
-			<!-- Multicompany -->
-			<t t-if="o and 'company_id' in o">
-				<t t-set="company" t-value="o.company_id"></t>
-			</t>
-			<t t-if="not o or not 'company_id' in o">
-				<t t-set="company" t-value="res_company"></t>
-			</t>
+<!--		<template id="report.external_layout">-->
+<!--			&lt;!&ndash; Multicompany &ndash;&gt;-->
+<!--			<t t-if="o and 'company_id' in o">-->
+<!--				<t t-set="company" t-value="o.company_id"></t>-->
+<!--			</t>-->
+<!--			<t t-if="not o or not 'company_id' in o">-->
+<!--				<t t-set="company" t-value="res_company"></t>-->
+<!--			</t>-->
 
-			<t t-call="report.external_layout_header" />
-			<t t-raw="0" />
-			<t t-call="report.external_layout_footer" />
-		</template>
+<!--			<t t-call="report.external_layout_header" />-->
+<!--			<t t-raw="0" />-->
+<!--			<t t-call="report.external_layout_footer" />-->
+<!--		</template>-->
 
 		<!-- hr { width:100%; height:1px; background: #fff } -->
-		<template id="report.external_layout_header">
-			<div class="header">
-				<!-- <div
-					style="display: block;
-                        height: 1px;
-                        border: 0;
-                        border-bottom: 2px solid #389438;
-                        margin: 1em 0;
-                        padding: 0;
-                        margin-top: -17px;
-                        z-index: 9;
-                        position: relative;">
-				</div>
-				<div class="col-xs-3" style="position:absolute;left:120px;">
-						<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 100px;max-width: 100px;"/>
-					</div>
-				
-				<div
-					style="position:absolute;top:10px;left:260px;max-height: 450px; page-break-inside: avoid; font-size:22px">
-					<h2><center>PALATHRA CONSTRUCTIONS</center></h2>
-					
-				</div>
-				<div class="col-xs-3" style="position:absolute;top:18px;left:820px;font-size:18px">
-						Phone: <span t-esc="company.phone"/>
-					</div>
- -->
-				
-				
-		</div>
+<!--		<template id="report.external_layout_header">-->
+<!--			<div class="header">-->
+<!--				&lt;!&ndash; <div-->
+<!--					style="display: block;-->
+<!--                        height: 1px;-->
+<!--                        border: 0;-->
+<!--                        border-bottom: 2px solid #389438;-->
+<!--                        margin: 1em 0;-->
+<!--                        padding: 0;-->
+<!--                        margin-top: -17px;-->
+<!--                        z-index: 9;-->
+<!--                        position: relative;">-->
+<!--				</div>-->
+<!--				<div class="col-xs-3" style="position:absolute;left:120px;">-->
+<!--						<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 100px;max-width: 100px;"/>-->
+<!--					</div>-->
+<!--				-->
+<!--				<div-->
+<!--					style="position:absolute;top:10px;left:260px;max-height: 450px; page-break-inside: avoid; font-size:22px">-->
+<!--					<h2><center>PALATHRA CONSTRUCTIONS</center></h2>-->
+<!--					-->
+<!--				</div>-->
+<!--				<div class="col-xs-3" style="position:absolute;top:18px;left:820px;font-size:18px">-->
+<!--						Phone: <span t-esc="company.phone"/>-->
+<!--					</div>-->
+<!-- &ndash;&gt;-->
+<!--				-->
+<!--				-->
+<!--		</div>-->
 
-		</template>
+<!--		</template>-->
 
 		<template id="report.external_layout_footer">
 			

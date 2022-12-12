@@ -20,7 +20,7 @@
 									<p style="font-size: 16px;">Company Name - <b><span t-field="o.contract_company_id.name"/> </b></p>
                                     <p style="font-size: 16px;"><b>S.Puram P.O Kurichi, Kottayam - 686532</b></p>
                                     <p style="font-size: 16px;"><b>+91 0481-2432787 , +91 96-45-205076</b></p>
-							 <p style="font-size: 16px;"><b>GST NO:<span t-field="o.contract_company_id.gst_no"/></b></p>
+<!--							 <p style="font-size: 16px;"><b>GST NO:<span t-field="o.contract_company_id.gst_no"/></b></p>-->
 									</div>
 						<div class="page" style="border-color:solid black;border-bottom: 1px solid black;border-right: 1px solid black;border-left: 1px solid black;border-top: 1px solid black;">
 
