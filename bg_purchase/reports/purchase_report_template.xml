@@ -48,9 +48,7 @@
                     <div class="oe_structure"/>
                     <div class="row">
                         <div>
-<!--                             <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>&ndash;&gt;-->
                             <img t-if="o.company_contractor_id.image" t-att-src="'data:image/png;base64,%s' % o.company_contractor_id.image" style="max-height: 70px;"/>
-<!--                            <img t-if="o.company_contractor_id.company_id.logo" t-att-src="'data:image/png;base64,%s' % o.company_contractor_id.company_id.logo" style="max-height: 45px;"/>-->
                         </div>
 
                          <div class="pull-left">
@@ -87,13 +85,33 @@
                                 <span t-field="o.partner_id.name"/>
                             </div>
                             <div>
-                                <span t-field="o.partner_id.street"/><br/>
-                                <span t-field="o.partner_id.street2"/><br/>
-                                <span t-field="o.partner_id.post"/><br/>
-                                <span t-field="o.partner_id.city"/><br/>
-    <!--                            <span t-field="o.partner_id.state_id.name"/>-->
-                                <span t-field="o.partner_id.zip"/><br/>
-    <!--                            <span t-field="o.partner_id.country_id.name"/>-->
+                                <t t-if="o.partner_id.street">
+                                    <span t-esc="o.partner_id.street"/><br/>
+                                </t>
+                                <t t-if="o.partner_id.street2">
+                                    <span t-esc="o.partner_id.street2"/><br/>
+                                </t>
+                                <t t-if="o.partner_id.post">
+                                    <span t-esc="o.partner_id.post"/><br/>
+                                </t>
+                                <t t-if="o.partner_id.city">
+                                    <span t-esc="o.partner_id.city"/><br/>
+                                </t>
+                                <t t-if="o.partner_id.state_id">
+                                    <span t-esc="o.partner_id.state_id.name"/>
+                                </t>
+                                <t t-if="o.partner_id.zip">
+                                    <span t-esc="o.partner_id.zip"/><br/>
+                                </t>
+                                <t t-if="o.partner_id.country_id">
+                                    <span t-esc="o.partner_id.country_id.name"/>
+                                </t>
+                                <t t-if="o.partner_id.fax">
+                                    <span>Fax:</span><t t-esc="o.partner_id.fax"/>
+                                </t>
+                                <t t-if="o.partner_id.phone">
+                                    <span>Tel:</span><t t-esc="o.partner_id.phone"/>
+                                </t>
                             </div>
                             <div>
                                 <td> TRN :</td>
@@ -122,20 +140,24 @@
                                     <span t-field="o.partner_id.responsible_email"/>
                                 </td>
                             </div>
-                           <div>
+                            <div>
                                 <td> Project No:</td>
                                 <td>
-                                    <span t-field="o.project_id.tender_id.tender_no"/>
+                                    <span t-field="o.project_id.project_number"/>
                                 </td>
                             </div>
-                          <div>
+                            <div>
                                 <td> Ref #:</td>
-                              <span>sup#123456</span><br/>
-    <!--                            <td>-->
-    <!--                                <span t-field="o.supplier_invoice_reference"/>-->
-<!--    &lt;!&ndash;                            </td>&ndash;&gt;<br/>-->
+                                <td>
+                                    <span t-field="o.supplier_quotation_reference"/>
+                              </td>
                             </div>
-
+                            <div>
+                                <td> MPR Ref #:</td>
+                                <td>
+                                    <span t-field="o.site_purchase_id.name"/>
+                              </td> <br/>
+                            </div>
                         </div>
                     </div>
                     <div class="row"/>
@@ -193,11 +215,10 @@
                                     <span t-field="line.required_qty"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-field="line.price_unit"/>
+                                    <span t-field="line.received_rate"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-field="line.total"
-                                        t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                    <span t-field="line.new_sub_total"/>
                                 </td>
                             </tr>
                         </tbody>
@@ -208,30 +229,26 @@
                                 <tr>
                                     <td><strong>Subtotal</strong></td>
                                     <td class="text-right">
-                                        <span t-field="o.non_taxable_amount"
-                                            t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                        <span t-esc="o.new_gross_total"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Tax Rate </td>
                                     <td class="text-right">
-                                        <span t-field="o.amount_tax"
-                                            t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                        <span t-field="o.tax_amount"/>
                                     </td>
                                 </tr>
 
                                 <tr class="border-black">
                                     <td><strong>Total Amount</strong></td>
                                     <td class="text-right">
-                                        <span t-esc="o.amount_total+o.discount_amount"
-                                            t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                        <span t-esc="o.amount_total+o.discount_amount"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><strong>Discount</strong></td>
                                     <td class="text-right">
-                                        <span t-field="o.discount_amount"
-                                            t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                        <span t-field="o.discount_amount"/>
                                     </td>
                                 </tr>
                                 <tr class="border-black">

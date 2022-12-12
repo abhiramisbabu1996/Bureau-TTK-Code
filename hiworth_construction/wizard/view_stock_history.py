@@ -52,7 +52,7 @@ class ViewStockHistory(models.TransientModel):
                 browse_site_purchase=site_purchase_model.browse(active)
                 
                 for sites in browse_site_purchase:
-                    for products in sites.req_list:
+                    for products in sites.site_purchase_item_line_ids:
 
                             
                             list_prod.append(products.item_id.id)

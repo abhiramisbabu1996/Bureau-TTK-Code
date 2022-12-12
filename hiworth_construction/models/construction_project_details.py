@@ -447,7 +447,7 @@ class category_items_estimation(models.Model):
 
 class project(models.Model):
     _inherit = "project.project"
-
+    _rec_name = 'project_number'
 
     @api.multi
     def set_open_project(self):
@@ -496,6 +496,7 @@ class project(models.Model):
             }
         }
 
+    project_number = fields.Char()
     company_id = fields.Many2one('res.company', 'Company', required=True)
     estimated_cost = fields.Float(compute='_compute_estimated_cost', store=True, string='Estimated Cost')
     estimated_cost_extra = fields.Float(compute='_compute_estimated_cost_extra', store=True, string='Estimated Cost for Extra Work')
@@ -545,6 +546,14 @@ class project(models.Model):
     estimation_line_ids = fields.One2many('estimation.line', 'project_id')
     plan_line_ids = fields.One2many('line.estimation', 'project_id')
     plan_id = fields.Many2one('master.plan')
+
+    @api.model
+    def create(self, vals):
+        if not vals.get('project_number'):
+            vals['project_number'] = self.env['ir.sequence'].next_by_code('project.project')
+        # seq = self.env['ir.sequence'].next_by_code('project.project')
+        # result['name'] = str('PBA/')+str(self.project_category)+str('/')+seq[:3]+str('/1/')+seq[-4:]
+        return super(project, self).create(vals)
 
     @api.depends('partner_id')
     def _onchange_acc_statement(self):
@@ -1708,9 +1717,12 @@ class purchase_order(models.Model):
 
                 else:
                     non_taxabale +=line.non_taxable_amount
-
+            rec.tax_amount = sum(rec.order_line.mapped('tax_amount'))
             rec.other_charge = other_charge
-            rec.new_gross_total = amount_untaxed + additonal_charge
+            if amount_untaxed >0:
+                rec.new_gross_total = amount_untaxed
+            else:
+                rec.new_gross_total = sum(rec.order_line.mapped('new_sub_total'))
             rec.non_taxable_amount =non_taxabale
     @api.multi
     @api.depends('packing_tax_id','loading_tax_id','transport_cost_tax_id','order_line','packing_charge','loading_tax','transport_cost')
@@ -1899,6 +1911,7 @@ class purchase_order(models.Model):
     other_igst_tax = fields.Float("Other Tax IGST")
     non_taxable_amount = fields.Float(compute='compute_new_gross_total',store=True,string="Non-Taxable Amount")
     new_gross_total = fields.Float(compute='compute_new_gross_total',store=True,string="Gross Total")
+    tax_amount = fields.Float(compute='compute_new_gross_total',store=True,string="Tax")
     amount_total2 = fields.Float(compute="compute_gst", string='Total', store=True, help="The total amount")
     amount_total = fields.Float(compute="compute_gst", string='Total', store=True, help="The total amount")
     invoice_date = fields.Date('Invoice Date')
@@ -3097,7 +3110,7 @@ class purchase_order_line(models.Model):
                         tax_amount += tax.amount
             else:
                 non_tax_amount = line.expected_rate * line.required_qty
-
+            line.tax_amount = tax_amount
             line.non_taxable_amount = non_tax_amount
 
             line.new_sub_total = (line.expected_rate / (1+tax_amount)) * line.required_qty
@@ -3126,6 +3139,7 @@ class purchase_order_line(models.Model):
                 non_taxable = line.new_sub_total
             line.gst_tax = line.new_sub_total*(gst)
             line.igst_tax = line.new_sub_total*(igst)
+            line.tax_amount = line.gst_tax + line.igst_tax
             line.total = line.new_sub_total + line.gst_tax + line.igst_tax
 
 

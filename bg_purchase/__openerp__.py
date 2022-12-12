@@ -11,6 +11,7 @@
     ],
     "images": ["static/image/bg_header.png"],
     'data': [
+        'views/purchase_view.xml',
         'reports/purchase_report_template.xml',
     ],
     'css': [''],

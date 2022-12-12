@@ -188,13 +188,13 @@ class ProjectProject(models.Model):
 
 
 
-	@api.model
-	def create(self, vals):
-		result = super(ProjectProject, self).create(vals)
-		if result['name'] == False: 
-			seq = self.env['ir.sequence'].next_by_code('project.project')
-			result['name'] = str('PBA/')+str(self.project_category)+str('/')+seq[:3]+str('/1/')+seq[-4:]
-		return result
+	# @api.model
+	# def create(self, vals):
+	# 	result = super(ProjectProject, self).create(vals)
+	# 	if result['name'] == False:
+	# 		seq = self.env['ir.sequence'].next_by_code('project.project')
+	# 		result['name'] = str('PBA/')+str(self.project_category)+str('/')+seq[:3]+str('/1/')+seq[-4:]
+	# 	return result
 
 
 	def set_open(self, cr, uid, ids, context=None):
