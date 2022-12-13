@@ -203,14 +203,14 @@
                         <tbody>
                             <tr t-foreach="o.order_line" t-as="line">
                                 <td style='font-size:15px'>
-                                    <span t-esc="sl_no"/>
+                                    <center><span t-esc="sl_no"/></center>
                                 </td>
                                     <t t-set="sl_no" t-value="sl_no+1" />
                                 <td>
                                     <span t-field="line.name"/>
                                 </td>
                                 <td>
-                                    <span t-field="line.product_uom.name"/>
+                                    <center><span t-field="line.product_uom.name"/></center>
                                 </td>
                                 <td class="text-right">
                                     <span t-field="line.required_qty"/>
