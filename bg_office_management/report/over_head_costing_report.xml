@@ -173,10 +173,10 @@
 									        <p t-foreach="docs.get_details()" t-as="line">
 										    <t t-set="grand_total" t-value="line['grand_total']"/>
 									        </p>
-											<t t-set="per_total" t-value="0"/>
-									        <p t-foreach="docs.get_details()" t-as="line">
-										    <t t-set="per_total" t-value="line['per_total']"/>
-									        </p>
+<!--											<t t-set="per_total" t-value="0"/>-->
+<!--									        <p t-foreach="docs.get_details()" t-as="line">-->
+<!--										    <t t-set="per_total" t-value="line['per_total']"/>-->
+<!--									        </p>-->
 
 
 											<t t-foreach="docs.get_details()" t-as="line">
@@ -217,7 +217,7 @@
 <!--											<td></td>-->
 											<td><center><span t-esc="t1"/></center></td>
 											<td><center><span t-esc="t2"/></center></td>
-											<td><center><span t-esc="per_total"/></center></td>
+<!--											<td><center><span t-esc="per_total"/></center></td>-->
 											<td><center><span t-esc="jan"/></center></td>
 											<td><center><span t-esc="feb"/></center></td>
 											<td><center><span t-esc="mar"/></center></td>
