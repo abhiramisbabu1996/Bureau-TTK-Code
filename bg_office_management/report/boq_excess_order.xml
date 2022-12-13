@@ -59,7 +59,7 @@
 							<center><b><h1>Boq Excess Order Report By Qs</h1></b></center><br/>
 
 <!--	                    <span><center><b><h4> <span t-field="o.date_from"/> To <span t-field="o.date_to"/></h4></b></center></span>-->
-	                    <span><center><b><h4> <span t-field="o.project_id.name"/></h4></b></center></span>
+	                    <span><b><h4> <span t-field="o.project_id.name"/></h4></b></span>
 							<t t-set="sl_no" t-value="1" />
 							<t t-set="subtotal" t-value="0" />
 
@@ -68,6 +68,9 @@
 
 									<table>
 										<thead>
+											<tr>
+												<td colspan="11"><b>Actual</b></td>
+										    </tr>
 
 											<tr>
 												<td style="width: 4%;" align="center"><h4><b><center>S# No</center></b></h4></td>
@@ -138,7 +141,7 @@
 
 		<menuitem action="action_boq_excess_report" id="menu_boq_excess_reports_child"
                               name="Boq Excess order"
-                              sequence="5" parent="menu_recurring_expense_reports"/>
+                              sequence="6" parent="menu_recurring_expense_reports"/>
 
     </data>
 </openerp>

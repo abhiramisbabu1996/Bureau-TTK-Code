@@ -1,6 +1,6 @@
 <openerp>
 	<data>
-		<record id="report_paperformat_oh" model="report.paperformat">
+		<record id="report_paperformat_oh1" model="report.paperformat">
 			<field name="name">Landscape</field>
 			<field name="default" eval="True" />
 			<field name="format">A4</field>
@@ -13,37 +13,36 @@
 			<field name="header_spacing">12</field>
 			<field name="dpi">0</field>
 		</record>
-        <record model="ir.ui.view" id="report_overhead_costing_wizard_id">
-			<field name="name">overhead.costing.reports</field>
-			<field name="model">overhead.costing.reports</field>
+        <record model="ir.ui.view" id="report_overhead_project_wizard_id">
+			<field name="name">overhead.project</field>
+			<field name="model">overhead.project</field>
 			<field name="arch" type="xml">
-				<form string="Recurring Expense Report">
+				<form string="Project Overhead Distribution Report">
 					<group col="2">
 						<group>
-							<field name="overhead_category"/>
-							<field name="overhead_sub_category"/>
+							<field name="project_id"/>
 						</group>
 						<group>
 							<field name="month_select"/>
 						</group>
                     </group>
 					<footer>
-						<button name="action_overhead_costing_view" type="object" string="View" class="oe_highlight" />
-						<button name="action_overhead_costing" type="object" string="Print" class="oe_highlight" />
+						<button name="action_overhead_project_view" type="object" string="View" class="oe_highlight" />
+						<button name="action_overhead_project" type="object" string="Print" class="oe_highlight" />
 						<button string="Cancel" class="oe_link" special="cancel"/>
 					</footer>
 				</form>
 			</field>
 		</record>
-<report id="report_overhead_cost_id" string="Overhead Costing By Commercial Report"
-			model="overhead.costing.reports" report_type="qweb-pdf"
-			name="bg_office_management.report_overhead_costing_template"/>
-					<record id="bg_office_management.report_overhead_cost_id" model="ir.actions.report.xml">
-    <field name="paperformat_id" ref="bg_office_management.report_paperformat_oh"/>
+<report id="report_overhead_poh_id" string="Project Overhead Distribution Report"
+			model="overhead.project" report_type="qweb-pdf"
+			name="bg_office_management.report_overhead_project_template"/>
+					<record id="bg_office_management.report_overhead_poh_id" model="ir.actions.report.xml">
+    <field name="paperformat_id" ref="bg_office_management.report_paperformat_oh1"/>
 </record>
 
 <!--	.....TEMPLATE..............................................................................-->
-		<template id="report_overhead_costing_template">
+		<template id="report_overhead_project_template">
 			<style>
              table, th, td {
   border: 1px solid black;
@@ -60,7 +59,7 @@
 					<t t-call="report.external_layout">
 						<div class="page">
 
-							<center><b><h1>Overhead Costing Report By Commercial</h1></b></center><br/>
+							<center><b><h1>Project Overhead Distribution Report</h1></b></center><br/>
 
 <!--	                    <span><center><b><h4> <span t-field="o.date_from"/> To <span t-field="o.date_to"/></h4></b></center></span>-->
 							<t t-set="sl_no" t-value="1" />
@@ -72,18 +71,15 @@
 									<table>
 										<thead>
 											<tr>
-												<td></td>
-												<td></td>
-												<td></td>
-												<td colspan="2"><b>Estimated</b></td>
+
+												<td colspan="4"></td>
                                                 <td colspan="13"><b>Actual</b></td>
 										    </tr>
 											<tr>
 												<td style="width: 4%;" align="center"><h4><b><center>S# No</center></b></h4></td>
-												<td style="width: 10%;" align="center"><h4><b><center>Categories</center></b></h4></td>
-												<td style="width: 10%;" align="center"><h4><b><center>Sub Categories</center></b></h4></td>
-												<td style="width: 10%;" align="center"><h4><b><center>Estimated Total Amount</center></b></h4></td>
-												<td style="width: 10%;" align="center"><h4><b><center>Estimated Amount/Month</center></b></h4></td>
+												<td style="width: 10%;" align="center"><h4><b><center>Project</center></b></h4></td>
+												<td style="width: 10%;" align="center"><h4><b><center>Project Value</center></b></h4></td>
+												<td style="width: 10%;" align="center"><h4><b><center>%Weightage</center></b></h4></td>
 												<td style="width: 10%;" align="center"><h4><b><center>Jan</center></b></h4></td>
 												<td style="width: 10%;" align="center"><h4><b><center>Feb</center></b></h4></td>
 												<td style="width: 10%;" align="center"><h4><b><center>Mar</center></b></h4></td>
@@ -102,12 +98,12 @@
 										<tbody>
 											<t t-set="t1" t-value="0"/>
 									        <p t-foreach="docs.get_details()" t-as="line">
-										    <t t-set="t1" t-value="line['e_total_amount_total']"/>
+										    <t t-set="t1" t-value="line['e_totalproject_value']"/>
 									        </p>
 
 											<t t-set="t2" t-value="0"/>
 									        <p t-foreach="docs.get_details()" t-as="line">
-										    <t t-set="t2" t-value="line['e_amount_month_total']"/>
+										    <t t-set="t2" t-value="line['per_total']"/>
 									        </p>
 
 											<t t-set="jan" t-value="0"/>
@@ -173,10 +169,6 @@
 									        <p t-foreach="docs.get_details()" t-as="line">
 										    <t t-set="grand_total" t-value="line['grand_total']"/>
 									        </p>
-<!--											<t t-set="per_total" t-value="0"/>-->
-<!--									        <p t-foreach="docs.get_details()" t-as="line">-->
-<!--										    <t t-set="per_total" t-value="line['per_total']"/>-->
-<!--									        </p>-->
 
 
 											<t t-foreach="docs.get_details()" t-as="line">
@@ -186,15 +178,13 @@
 															<t t-set="sl_no" t-value="sl_no+1" /></center>
 													</td>
 													<td>
-														<center><span t-esc="line['overhead_category']"/></center>
+														<center><span t-esc="line['project_id']"/></center>
 													</td>
+
 													<td>
-														<center><span t-esc="line['overhead_sub_category']"/></center>
+														<center><span t-esc="line['project_value']"/></center>
 													</td>
-													<td>
-														<center><span t-esc="line['e_total_amount']"/></center>
-													</td>
-													<td><center><span t-esc="line['e_amount_month']"/></center></td>
+													<td><center><span t-esc="line['row_percentage']"/></center></td>
 													<td><center><span t-esc="line['jan']"/></center></td>
 													<td><center><span t-esc="line['feb']"/></center></td>
 													<td><center><span t-esc="line['mar']"/></center></td>
@@ -211,13 +201,12 @@
 												</tr>
 											</t>
 										<tr>
-											<td colspan="3"><b>Total</b></td>
+											<td colspan="2"><b>Total</b></td>
 <!--											<td></td>-->
 <!--											<td></td>-->
 <!--											<td></td>-->
 											<td><center><span t-esc="t1"/></center></td>
 											<td><center><span t-esc="t2"/></center></td>
-<!--											<td><center><span t-esc="per_total"/></center></td>-->
 											<td><center><span t-esc="jan"/></center></td>
 											<td><center><span t-esc="feb"/></center></td>
 											<td><center><span t-esc="mar"/></center></td>
@@ -243,19 +232,19 @@
 </template>
 <!--_____________________________________________________________________________________________________________________-->
 
-		<record id="action_overhead_costing_report" model="ir.actions.act_window">
-					<field name="name">Print Overhead Costing Report</field>
+		<record id="action_project_os" model="ir.actions.act_window">
+					<field name="name">Print Overhead Project Report</field>
 					<field name="type">ir.actions.act_window</field>
-					<field name="res_model">overhead.costing.reports</field>
+					<field name="res_model">overhead.project</field>
 					<field name="target">new</field>
 					<field name="view_type">form</field>
 					<field name="view_mode">form</field>
 		</record>
 
 
-		<menuitem action="action_overhead_costing_report" id="menu_over_head_reports_child"
-                              name="Overhead Costing By Commerce Report"
-                              sequence="1" parent="menu_recurring_expense_reports"/>
+		<menuitem action="action_project_os" id="menu_project_os_child"
+                              name="Project Overhead Distribution Report"
+                              sequence="2" parent="menu_recurring_expense_reports"/>
 
     </data>
 </openerp>

@@ -52,7 +52,7 @@ class ReportRecurringExpense(models.TransientModel):
         if self.overhead_category:
             domain += [('overhead_category', '=', self.overhead_category.id)]
         if self.overhead_sub_category:
-            domain += [('overhead_sub_category', '=', self.overhead_category.id)]
+            domain += [('overhead_sub_category', '=', self.overhead_sub_category.id)]
         if self.name:
             domain += [('name', '=', self.name.id)]
         if self.recurring_period:

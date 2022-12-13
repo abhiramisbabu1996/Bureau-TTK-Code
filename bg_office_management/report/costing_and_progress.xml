@@ -72,6 +72,11 @@
 
 									<table>
 										<thead>
+											<tr>
+
+
+                                                <td colspan="13"><b>Project Summary</b></td>
+										    </tr>
 
 											<tr>
 												<td style="width: 4%;" align="center"><h4><b><center>S# No</center></b></h4></td>
@@ -146,7 +151,7 @@
 
 		<menuitem action="action_costing_commercial_report" id="menu_progress_costing_reports_child"
                               name="Project Costing-Progress Report"
-                              sequence="3" parent="menu_recurring_expense_reports"/>
+                              sequence="4" parent="menu_recurring_expense_reports"/>
 
     </data>
 </openerp>
