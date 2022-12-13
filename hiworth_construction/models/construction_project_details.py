@@ -1645,13 +1645,11 @@ class purchase_order(models.Model):
 
     @api.model
     def create(self,vals):
-
         if vals.get('supplier_ids'):
             vals['name'] =self.env['ir.sequence'].next_by_code('rfq.code')
 
         if vals.get('partner_id'):
             vals.update({'state':'confirmed'})
-            vals['name'] =self.env['ir.sequence'].next_by_code('purchase.order')
         if vals.get('merged_po',False):
             vals.update({'state': 'approved'})
         res = super(purchase_order, self).create(vals)
