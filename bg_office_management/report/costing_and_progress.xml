@@ -72,6 +72,11 @@
 
 									<table>
 										<thead>
+											<tr>
+
+
+                                                <td colspan="13"><b>Project Summary</b></td>
+										    </tr>
 
 											<tr>
 												<td style="width: 4%;" align="center"><h4><b><center>S# No</center></b></h4></td>

@@ -59,7 +59,7 @@
 							<center><b><h1>Boq Estimated Report By Qs</h1></b></center><br/>
 
 <!--	                    <span><center><b><h4> <span t-field="o.date_from"/> To <span t-field="o.date_to"/></h4></b></center></span>-->
-	                    <span><center><b><h4> <span t-field="o.project_id.name"/></h4></b></center></span>
+	                    <span><b><h4> <span t-field="o.project_id.name"/></h4></b></span>
 							<t t-set="sl_no" t-value="1" />
 							<t t-set="subtotal" t-value="0" />
 
@@ -68,6 +68,10 @@
 
 									<table>
 										<thead>
+											<tr>
+												<td colspan="10"><b>Estimated</b></td>
+                                                <td colspan="7"><b>Actual</b></td>
+										    </tr>
 
 											<tr>
 												<td style="width: 4%;" align="center"><h4><b><center>S# No</center></b></h4></td>
@@ -81,12 +85,12 @@
 												<td style="width: 10%;" align="center"><h4><b><center>Unit Cost</center></b></h4></td>
 												<td style="width: 10%;" align="center"><h4><b><center>Total Cost</center></b></h4></td>
 
-												<td style="width: 10%;" align="center"><h4><b><center>Actual Quantity</center></b></h4></td>
-												<td style="width: 10%;" align="center"><h4><b><center>Actual Unit</center></b></h4></td>
+												<td style="width: 10%;" align="center"><h4><b><center>Quantity</center></b></h4></td>
+												<td style="width: 10%;" align="center"><h4><b><center>Unit</center></b></h4></td>
 												<td style="width: 10%;" align="center"><h4><b><center>Difference</center></b></h4></td>
 												<td style="width: 10%;" align="center"><h4><b><center>%Quantity</center></b></h4></td>
-												<td style="width: 10%;" align="center"><h4><b><center>Actual Unit Cost</center></b></h4></td>
-												<td style="width: 10%;" align="center"><h4><b><center>Actual Total Cost</center></b></h4></td>
+												<td style="width: 10%;" align="center"><h4><b><center>Unit Cost</center></b></h4></td>
+												<td style="width: 10%;" align="center"><h4><b><center>Total Cost</center></b></h4></td>
 												<td style="width: 10%;" align="center"><h4><b><center>%Cost</center></b></h4></td>
 											</tr>
 										</thead>
