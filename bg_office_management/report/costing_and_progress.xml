@@ -122,11 +122,11 @@
 													<td>
 														<center><span t-esc="line['perce_man_hrs_consumed']"/></center>
 													</td>
-													<td><span t-esc="line['estimated_mate_cost']"/></td>
-													<td><span t-esc="line['purchase_mat_cost']"/></td>
-													<td><span t-esc="line['per_mat_purchased']"/></td>
-													<td><span t-esc="line['per_progress']"/></td>
-													<td><span t-esc="line['per_productivity']"/></td>
+													<td><center><span t-esc="line['estimated_mate_cost']"/></center></td>
+													<td><center><span t-esc="line['purchase_mat_cost']"/></center></td>
+													<td><center><span t-esc="line['per_mat_purchased']"/></center></td>
+													<td><center><span t-esc="line['per_progress']"/></center></td>
+													<td><center><span t-esc="line['per_productivity']"/></center></td>
 												</tr>
 											</t>
 										</tbody>

@@ -74,8 +74,8 @@
 									<table>
 										<thead>
 											<tr>
-												<td colspan="8"><b>Estimated</b></td>
-                                                <td colspan="3"><b>Actual</b></td>
+												<td colspan="8"><center><b>Estimated</b></center></td>
+                                                <td colspan="3"><center><b>Actual Till Date</b></center></td>
 										    </tr>
 
 
@@ -100,7 +100,7 @@
 														<center><span t-esc="sl_no" />
 															<t t-set="sl_no" t-value="sl_no+1" /></center>
 													</td>
-                                                    <td><span t-esc="line['construction_activities']"/></td>
+													<td><center><span t-esc="line['construction_activities']"/></center></td>
 													<td>
 														<center><span t-esc="line['project_id']"/></center>
 													</td>
@@ -122,8 +122,8 @@
 													<td>
 														<center><span t-esc="line['total_manhours_required']"/></center>
 													</td>
-													<td><span t-esc="line['difference']"/></td>
-													<td><span t-esc="line['per_used']"/></td>
+													<td><center><span t-esc="line['difference']"/></center></td>
+													<td><center><span t-esc="line['per_used']"/></center></td>
 												</tr>
 											</t>
 										</tbody>

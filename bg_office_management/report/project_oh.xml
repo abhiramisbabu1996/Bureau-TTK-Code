@@ -73,7 +73,7 @@
 											<tr>
 
 												<td colspan="4"></td>
-                                                <td colspan="13"><b>Actual</b></td>
+                                                <td colspan="13"><center><b>Actual</b></center></td>
 										    </tr>
 											<tr>
 												<td style="width: 4%;" align="center"><h4><b><center>S# No</center></b></h4></td>
@@ -201,25 +201,25 @@
 												</tr>
 											</t>
 										<tr>
-											<td colspan="2"><b>Total</b></td>
+											<td colspan="2"><center><b>Total</b></center></td>
 <!--											<td></td>-->
 <!--											<td></td>-->
 <!--											<td></td>-->
-											<td><center><span t-esc="t1"/></center></td>
-											<td><center><span t-esc="t2"/></center></td>
-											<td><center><span t-esc="jan"/></center></td>
-											<td><center><span t-esc="feb"/></center></td>
-											<td><center><span t-esc="mar"/></center></td>
-											<td><center><span t-esc="apr"/></center></td>
-											<td><center><span t-esc="may"/></center></td>
-											<td><center><span t-esc="june"/></center></td>
-											<td><center><span t-esc="july"/></center></td>
-											<td><center><span t-esc="aug"/></center></td>
-											<td><center><span t-esc="sep"/></center></td>
-											<td><center><span t-esc="oct"/></center></td>
-											<td><center><span t-esc="nov"/></center></td>
-											<td><center><span t-esc="dec"/></center></td>
-											<td><center><span t-esc="grand_total"/></center></td>
+											<td><center><b><span t-esc="t1"/></b></center></td>
+											<td><center><b><span t-esc="t2"/></b></center></td>
+											<td><center><b><span t-esc="jan"/></b></center></td>
+											<td><center><b><span t-esc="feb"/></b></center></td>
+											<td><center><b><span t-esc="mar"/></b></center></td>
+											<td><center><b><span t-esc="apr"/></b></center></td>
+											<td><center><b><span t-esc="may"/></b></center></td>
+											<td><center><b><span t-esc="june"/></b></center></td>
+											<td><center><b><span t-esc="july"/></b></center></td>
+											<td><center><b><span t-esc="aug"/></b></center></td>
+											<td><center><b><span t-esc="sep"/></b></center></td>
+											<td><center><b><span t-esc="oct"/></b></center></td>
+											<td><center><b><span t-esc="nov"/></b></center></td>
+											<td><center><b><span t-esc="dec"/></b></center></td>
+											<td><center><b><span t-esc="grand_total"/></b></center></td>
 										</tr>
 										</tbody>
 									</table>

@@ -69,8 +69,8 @@
 									<table>
 										<thead>
 											<tr>
-												<td colspan="10"><b>Estimated</b></td>
-                                                <td colspan="7"><b>Actual</b></td>
+												<td colspan="10"><center><b>Estimated</b></center></td>
+                                                <td colspan="7"><center><b>Actual</b></center></td>
 										    </tr>
 
 											<tr>
@@ -101,7 +101,7 @@
 														<center><span t-esc="sl_no" />
 															<t t-set="sl_no" t-value="sl_no+1" /></center>
 													</td>
-                                                    <td><span t-esc="line['category']"/></td>
+													<td><center><span t-esc="line['category']"/></center></td>
 													<td>
 														<center><span t-esc="line['sub_category']"/></center>
 													</td>
@@ -123,14 +123,14 @@
 													<td>
 														<center><span t-esc="line['unit_cost']"/></center>
 													</td>
-													<td><span t-esc="line['total_cost']"/></td>
-													<td><span t-esc="line['a_quantity']"/></td>
-													<td><span t-esc="line['a_unit']"/></td>
-													<td><span t-esc="line['difference']"/></td>
-													<td><span t-esc="line['per_qty']"/></td>
-													<td><span t-esc="line['a_unit_cost']"/></td>
-													<td><span t-esc="line['a_total_cost']"/></td>
-													<td><span t-esc="line['per_cost']"/></td>
+													<td><center><span t-esc="line['total_cost']"/></center></td>
+													<td><center><span t-esc="line['a_quantity']"/></center></td>
+													<td><center><span t-esc="line['a_unit']"/></center></td>
+													<td><center><span t-esc="line['difference']"/></center></td>
+													<td><center><span t-esc="line['per_qty']"/></center></td>
+													<td><center><span t-esc="line['a_unit_cost']"/></center></td>
+													<td><center><span t-esc="line['a_total_cost']"/></center></td>
+													<td><center><span t-esc="line['per_cost']"/></center></td>
 												</tr>
 											</t>
 										</tbody>
