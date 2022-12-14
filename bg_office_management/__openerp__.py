@@ -15,6 +15,8 @@
         'views/boq_estimated_by_qs.xml',
         'views/boq_excess_order_by_qs.xml',
         'views/work_hours_planned_by_qs.xml',
+        'views/marketing.xml',
+        'views/marketing_work_sub_plan.xml',
         'report/report_recurring_expense.xml',
         'report/over_head_costing_report.xml',
         'report/costing_and_progress.xml',
