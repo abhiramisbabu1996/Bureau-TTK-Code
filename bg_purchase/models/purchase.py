@@ -9,9 +9,10 @@ class PurchaseOrder(models.Model):
 
     @api.model
     def create(self, vals):
-        sequence =  self.env['ir.sequence'].next_by_code('purchase.order').split('/')
-        project_number = self.env['project.project'].browse(vals.get('project_id')).project_number.split('-')
+        sequence = self.env['ir.sequence'].next_by_code('purchase.order').split('/')
+        project_number = self.env['project.project'].browse(vals.get('project_id')).project_number
         if project_number:
+            project_number = project_number.split('-')
             name = sequence[0]+"/"+sequence[1]+"/"+project_number[1]+"/"+sequence[2]
         else:
             name = sequence
