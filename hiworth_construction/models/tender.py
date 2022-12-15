@@ -214,21 +214,21 @@ class HiworthTender(models.Model):
 
 	@api.onchange('line_ids')
 	def set_contractor(self):
-		print "function"
+		print("function")
 		for rec in self:
 			for x in rec.line_ids:
 				if x.s_check :
-					print "checked"
-					print x.partner_id.id , rec.contractor_id1.id
+					print("checked")
+					print (x.partner_id.id , rec.contractor_id1.id)
 					rec.contractor_id1 = x.partner_id.id
 
 	@api.constrains('line_ids')
 	def _check_contractor(self):
 		for rec in self:
-			print "check num"
+			# print "check num"
 			search_obj = self.env['unattended.tender.line'].search(
 				[('hiworth_tender_id', '=', rec.id), ('s_check', '=', True)])
-			print "ppppppppppppppppppppppppppppppppppppppppp", len(search_obj.ids)
+			# print "ppppppppppppppppppppppppppppppppppppppppp", len(search_obj.ids)
 			if len(search_obj.ids) > 1:
 				raise exceptions.ValidationError("Not more than one contractor is to be selected")
 
@@ -243,7 +243,7 @@ class HiworthTender(models.Model):
 	@api.onchange('postponed_date')
 	def _check_postponed_date(self):
 		for record in self:
-			print record.postponed_date,record.creation_date
+			# print record.postponed_date,record.creation_date
 			if record.postponed_date:
 				if record.postponed_date < record.creation_date :
 					raise exceptions.ValidationError("Postponed date of tender should be greater than the Date of creation")
@@ -326,7 +326,7 @@ class HiworthTender(models.Model):
 		for record in self:
 			amount = 0
 			collateral = self.env['hiworth.collateral'].search([('date','<=', record.bg_date),('bank_id','=', record.fd_payment_mode.id)],order='date desc', limit=1)
-			print 'chck@--------------------------', collateral, record.fd_payment_mode.limit
+			# print 'chck@--------------------------', collateral, record.fd_payment_mode.limit
 			if collateral:
 				# print '1---------'
 				record.available_collateral = collateral.balance
@@ -362,7 +362,7 @@ class HiworthTender(models.Model):
 		
 	@api.multi
 	def button_cancel_initial(self):
-		print "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
+		# print "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
 		self.initial_state = 'cancel'
 	
 	@api.multi
@@ -456,7 +456,7 @@ class HiworthTender(models.Model):
 	@api.multi
 	def button_receive_selection(self):
 		self.state = 'selected'
-		print 'ooooooo-----------', self.notice_received_date
+		# print 'ooooooo-----------', self.notice_received_date
 		if self.notice_received_date == False:
 			raise osv.except_osv(_('Error!'),_("Please enter selection notice received date"))
 		
@@ -722,7 +722,7 @@ class Tender_bg_release(models.TransientModel):
 											})
 		collateral._compute_collateral_balance()
 		collateral.state = 'approve'
-		print 'asassasas-------------------11'
+		# print 'asassasas-------------------11'
 		self.tender_id.bg_boolean = True
 		self.tender_id.release_bg = self.bg_amount
 		self.tender_id.release_bg_date = self.date
@@ -731,13 +731,13 @@ class Tender_bg_release(models.TransientModel):
 		move = self.env['account.move']
 		move_line = self.env['account.move.line']
 		
-		print 'asassasas-------------------21', self.tender_id.fd_payment_mode.journal_id.id, self.date, self.id
+		# print 'asassasas-------------------21', self.tender_id.fd_payment_mode.journal_id.id, self.date, self.id
 		move_id = move.create({
 							'journal_id': self.tender_id.fd_payment_mode.journal_id.id,
 							'date': datetime.now(),
 							'tender_id': self.tender_id.id
 							})
-		print 'asassasas-------------------22'
+		# print 'asassasas-------------------22'
 		
 		line_id = move_line.create({
 								'account_id': self.account_id.id,
@@ -747,7 +747,7 @@ class Tender_bg_release(models.TransientModel):
 								'move_id': move_id.id,
 								})
 			
-		print 'asassasas-------------------23'
+		# print 'asassasas-------------------23'
 		line_id = move_line.create({
 								'account_id': self.tender_id.fd_payment_mode.journal_id.default_debit_account_id.id,
 								'name': 'Released FD Amount',
@@ -756,7 +756,7 @@ class Tender_bg_release(models.TransientModel):
 								'move_id': move_id.id,
 								})
 		move_id.button_validate()
-		print 'asassasas-------------------33'
+		# print 'asassasas-------------------33'
 
 		if self.tender_id.emd_boolean == True and self.tender_id.bg_boolean == True and self.tender_id.cs_boolean == True and self.tender_id.ps_boolean == True:
 			self.tender_id.state = 'closed'
@@ -809,7 +809,7 @@ class Tender_cs_release(models.TransientModel):
 								'move_id': move_id1.id,
 								})
 		move_id1.button_validate()
-		print 'asassasas-------------------00000'
+		# print 'asassasas-------------------00000'
 		if self.tender_id.emd_boolean == True and self.tender_id.bg_boolean == True and self.tender_id.cs_boolean == True and self.tender_id.ps_boolean == True:
 			self.tender_id.state = 'closed'
 
@@ -1035,7 +1035,7 @@ class HiworthTenderEMD(models.Model):
 		line_id = move_line.create(values)
 		move_id.button_validate()
 		self.tender_id.create_tender_code()
-		print "=-=-=-=-=-=-=-==-=-=--2222"
+		# print "=-=-=-=-=-=-=-==-=-=--2222"
 
 	@api.multi
 	def button_cancel(self):
@@ -1064,10 +1064,10 @@ class HiworthTenderEMD(models.TransientModel):
 
 	@api.multi
 	def button_confirm(self):
-		print 'self.tender_id.state-----------',self.tender_id.state
+		# print 'self.tender_id.state-----------',self.tender_id.state
 		if self.tender_id.state == 'rejected':
 			self.tender_id.state = 'closed'
-			print 'self.tender_id.state1111-----------',self.tender_id.state
+			# print 'self.tender_id.state1111-----------',self.tender_id.state
 
 		self.tender_id.emd_boolean = True
 		# self.tender_id.state = 'closed'
@@ -1292,7 +1292,7 @@ class SecurityDepositForm(models.Model):
 		self.work_id.perf_security_period = self.perf_security_period
 		self.work_id.perf_security_number = self.perf_security_number
 		self.work_id.remarks = self.remarks
-		print 'test0-----------------------------'
+		# print 'test0-----------------------------'
 
 
 		collateral = self.env['hiworth.collateral'].create({
@@ -1314,7 +1314,7 @@ class SecurityDepositForm(models.Model):
 		collateral._compute_collateral_balance()
 		collateral.state = 'approve'
 
-		print 'test1-----------------------------'
+		# print 'test1-----------------------------'
 
 		move = self.env['account.move']
 		move_line = self.env['account.move.line']
@@ -1327,7 +1327,7 @@ class SecurityDepositForm(models.Model):
 								'tender_id': self.work_id.id
 								})
 			
-			print 'test11-----------------------------'
+			# print 'test11-----------------------------'
 			line_id = move_line.create({
 									'account_id': self.fd_account.id,
 									'name': 'FD Amount',
@@ -1336,7 +1336,7 @@ class SecurityDepositForm(models.Model):
 									'move_id': move_id.id,
 									'status': 'draft'
 									})
-			print 'test22-----------------------------'
+			# print 'test22-----------------------------'
 				
 			line_id = move_line.create({
 									'account_id': self.fd_payment_mode.journal_id.default_credit_account_id.id,
@@ -1346,9 +1346,9 @@ class SecurityDepositForm(models.Model):
 									'move_id': move_id.id,
 									'status': 'draft'
 									})
-			print 'test33-----------------------------'
+			# print 'test33-----------------------------'
 			move_id.button_validate()
-			print 'test2-----------------------------'
+			# print 'test2-----------------------------'
 		# Common Security
 
 		if self.com_security_amount != 0:
@@ -1379,7 +1379,7 @@ class SecurityDepositForm(models.Model):
 									})
 			move_id1.button_validate()
 
-		print 'test3-----------------------------'
+		# print 'test3-----------------------------'
 		# Performance Security
 		# if self.status == 'below' and self.performance_security_amount != 0:
 		if self.performance_security_amount != 0:
@@ -1437,7 +1437,7 @@ class SecurityDepositForm(models.Model):
 
 			else:
 				pass
-		print 'test4-----------------------------'
+		# print 'test4-----------------------------'
 
 
 
@@ -1447,7 +1447,7 @@ class SecurityDepositForm(models.Model):
 		for record in self:
 			amount = 0
 			collateral = self.env['hiworth.collateral'].search([('date','<=', record.bg_date),('bank_id','=', record.fd_payment_mode.id)],order='date desc', limit=1)
-			print 'chck@--------------------------', collateral, record.fd_payment_mode.limit
+			# print 'chck@--------------------------', collateral, record.fd_payment_mode.limit
 			if collateral:
 				# print '1---------'
 				record.available_collateral = collateral.balance
@@ -1553,11 +1553,11 @@ class HiworthCollateral(models.Model):
 			debit = 0
 			credit = 0
 			collateral = self.env['hiworth.collateral'].search([('bank_id','=',record.bank_id.id)])
-			print 'collateral-------------------------', collateral
+			# print 'collateral-------------------------', collateral
 			for col_id in collateral:
 				debit += col_id.debit
 				credit += col_id.credit
-			print 'bal-----------------------------------', debit, credit, record.limit
+			# print 'bal-----------------------------------', debit, credit, record.limit
 			record.balance = record.limit + (debit - credit)
 
 	# @api.multi
@@ -1615,8 +1615,8 @@ class ResPartnerBankType(models.Model):
 	@api.multi
 	def unlink(self):
 		for rec in self:
-			print 'qqqqqqqqqqqqq--------------------------------',rec.id
-			print 'qqqqqqqqqqqqq--------------------------------', self.env.ref('hiworth_construction.bank_account_type_od').id
+			# print 'qqqqqqqqqqqqq--------------------------------',rec.id
+			# print 'qqqqqqqqqqqqq--------------------------------', self.env.ref('hiworth_construction.bank_account_type_od').id
 			if self.env.ref('hiworth_construction.bank_account_type_od').id == rec.id:
 				raise osv.except_osv(_('Error!'),_("You have no permission to delete OD Account"))
 			elif self.env.ref('hiworth_construction.bank_account_type_current').id == rec.id:
@@ -1838,7 +1838,7 @@ class BankGuranteeDetails(models.Model):
 		
 		
 		
-		print 'test1-----------------------------'
+		# print 'test1-----------------------------'
 		
 		move = self.env['account.move']
 		move_line = self.env['account.move.line']
@@ -1851,7 +1851,7 @@ class BankGuranteeDetails(models.Model):
 
 			})
 			
-			print 'test11-----------------------------'
+			# print 'test11-----------------------------'
 			line_id = move_line.create({
 				'account_id': self.fd_account.id,
 				'name': 'FD Amount',
@@ -1860,7 +1860,7 @@ class BankGuranteeDetails(models.Model):
 				'move_id': move_id.id,
 				'status': 'draft'
 			})
-			print 'test22-----------------------------'
+			# print 'test22-----------------------------'
 			
 			line_id = move_line.create({
 				'account_id': self.fd_payment_mode.journal_id.default_credit_account_id.id,
@@ -1870,9 +1870,9 @@ class BankGuranteeDetails(models.Model):
 				'move_id': move_id.id,
 				'status': 'draft'
 			})
-			print 'test33-----------------------------'
+			# print 'test33-----------------------------'
 			move_id.button_validate()
-			print 'test2-----------------------------'
+			# print 'test2-----------------------------'
 			self.state='submit'
 	
 	@api.multi
