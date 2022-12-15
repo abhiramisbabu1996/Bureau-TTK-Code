@@ -56,7 +56,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form,kanban</field>
 		</record>
-				<menuitem id="overhead_costing" name="Overhead Costing" parent="hiworth_project_management.menu_office_management" sequence="1" />
+				<menuitem id="overhead_costing" name="Overhead Costing" parent="hiworth_project_management.menu_office_management" sequence="2" />
 				<menuitem id="overhead_costing_by_commercial" name="Overhead Costing By Commercial" parent="overhead_costing" action="action_overhead_costing_by_commercial"/>
     </data>
 </openerp>

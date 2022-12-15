@@ -17,6 +17,7 @@
         'views/work_hours_planned_by_qs.xml',
         'views/marketing.xml',
         'views/marketing_work_sub_plan.xml',
+        # 'views/document_collection.xml',
         'report/report_recurring_expense.xml',
         'report/over_head_costing_report.xml',
         'report/costing_and_progress.xml',

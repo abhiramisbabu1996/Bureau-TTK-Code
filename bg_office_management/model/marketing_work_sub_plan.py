@@ -24,19 +24,20 @@ class BgWorkPlans(models.Model):
     appro_finish_date = fields.Date('Approximate Finish Date')
     duration = fields.Integer('Duration Days')
     site_engineer = fields.Many2one('hr.employee', 'Site Engineer')
+    file_loc = fields.Char('File Location')
 
 
 class BgWorkSubPlan(models.Model):
     _name = 'work.submission.plan'
     _rec_name = 'project'
 
-    name = fields.Char('Planning/Programme')
-    project = fields.Many2one('project.project', 'Project')
+    project = fields.Char('Project')
+    # project = fields.Many2one('project.project', 'Project')
     location = fields.Char('Place/Location')
     sqft = fields.Float('Square Feet')
     no_floors = fields.Integer('No floors')
     work_start_date = fields.Date('Work Start Date')
-    work_completeion_date = fields.Date('Work Completion Date')
+    work_completeion_date = fields.Date('Work Submission Date')
     work_agreement_date = fields.Date('Work Agreement Date')
     work_target_date = fields.Date('Work Target Date')
     work_plan_ids = fields.One2many(

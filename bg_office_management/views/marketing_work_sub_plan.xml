@@ -6,7 +6,7 @@
             <field name="model">work.submission.plan</field>
             <field name="arch" type="xml">
                 <tree string="Work Submission Plan">
-                    <field name="name"/>
+<!--                    <field name="name"/>-->
                     <field name="project"/>
                     <field name="location"/>
                     <field name="sqft"/>
@@ -26,7 +26,7 @@
 					<h1><center>Work Submission Plans</center></h1><br></br><br></br>
 					<group col="2">
 						<group>
-							<field name="name"/>
+<!--							<field name="name"/>-->
                             <field name="project"/>
                             <field name="location"/>
                             <field name="sqft"/>
@@ -45,14 +45,15 @@
                                     <tree editable="bottom">
                                         <field name="nature"/>
                                         <field name="work_description"/>
-                                        <field name="start_date"/>
-                                        <field name="appro_finish_date"/>
-                                        <field name="duration"/>
-                                        <field name="sqft"/>
-                                        <field name="machines"/>
-                                        <field name="materials"/>
-                                        <field name="sub_contractor"/>
-                                        <field name="site_engineer"/>
+<!--                                        <field name="start_date"/>-->
+<!--                                        <field name="appro_finish_date"/>-->
+<!--                                        <field name="duration"/>-->
+<!--                                        <field name="sqft"/>-->
+<!--                                        <field name="machines"/>-->
+<!--                                        <field name="materials"/>-->
+<!--                                        <field name="sub_contractor"/>-->
+<!--                                        <field name="site_engineer"/>-->
+                                        <field name="file_loc"/>
                                         <field name="remarks"/>
                                     </tree>
                                 </field>
@@ -67,6 +68,6 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form,kanban</field>
 		</record>
-        <menuitem action="action_work_sub_plans_id" id="work_sub_plan_id_child" name="Work Submission Plan" parent="site_visit_parent_id" sequence="2"/>
+        <menuitem action="action_work_sub_plans_id" id="work_sub_plan_id_child" name="Work Submission Plan" parent="site_visit_parent_id" sequence="3"/>
     </data>
 </openerp>

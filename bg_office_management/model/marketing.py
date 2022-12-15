@@ -28,7 +28,9 @@ class BgMarketingSiteVisitEntry(models.Model):
     _name = 'site.visit.entry'
     _rec_name = 'project'
 
-    project = fields.Many2one('project.project', 'Project Name')
+    # project = fields.Many2one('project.project', 'Project Name')
+    project = fields.Char('Project')
+    location = fields.Char('Location')
     creation_date = fields.Date('Creation Date')
     site_visit_ids = fields.One2many(
         comodel_name='site.visit',

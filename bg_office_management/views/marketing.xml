@@ -7,6 +7,7 @@
             <field name="arch" type="xml">
                 <tree string="Site Visits">
                     <field name="project"/>
+                    <field name="location"/>
                     <field name="creation_date"/>
                 </tree>
             </field>
@@ -21,6 +22,7 @@
 					<group col="2">
 						<group>
 							<field name="project"/>
+							<field name="location"/>
 						</group>
 						<group>
                             <field name="creation_date"/>
@@ -50,7 +52,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form,kanban</field>
 		</record>
-        <menuitem id="site_visit_parent_id" name="Marketing" parent="hiworth_project_management.menu_office_management"/>
+        <menuitem id="site_visit_parent_id" name="Marketing" parent="hiworth_project_management.menu_office_management" sequence="1"/>
         <menuitem action="action_site_visits" id="site_visit_id_child" name="Site Visit Details" parent="site_visit_parent_id" sequence="1"/>
     </data>
 </openerp>
