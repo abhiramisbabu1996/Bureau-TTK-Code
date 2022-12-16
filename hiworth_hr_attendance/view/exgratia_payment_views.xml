@@ -131,7 +131,7 @@
 
         <record id="action_holiday_working_hiworth_form_view" model="ir.actions.act_window.view">
             <field name="view_mode">form</field>
-            <field name="view_id" ref="hiworthexgratia_payment_form_holiday" />
+            <field name="view_id" ref="exgratia_payment_form_holiday" />
             <field name="act_window_id" ref="action_holiday_working_days" />
         </record>
 
