@@ -40,7 +40,36 @@
 <!--            </field>-->
 <!--        </record>-->
 
-                <record id="exgratia_payment_form" model="ir.ui.view">
+        <record id="exgratia_payment_form" model="ir.ui.view">
+            <field name="name">Exgratia Payment</field>
+            <field name="model">exgratia.payment</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form string="Exgratia" create="false">
+                	<header>
+                         <button name="action_cancel" states='draft,new' string="Cancel" type="object" class="oe_highlight"/>
+                        <button name="action_set_draft" string="Set to New" states='cancel' type="object" class="oe_highlight"/>
+                        <field name="state" widget="statusbar"/>
+
+                	</header>
+                	<sheet>
+                	<group col="4">
+                        <field name="employee_id" options="{'no_create':True}" attrs="{'readonly':[('state','in',['paid','cancel','new'])]}"/>
+                        <field name="date" attrs="{'readonly':[('state','in',['paid','cancel','new'])]}"/>
+
+                    </group>
+                        <group col="4">
+                            <field name="hours" required="1" attrs="{'readonly':[('state','in',['paid','cancel','new'])]}"/>
+                            <field name="remarks" attrs="{'readonly':[('state','in',['paid','cancel'])]}"/>
+                        </group>
+                    </sheet>
+
+                </form>
+            </field>
+        </record>
+
+
+        <record id="exgratia_payment_form_holiday" model="ir.ui.view">
             <field name="name">Exgratia Payment</field>
             <field name="model">exgratia.payment</field>
             <field name="arch" type="xml">
@@ -58,7 +87,7 @@
 
                     </group>
                         <group col="4">
-                            <field name="hours" attrs="{'readonly':[('state','in',['paid','cancel','new'])]}"/>
+                            <field name="attendance" required="1" attrs="{'readonly':[('state','in',['paid','cancel','new'])]}"/>
                             <field name="remarks" attrs="{'readonly':[('state','in',['paid','cancel'])]}"/>
                         </group>
                     </sheet>
@@ -82,7 +111,7 @@
             </field>
         </record>
 
-           <record id="exgratia_payment_action" model="ir.actions.act_window">
+        <record id="exgratia_payment_action" model="ir.actions.act_window">
             <field name="name">Exgratia Payment</field>
             <field name="res_model">exgratia.payment</field>
             <field name="view_mode">tree,form</field>
@@ -91,6 +120,20 @@
             <field name="view_id" ref="exgratia_payment_tree" />
         </record>
 
+        <record id="action_holiday_working_days" model="ir.actions.act_window">
+            <field name="name">Exgratia Payment</field>
+            <field name="res_model">exgratia.payment</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="target">current</field>
+            <field name="view_id" ref="exgratia_payment_form_holiday"/>
+        </record>
+
+        <record id="action_holiday_working_hiworth_form_view" model="ir.actions.act_window.view">
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="hiworthexgratia_payment_form_holiday" />
+            <field name="act_window_id" ref="action_holiday_working_days" />
+        </record>
 
 
 
@@ -100,6 +143,13 @@
                   parent="hiworth_hr_attendance.menu_attendance"
                   sequence="3"
                   action="exgratia_payment_action"
+                  groups="base.group_erp_manager,group_hr"/>
+
+        <menuitem name="Holiday Working attendance"
+                  id="menu_exgratia_holiday"
+                  parent="hiworth_hr_attendance.menu_attendance"
+                  sequence="3"
+                  action="action_holiday_working_days"
                   groups="base.group_erp_manager,group_hr"/>
     </data>
 </openerp>

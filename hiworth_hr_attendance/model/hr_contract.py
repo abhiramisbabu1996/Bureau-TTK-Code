@@ -17,16 +17,17 @@ class ContractSalaryRule(models.Model):
     ], 'Percentage based on')
     account_id = fields.Many2one('account.account', 'Related Account')
     contract_id = fields.Many2one('hr.contract', 'Contract')
-    amount = fields.Float('Amount', compute="amount_compute")
+    amount = fields.Float('Amount')
+    # amount = fields.Float('Amount', compute="amount_compute", inverse="compute_inverse_amount",readonly=False)
     amount_percentage = fields.Float('Percentage(%)')
     related_type = fields.Selection('Rule Process Type', related='rule_id.related_type')
     amount_select = fields.Selection([
         ('fix', 'Fixed'),
         ('percentage', 'Percentage'),
-        # ('manual','Manual'),
+        ('code','Code'),
     ], 'Amount Type')
     is_related = fields.Boolean('Is related to any daily activities', default=False)
-    rule_type = fields.Selection([('Earning', 'Earning'), ('Deduction', 'Deduction')], 'Salary Type')
+    rule_type = fields.Selection([('gross', 'Gross'),('net', 'Net'),('Earning', 'Earning'), ('Deduction', 'Deduction')], 'Salary Type')
     # related_type = fields.Selection([('canteen','canteen')], 'Related Process')
     per_day_amount = fields.Float('Per Day Amount')
     employer_amt_paid_by = fields.Selection([('employer', 'Paid by employer'),
@@ -44,7 +45,7 @@ class ContractSalaryRule(models.Model):
     # amount_python_compute = fields.Text('Python Code')
     # amount_percentage_base = fields.Char('Percentage based on')
     # quantity = fields.Char('Quantity')
-    code = fields.Char('Code', size=64, required=True, )
+    code = fields.Char('Code', size=64)
 
     @api.depends('amount_fix', 'amount_percentage')
     def amount_compute(self):

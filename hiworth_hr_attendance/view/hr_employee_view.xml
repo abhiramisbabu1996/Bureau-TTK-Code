@@ -338,42 +338,78 @@
             <field name="month" required="1" attrs="{'readonly':[('state','not in',['draft','verify'])]}"/>
           </xpath>
           <xpath expr="//group/div/field[@name='date_from']" position="attributes">
-            <attribute name="readonly">0</attribute>
-              <attribute name="force_save">1</attribute>
+                <attribute name="readonly">0</attribute>
+                <attribute name="force_save">1</attribute>
           </xpath>
             <xpath expr="//group[1]" position="after">
-                <group>
-                <group string="Earnings">
-                    <field name="basic_salary" readonly="1"/>
-                    <field name="on_public_holidays" readonly="1"/>
-                    <field name="overtime" readonly="1"/>
-                    <field name="house_rent_allowance"/>
-                    <field name="vehicle_allowance"/>
-                    <field name="petrol_allowance"/>
-                    <field name="travel_allowance"/>
-                    <field name="da"/>
-                    <field name="other_allowance"/>
-                    <field name="gross_salary" readonly="1" style="font-size:13pt;"/>
-                    <group string="Net Salary">
-                    <field name="net_salary" readonly="1" style="font-size:13pt;"/>
+                <group col="2" string="Salary Computation">
+                    <group string="Earnings">
+                        <field name="attendance" readonly="1" string="Attendance"/>
+                        <field name="basic_salary" readonly="1" string="CTC"/>
+<!--                        <field name="wages_due" string="Salary Due"/>-->
+                        <field name="contract_salary_rule_ids" nolabel="1">
+                            <tree create="0" edit="0">
+                                <field name="rule_id"/>
+                                <field name="amount"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Deductions">
+                        <field name="lop" string="LOP days" readonly="1"/>
+                        <field name="salary_deductions" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="amount"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group>
+                        <field name="overtime" readonly="1"/>
+                        <field name="gross_salary" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="lop_amount" readonly="1"/>
+                        <field name="total_deduction" string="Total Deduction" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="net_salary" string="Net Salary" readonly="1"/>
                     </group>
 
-                </group>
-                    <group string="Deductions">
-                        <field name="attendance"   string="LOP days" readonly="1"/>
-                        <field name="wages_due" string="Salary deduction"/>
-<!--                        <field name="amount_advance"/>-->
-<!--                        <field name="staff_donation"/>-->
-<!--                        <field name="mobile_over"/>>-->
-<!--                        <field name="loan_refund"/>-->
-<!--                        <field name="fine"/>-->
-                        <field name="total_deduction" style="font-size:13pt;" readonly="1"/>
-                    </group>
+
+
+
+
+
+<!--                <group string="Earnings">-->
+<!--                    <field name="on_public_holidays" readonly="1"/>-->
+<!--                    <field name="overtime" readonly="1"/>-->
+<!--                    <field name="house_rent_allowance"/>-->
+<!--                    <field name="vehicle_allowance"/>-->
+<!--                    <field name="petrol_allowance"/>-->
+<!--                    <field name="travel_allowance"/>-->
+<!--                    <field name="da"/>-->
+<!--                    <field name="other_allowance"/>-->
+<!--                    <field name="gross_salary" readonly="1" style="font-size:13pt;"/>-->
+<!--                    <group string="Net Salary">-->
+<!--                    <field name="net_salary" readonly="1" style="font-size:13pt;"/>-->
+<!--                    </group>-->
+
+<!--                </group>-->
+<!--                    <group string="Deductions">-->
+<!--                        <field name="attendance"   string="LOP days" readonly="1"/>-->
+<!--                        <field name="wages_due" string="Salary deduction"/>-->
+<!--&lt;!&ndash;                        <field name="amount_advance"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <field name="staff_donation"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <field name="mobile_over"/>>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <field name="loan_refund"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <field name="fine"/>&ndash;&gt;-->
+<!--                        <field name="total_deduction" style="font-size:13pt;" readonly="1"/>-->
+<!--                    </group>-->
                      <group string="Gratuity">
 <!--                         <field name="state_emp" widget="radio" string="Status" default='False'/>-->
                          <field name="resigned" attrs="{'readonly': [('terminated','=', True)]}" />
-                    <field name="terminated" attrs="{'readonly': [('resigned','=', True)]}"/>
-                    <field name="gratuity"/>
+                         <field name="terminated" attrs="{'readonly': [('resigned','=', True)]}"/>
+                         <field name="gratuity"/>
                      </group>
                 </group>
             </xpath>

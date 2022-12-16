@@ -774,7 +774,15 @@ class LossPay(models.Model):
     def confirm_edit(self):
         self.rec.holidays_validate()
         self.rec.lop_emp = self.name
-       
+
+
+class SalaryDeduction(models.Model):
+    _name = 'salary.deductions'
+
+    name = fields.Char()
+    amount = fields.Float()
+    payslip_id = fields.Many2one('hr.payslip')
+
 
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
@@ -820,30 +828,60 @@ class HrPayslip(models.Model):
     #         end_date = date_object + relativedelta(day=31)
     #         self.date_to = end_date
 
-    @api.depends('attendance')
-    def compute_attendance(self):
-        for rec in self:
-            # attendance = self.env['hiworth.hr.attendance'].search([('date','>=',self.date_from),('date','<=',self.date_to),('attendance','=','full'),('name','=',self.employee_id.id)])
-            # rec.attendance = len(attendance.ids)
-            date_to = datetime.strptime(rec.date_to,"%Y-%m-%d")
-            date_from = datetime.strptime(rec.date_from,"%Y-%m-%d")
-            rec.wages_due = (rec.contract_id.wage * rec.attendance)/(((date_to - date_from).days )+1)
-            working_days = (date_to - date_from).days
-            if rec.attendance < working_days:
-                if rec.employee_id.casual_leave > 0.0:
-                    if (working_days - rec.attendance) > rec.employee_id.casual_leave:
-                        rec.employee_id.casual_leave = rec.employee_id.casual_leave - +1
-                    rec.attendance = rec.attendance + 1
-            else:
-                rec.employee_id.casual_leave = rec.employee_id.casual_leave + 1
+    # @api.depends('attendance')
+    # def compute_attendance(self):
+    #     for rec in self:
+    #         # attendance = self.env['hiworth.hr.attendance'].search([('date','>=',self.date_from),('date','<=',self.date_to),('attendance','=','full'),('name','=',self.employee_id.id)])
+    #         # rec.attendance = len(attendance.ids)
+    #         date_to = datetime.strptime(rec.date_to,"%Y-%m-%d")
+    #         date_from = datetime.strptime(rec.date_from,"%Y-%m-%d")
+    #         rec.wages_due = (rec.contract_id.wage * rec.attendance)/(((date_to - date_from).days )+1)
+    #         working_days = (date_to - date_from).days
+    #         if rec.attendance < working_days:
+    #             if rec.employee_id.casual_leave > 0.0:
+    #                 if (working_days - rec.attendance) > rec.employee_id.casual_leave:
+    #                     rec.employee_id.casual_leave = rec.employee_id.casual_leave - +1
+    #                 rec.attendance = rec.attendance + 1
+    #         else:
+    #             rec.employee_id.casual_leave = rec.employee_id.casual_leave + 1
 
     @api.depends('contract_id')
     def compute_basic_salary(self):
         for rec in self:
             rec.basic_salary = rec.contract_id.wage
-            rec.struct_id=rec.id
+    @api.onchange('contract_id')
+    def onchange_contract_id(self):
+        for rec in self:
+            if rec.contract_id.struct_id:
+                rec.struct_id=rec.contract_id.struct_id
+                line_ids = []
+                # rec.hr_salary_rule = rec.contract_id.struct_id.rule_ids
+                rec.contract_salary_rule_ids = False
+                if rec.contract_id:
+                    for rule in rec.contract_id.rule_lines:
+                        values = {
+                            'rule_id': rule.rule_id.id,
+                            'amount':rule.amount,
+                        }
+                        line_ids.append((0, 0, values))
+                    rec.contract_salary_rule_ids = line_ids
 
-    lop = fields.Float('Loss Of Pay Days', compute="_onchange_lop")
+    # @api.onchange('month')
+    # def onchange_month(self):
+    #     for rec in self:
+    #         if rec.month:
+    #             today_date_month = datetime.today().month
+    #             if rec.month == 'February':
+    #                 date = "1"
+    #             elif rec.month in ['December','October','August','July','May','March','January']:
+    #
+    #             else:
+
+
+    salary_deductions = fields.One2many('salary.deductions','payslip_id')
+    contract_salary_rule_ids = fields.One2many('contract.salary.rule', 'hr_payslip_id')
+    lop = fields.Float('LOP Days')
+    lop_amount = fields.Float('LOP Amount')
     advance = fields.Float('Advance', compute="_compute_advance_amount")
     state = fields.Selection([
             ('draft', 'Draft'),
@@ -878,11 +916,11 @@ class HrPayslip(models.Model):
     sealed_amount = fields.Float(string="Sealed PF Amount")
     sealed_esi_amount = fields.Float(string="Sealed ESI Amount")
     attendance = fields.Float(string="Attndance")
-    wages_due = fields.Float(string="wages Due", compute='compute_attendance')
+    wages_due = fields.Float(string="wages Due")
     pf_required = fields.Boolean(string="PF Required Or Not", default=False)
     amount_advance = fields.Float(string="Advance")
     ###############TRIANGLE#####################
-    basic_salary = fields.Float(string="Basic Salary",compute="compute_basic_salary",store=True)
+    basic_salary = fields.Float(string="CTC",compute="compute_basic_salary",store=True)
     other_allowance = fields.Float(string="Other Allowance")
     house_rent_allowance = fields.Float(string="House Rent Allowance")
     per_day_salary = fields.Float(string="Per Day Salary")
@@ -905,122 +943,178 @@ class HrPayslip(models.Model):
     employee_payslip_batches_id = fields.Many2one('hr.payslip.batches')
 
     def compute_sheet(self, cr, uid, ids, context=None):
+        # res = super(HrPayslip, self).compute_sheet()
         res = super(HrPayslip, self).compute_sheet(cr, uid, ids, context=context)
         payslip = self.browse(cr, uid, ids[0])
-        exgratia=self.pool.get('exgratia.payment')
-        exgratia_days = exgratia.search(cr, uid,
-            [('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
-             ('date', '<=', datetime.strptime(payslip.date_to, "%Y-%m-%d")),
-             ('employee_id', '=', payslip.employee_id.id),
-             ('state', '!=', 'cancel'),],context=context)
-        holiday = 0
-        week_day = 0
-        public_holiday = self.pool.get('public.holiday')
-        for number in exgratia_days:
-            day = exgratia.browse(cr, uid, number)
-            public_holidays = public_holiday.search(cr, uid,[('date', '=', day.date)], context=context)
-            if datetime.strptime(day.date, "%Y-%m-%d").weekday() == 6 or public_holidays:
-                holiday += day.hours
-            else:
-                week_day += day.hours
+        # sequence_obj = self.pool.get('ir.sequence')
+        # payslip.number = payslip.number or sequence_obj.get(cr, uid, 'salary.slip')
+
+        exgratia = self.pool.get('exgratia.payment')
+        # exgratia_days = exgratia.search(cr, uid,
+
+        exgratia_days_full = exgratia.search(cr, uid,[('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
+                                         ('date', '<=', datetime.strptime(payslip.date_to, "%Y-%m-%d")),
+                                         ('employee_id', '=', payslip.employee_id.id),
+                                         ('state', '!=', 'cancel'),('attendance','=','full')], context=context)
+
+        exgratia_days_half = exgratia.search(cr, uid,[('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
+                                         ('date', '<=', datetime.strptime(payslip.date_to, "%Y-%m-%d")),
+                                         ('employee_id', '=', payslip.employee_id.id),
+                                         ('state', '!=', 'cancel'),('attendance','=','half')], context=context)
+
+        over_time = exgratia.search(cr, uid,[('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
+                                         ('date', '<=', datetime.strptime(payslip.date_to, "%Y-%m-%d")),
+                                         ('employee_id', '=', payslip.employee_id.id),
+                                         ('state', '!=', 'cancel'),('attendance', 'not in',['full', 'half'])], context=context)
+
         attendance = self.pool.get('hiworth.hr.attendance')
-        full = attendance.search(cr, uid,[('name', '=', payslip.employee_id.id), ('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),('date','<=',datetime.strptime(payslip.date_to, "%Y-%m-%d")),('attendance','=','absent')],context=context)
-        half = attendance.search(cr, uid,[('name', '=', payslip.employee_id.id),  ('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),('date','<=',datetime.strptime(payslip.date_to, "%Y-%m-%d")),('attendance','=','half')],context=context)
+        full_present = attendance.search(cr, uid,[
+            ('name', '=', payslip.employee_id.id),
+            ('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
+            ('date','<=',datetime.strptime(payslip.date_to, "%Y-%m-%d")),
+            ('attendance','=','full')], context=context)
 
-        for rec in payslip:
-            for rule in rec.contract_id.rule_lines:
-                if not rec.house_rent_allowance or rec.house_rent_allowance == 0.0:
-                    if rule.rule_id.code == "HRA":
-                        if rule.rule_id.amount_select == 'fix':
-                            if rule.amount_fix:
-                                rec.house_rent_allowance = rule.amount_fix
-                            else:
-                                rec.house_rent_allowance = rule.rule_id.amount_fix
-                        elif rule.rule_id.amount_select == 'percentage':
-                            if rule.amount_percentage:
-                                rec.house_rent_allowance = rec.basic_salary * (rule.amount_percentage/100)
-                            else:
-                                rec.house_rent_allowance = rec.basic_salary * (rule.rule_id.amount_percentage/100)
+        half = attendance.search(cr, uid,
+            [('name', '=', payslip.employee_id.id),
+             ('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
+             ('date','<=',datetime.strptime(payslip.date_to, "%Y-%m-%d")),
+             ('attendance','=','half')], context=context)
 
-                if not rec.travel_allowance or rec.travel_allowance == 0.0:
-                    if rule.rule_id.code == "TA":
-                        if rule.rule_id.amount_select == 'fix':
-                            if rule.amount_fix:
-                                rec.travel_allowance = rule.amount_fix
-                            else:
-                                rec.travel_allowance = rule.rule_id.amount_fix
-                        elif rule.rule_id.amount_select == 'percentage':
-                            if rule.amount_percentage:
-                                rec.travel_allowance = rec.basic_salary * (rule.amount_percentage/100)
-                            else:
-                                rec.travel_allowance = rec.basic_salary * (rule.rule_id.amount_percentage/100)
+        full_absent = attendance.search(cr, uid,
+            [('name', '=', payslip.employee_id.id),
+             ('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
+             ('date','<=',datetime.strptime(payslip.date_to, "%Y-%m-%d")),
+             ('attendance','=','absent')], context=context)
 
-                if not rec.petrol_allowance or rec.petrol_allowance == 0.0:
-                    if rule.rule_id.code == "PA":
-                        if rule.rule_id.amount_select == 'fix':
-                            if rule.amount_fix:
-                                rec.petrol_allowance = rule.amount_fix
-                            else:
-                                rec.petrol_allowance = rule.rule_id.amount_fix
-                        elif rule.rule_id.amount_select == 'percentage':
-                            if rule.amount_percentage:
-                                rec.petrol_allowance = rec.basic_salary * (rule.amount_percentage/100)
-                            else:
-                                rec.petrol_allowance = rec.basic_salary * (rule.rule_id.amount_percentage/100)
+        payslip.attendance = len(full_present)+(len(half)*0.5)+(len(exgratia_days_full)+(len(exgratia_days_half)*0.5))
+        per_day_salary = payslip.basic_salary * 12 / 365
+        per_hour_salary = per_day_salary / 8
+        over_time =  sum(exgratia.browse(cr,uid,over_time).mapped('hours')) *  per_hour_salary
+        payslip.over_time = over_time
+        lop_days = len(full_absent)+(len(half)*0.5)-(len(exgratia_days_full)+(len(exgratia_days_half)*0.5))
+        payslip.lop = lop_days
+        lop_amount = lop_days * per_day_salary
+        payslip.lop_amount = lop_amount
 
-                if not rec.other_allowance or rec.other_allowance == 0.0:
-                    if rule.rule_id.code == "OA":
-                        if rule.rule_id.amount_select == 'fix':
-                            if rule.amount_fix:
-                                rec.other_allowance = rule.amount_fix
-                            else:
-                                rec.other_allowance = rule.rule_id.amount_fix
-                        elif rule.rule_id.amount_select == 'percentage':
-                            if rule.amount_percentage:
-                                rec.other_allowance = rec.basic_salary * (rule.amount_percentage/100)
-                            else:
-                                rec.other_allowance = rec.basic_salary * (rule.rule_id.amount_percentage/100)
+        payslip.gross_salary = sum(payslip.contract_salary_rule_ids.mapped('amount')) + over_time
+        payslip.total_deduction = sum(payslip.salary_deductions.mapped('amount')) + lop_amount
+        payslip.net_salary = payslip.gross_salary - payslip.total_deduction
 
-                if not rec.da or rec.da == 0.0:
-                    if rule.rule_id.code == "DA":
-                        if rule.rule_id.amount_select == 'fix':
-                            if rule.amount_fix:
-                                rec.da = rule.amount_fix
-                            else:
-                                rec.da = rule.rule_id.amount_fix
-                        elif rule.rule_id.amount_select == 'percentage':
-                            if rule.amount_percentage:
-                                rec.da = rec.basic_salary * (rule.amount_percentage/100)
-                            else:
-                                rec.da = rec.basic_salary * (rule.rule_id.amount_percentage/100)
 
-                if not rec.vehicle_allowance or rec.vehicle_allowance == 0.0:
-                    if rule.rule_id.code == "VA":
-                        if rule.rule_id.amount_select == 'fix':
-                            if rule.amount_fix:
-                                rec.vehicle_allowance = rule.amount_fix
-                            else:
-                                rec.vehicle_allowance = rule.rule_id.amount_fix
-                        elif rule.rule_id.amount_select == 'percentage':
-                            if rule.amount_percentage:
-                                rec.vehicle_allowance = rec.basic_salary * (rule.amount_percentage/100)
-                            else:
-                                rec.vehicle_allowance = rec.basic_salary * (rule.rule_id.amount_percentage/100)
 
-            gross_salary = rec.basic_salary + rec.house_rent_allowance + rec.vehicle_allowance + rec.petrol_allowance \
-                           + rec.other_allowance + rec.da + rec.travel_allowance
-            per_day_salary = gross_salary * 12 / 365
-            per_hour_salary = per_day_salary / 8
-            rec.overtime = per_hour_salary * 1.25 * week_day
-            rec.on_public_holidays = per_hour_salary * 1.50 * holiday
-            rec.attendance = len(full)+(len(half)*0.5)
-            lop_amount = rec.attendance * per_day_salary
-            rec.wages_due = lop_amount
-            rec.gross_salary = gross_salary + rec.on_public_holidays + rec.overtime
-            total_deduction = rec.wages_due+rec.amount_advance+rec.staff_donation+rec.mobile_over+rec.loan_refund+rec.fine
-            rec.total_deduction = total_deduction
-            rec.net_salary = rec.gross_salary-rec.total_deduction
-            rec.state='verify'
+
+
+
+        # exgratia_days = exgratia.search(cr, uid,
+        #                                 [('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
+        #                                  ('date', '<=', datetime.strptime(payslip.date_to, "%Y-%m-%d")),
+        #                                  ('employee_id', '=', payslip.employee_id.id),
+        #                                  ('state', '!=', 'cancel'), ], context=context)
+        # holiday = 0
+        # week_day = 0
+        # public_holiday = self.pool.get('public.holiday')
+        # for number in exgratia_days:
+        #     day = exgratia.browse(cr, uid, number)
+        #     public_holidays = public_holiday.search(cr, uid,[('date', '=', day.date)], context=context)
+        #     if datetime.strptime(day.date, "%Y-%m-%d").weekday() == 6 or public_holidays:
+        #         holiday += day.hours
+        #     else:
+        #         week_day += day.hours
+
+        # for rec in payslip:
+        #     for rule in rec.contract_id.rule_lines:
+        #         if not rec.house_rent_allowance or rec.house_rent_allowance == 0.0:
+        #             if rule.rule_id.code == "HRA":
+        #                 if rule.rule_id.amount_select == 'fix':
+        #                     if rule.amount_fix:
+        #                         rec.house_rent_allowance = rule.amount_fix
+        #                     else:
+        #                         rec.house_rent_allowance = rule.rule_id.amount_fix
+        #                 elif rule.rule_id.amount_select == 'percentage':
+        #                     if rule.amount_percentage:
+        #                         rec.house_rent_allowance = rec.basic_salary * (rule.amount_percentage/100)
+        #                     else:
+        #                         rec.house_rent_allowance = rec.basic_salary * (rule.rule_id.amount_percentage/100)
+        #
+        #         if not rec.travel_allowance or rec.travel_allowance == 0.0:
+        #             if rule.rule_id.code == "TA":
+        #                 if rule.rule_id.amount_select == 'fix':
+        #                     if rule.amount_fix:
+        #                         rec.travel_allowance = rule.amount_fix
+        #                     else:
+        #                         rec.travel_allowance = rule.rule_id.amount_fix
+        #                 elif rule.rule_id.amount_select == 'percentage':
+        #                     if rule.amount_percentage:
+        #                         rec.travel_allowance = rec.basic_salary * (rule.amount_percentage/100)
+        #                     else:
+        #                         rec.travel_allowance = rec.basic_salary * (rule.rule_id.amount_percentage/100)
+        #
+        #         if not rec.petrol_allowance or rec.petrol_allowance == 0.0:
+        #             if rule.rule_id.code == "PA":
+        #                 if rule.rule_id.amount_select == 'fix':
+        #                     if rule.amount_fix:
+        #                         rec.petrol_allowance = rule.amount_fix
+        #                     else:
+        #                         rec.petrol_allowance = rule.rule_id.amount_fix
+        #                 elif rule.rule_id.amount_select == 'percentage':
+        #                     if rule.amount_percentage:
+        #                         rec.petrol_allowance = rec.basic_salary * (rule.amount_percentage/100)
+        #                     else:
+        #                         rec.petrol_allowance = rec.basic_salary * (rule.rule_id.amount_percentage/100)
+        #
+        #         if not rec.other_allowance or rec.other_allowance == 0.0:
+        #             if rule.rule_id.code == "OA":
+        #                 if rule.rule_id.amount_select == 'fix':
+        #                     if rule.amount_fix:
+        #                         rec.other_allowance = rule.amount_fix
+        #                     else:
+        #                         rec.other_allowance = rule.rule_id.amount_fix
+        #                 elif rule.rule_id.amount_select == 'percentage':
+        #                     if rule.amount_percentage:
+        #                         rec.other_allowance = rec.basic_salary * (rule.amount_percentage/100)
+        #                     else:
+        #                         rec.other_allowance = rec.basic_salary * (rule.rule_id.amount_percentage/100)
+        #
+        #         if not rec.da or rec.da == 0.0:
+        #             if rule.rule_id.code == "DA":
+        #                 if rule.rule_id.amount_select == 'fix':
+        #                     if rule.amount_fix:
+        #                         rec.da = rule.amount_fix
+        #                     else:
+        #                         rec.da = rule.rule_id.amount_fix
+        #                 elif rule.rule_id.amount_select == 'percentage':
+        #                     if rule.amount_percentage:
+        #                         rec.da = rec.basic_salary * (rule.amount_percentage/100)
+        #                     else:
+        #                         rec.da = rec.basic_salary * (rule.rule_id.amount_percentage/100)
+        #
+        #         if not rec.vehicle_allowance or rec.vehicle_allowance == 0.0:
+        #             if rule.rule_id.code == "VA":
+        #                 if rule.rule_id.amount_select == 'fix':
+        #                     if rule.amount_fix:
+        #                         rec.vehicle_allowance = rule.amount_fix
+        #                     else:
+        #                         rec.vehicle_allowance = rule.rule_id.amount_fix
+        #                 elif rule.rule_id.amount_select == 'percentage':
+        #                     if rule.amount_percentage:
+        #                         rec.vehicle_allowance = rec.basic_salary * (rule.amount_percentage/100)
+        #                     else:
+        #                         rec.vehicle_allowance = rec.basic_salary * (rule.rule_id.amount_percentage/100)
+        #
+        #     gross_salary = rec.basic_salary + rec.house_rent_allowance + rec.vehicle_allowance + rec.petrol_allowance \
+        #                    + rec.other_allowance + rec.da + rec.travel_allowance
+        #     per_day_salary = gross_salary * 12 / 365
+        #     per_hour_salary = per_day_salary / 8
+        #     rec.overtime = per_hour_salary * 1.25 * week_day
+        #     rec.on_public_holidays = per_hour_salary * 1.50 * holiday
+        #     rec.attendance = len(full)+(len(half)*0.5)
+        #     lop_amount = rec.attendance * per_day_salary
+        #     rec.wages_due = lop_amount
+        #     rec.gross_salary = gross_salary + rec.on_public_holidays + rec.overtime
+        #     total_deduction = rec.wages_due+rec.amount_advance+rec.staff_donation+rec.mobile_over+rec.loan_refund+rec.fine
+        #     rec.total_deduction = total_deduction
+        #     rec.net_salary = rec.gross_salary-rec.total_deduction
+        #     rec.state='verify'
 
 
     # @api.depends('basic_salary')
@@ -1178,20 +1272,20 @@ class HrPayslip(models.Model):
         for rec in self:
             rec.state ='paid'
 
-    @api.depends('employee_id')
-    def _onchange_lop(self):
-        # start_date = self.date_from
-        # end_date = self.date_to
-        # days_count = 0
-        # while (start_date < end_date):
-        #     day = dateutil.parser.parse(start_date).date().weekday()
-        #     if day != 1:
-        #         days_count += 1
-        #     start_date = start_date  + datetime.timedelta(days=1)
-        #     print 'days_count------------', days_count
-        recs = self.env['hr.holidays'].search([('employee_id','=',self.employee_id.id),('date_from','>=',self.date_from),('date_to','<=',self.date_to)])
-        for rec in recs:
-            self.lop += rec.lop_emp
+    # @api.depends('employee_id')
+    # def _onchange_lop(self):
+    #     # start_date = self.date_from
+    #     # end_date = self.date_to
+    #     # days_count = 0
+    #     # while (start_date < end_date):
+    #     #     day = dateutil.parser.parse(start_date).date().weekday()
+    #     #     if day != 1:
+    #     #         days_count += 1
+    #     #     start_date = start_date  + datetime.timedelta(days=1)
+    #     #     print 'days_count------------', days_count
+    #     recs = self.env['hr.holidays'].search([('employee_id','=',self.employee_id.id),('date_from','>=',self.date_from),('date_to','<=',self.date_to)])
+    #     for rec in recs:
+    #         self.lop += rec.lop_emp
         
            
 

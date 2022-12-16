@@ -107,7 +107,7 @@ class ExgratiaPayment(models.Model):
 
     employee_id = fields.Many2one('hr.employee',"Employee", required=True)
     date = fields.Date("Date", required=True)
-    hours = fields.Float(required=True)
+    hours = fields.Float()
     attendance = fields.Selection([('full','Full Present'),
                                    ('half','Half Present')],default='full',string="Attendance")
     payment_amt = fields.Float("Payment Amount")
@@ -396,7 +396,7 @@ class ExgratiaPayment(models.Model):
                 raise osv.except_osv(_('Warning!'), _(
                     'The Exgratia on the month %s can not be cancelled/deleted after the month') % (
                                          month_date.strftime("%B")))
-            rec.state = 'New'
+            rec.state = 'new'
             if rec.exgratia_redeem == 'leave':
                 # start_date = datetime(month_date.year, month_date.month, 1)
                 # if month_date.month == 2:
