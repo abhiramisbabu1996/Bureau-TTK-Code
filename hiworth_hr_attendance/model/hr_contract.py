@@ -10,6 +10,7 @@ import openerp.addons.decimal_precision as dp
 class ContractSalaryRule(models.Model):
     _name = 'contract.salary.rule'
 
+    hr_payslip_id = fields.Many2one('hr.payslip')
     rule_id = fields.Many2one('hr.salary.rule', 'Name')
     percentage_base = fields.Selection([
         ('basic', 'Basic'),
