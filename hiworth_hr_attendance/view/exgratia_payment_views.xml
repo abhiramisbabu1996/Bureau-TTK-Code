@@ -126,7 +126,6 @@
             <field name="view_mode">tree,form</field>
             <field name="view_type">form</field>
             <field name="target">current</field>
-            <field name="view_id" ref="exgratia_payment_form_holiday"/>
         </record>
 
         <record id="action_holiday_working_hiworth_form_view" model="ir.actions.act_window.view">
