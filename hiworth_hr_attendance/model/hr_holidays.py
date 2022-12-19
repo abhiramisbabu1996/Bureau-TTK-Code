@@ -189,251 +189,267 @@ class HrHolidays(models.Model):
         date_from = datetime.strptime(self.date_from, "%Y-%m-%d")
         date_to = datetime.strptime(self.date_to, "%Y-%m-%d")
         date_diff = date_to - date_from
-        for r in range(date_diff.days + 1):
-            attendance = self.env['hiworth.hr.attendance'].search(
-                [('name', '=', self.employee_id.id), ('date', '=', date_from)])
-            if not attendance:
-                leave_attendance = self.env['hiworth.hr.attendance'].create({'name': self.employee_id.id,
-                                                                             'attendance': 'absent',
-                                                                             'attendance_category': self.employee_id.attendance_category,
-                                                                             'date': date_from.strftime("%Y-%m-%d")})
-            else:
-                attendance.attendance = 'absent'
+        from_date = date_from
 
-            from_date = date_from + timedelta(days=1)
-            date_from = from_date
-        # contract_config = self.env['employee.config.leave'].search([('employee_id', '=', self.employee_id.id),
-        #                                                             ('leave_id', '=', self.leave_id.id)]) 
-        leave_request = self.env['employee.leave.request'].search(
-            [('leave_credited', '=', False), ('leave_request_id', '=', self.id)])
         active_contract = self.env['hr.contract'].search(
             [('employee_id', '=', self.employee_id.id), ('state', '=', 'active')])
-        contract_config = active_contract.employee_leave_ids.search([('id','in',active_contract.employee_leave_ids.ids),],limit=1,order= 'id desc')
+        employee_leave_id = active_contract.employee_leave_ids.search([('id','in',active_contract.employee_leave_ids.ids),],limit=1,order= 'id desc')
+        remaining = employee_leave_id.remaining
+        for r in range(date_diff.days + 1):
+            attendance = self.env['hiworth.hr.attendance'].search(
+                [('name', '=', self.employee_id.id), ('date', '=', from_date)])
+            if self.nos >= 1:
+                if not attendance:
+                    attendance = self.env['hiworth.hr.attendance'].create({
+                        'name': self.employee_id.id,
+                        'attendance': 'absent',
+                        'attendance_category': self.employee_id.attendance_category,
+                        'date': from_date.strftime("%Y-%m-%d")})
 
-        allowed_leave = contract_config.remaining
-        for leave in leave_request:
-            leave_date = datetime.strptime(leave.date, "%Y-%m-%d")
-            month_leave_status = self.env['month.leave.status'].search(
-                [('status_id', '=', leave.employee_id.id), ('month_id', '=', leave_date.month),
-                 ('leave_id', '=', leave.leave_id.id)])
-            prev_month = leave_date.month
-            if not month_leave_status:
-                if leave_date.month == 1:
-                    prev_month = 12
-                else:
-                    prev_month = leave_date.month - 1
-                prev_month_record = self.env['month.leave.status'].search([('status_id', '=', leave.employee_id.id),
-                                                                           ('month_id', '=', prev_month),
-                                                                           ('leave_id', '=', leave.leave_id.id),
-                                                                           ])
-                balance = prev_month_record.remaining or 0
+                if remaining>=1:
+                    attendance.attendance = 'full'
+                    attendance.compensatory_off = True
+                    employee_leave_id.availed += 1
 
-                month_leave_status = self.env['month.leave.status'].create({'status_id': leave.employee_id.id,
-                                                                            'month_id': leave_date.month,
-                                                                            'leave_id': leave.leave_id.id,
-                                                                            'availed': 0,
-                                                                            'available': balance,
-                                                                            # 'exgratia': contract_config.availa_exgre,
-                                                                            'month_leave_status_id': prev_month_record.id,
-                                                                            })
-            if allowed_leave > 0:
-                if active_contract.remaining >= contract_config.remaining:
-                    exgratia_full_ids = self.env['exgratia.payment'].search([
-                        ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
-                        ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'), ('estimated', '=', False)])
+                elif remaining == 0.5:
+                    attendance.attendance='half'
+                    attendance.half_compensatory_off = True
+                    employee_leave_id.availed += 0.5
 
-                    exgratia_half_ids = self.env['exgratia.payment'].search([
-                        ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
-                        ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'half')])
 
-                    exgratia_full_half_ids = self.env['exgratia.payment'].search([
-                        ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
-                        ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'),
-                        ('estimated', '=', 'half')])
-
-                    exgratia = len(exgratia_full_ids) + (len(exgratia_half_ids) * .5) + (len(exgratia_full_half_ids) * 0.5)
-                    if exgratia > 0:
-                        if allowed_leave < 1 or self.attendance == 'half':
-                            leave.leave_credited = True
-                            leave.adjusted_leave = 0.5
-                            leave.lop_leave = 0.5
-                            allowed_leave -= 0.5
-                            contract_config.availed += 0.5
-                            # contract_config.remaining -= 0.5
-                            attendance = self.env['hiworth.hr.attendance'].search([('name', '=', self.employee_id.id),
-                                                                                   ('date', '=', leave.date),
-                                                                                   ])
-                            if attendance:
-                                attendance.attendance = 'half'
-                                attendance.leave_id = leave
-                                attendance.compensatory_off = True
-
-                            if exgratia_half_ids:
-                                exgratia_half = self.env['exgratia.payment'].search([
-                                            ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
-                                            ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'half')], limit=1)
-
-                                exgratia_half.state = 'paid'
-                                leave.exgratia_id = exgratia_half.id
-                                active_contract.availed_exgratia += 0.5
-                                # contract_config.availa_exgre -= 0.5
-
-                            elif exgratia_full_half_ids and not exgratia_half_ids:
-                                exgratia_full_half = self.env['exgratia.payment'].search([
-                                                ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
-                                                ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'),
-                                                ('estimated', '=', 'half')], limit=1)
-                                exgratia_full_half.state = 'paid'
-                                leave.exgratia_id = exgratia_full_half.id
-                                active_contract.availed_exgratia += 0.5
-                                # contract_config.availa_exgre -= 0.5
-
-                            else:
-                                exgratia_full = self.env['exgratia.payment'].search([
-                                            ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
-                                            ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'),
-                                            ('estimated', '=', False)], limit=1)
-                                exgratia_full.attendance = 'half'
-                                exgratia_full.estimated = 'half'
-                                active_contract.availed_exgratia += 0.5
-                                # contract_config.availa_exgre -= 0.5
-                                leave.exgratia_id = exgratia_full.id
-
-                            if month_leave_status:
-                                month_leave_status.availed += .5
-                                # next_month_avialble = self.env['month.leave.status'].search(
-                                #     [('month_leave_status_id', '=', month_leave_status.id),
-                                #      ])
-                                # if next_month_avialble:
-                                #     next_month_avialble.available -= .5
-
-                        else:
-                            leave.leave_credited = True
-                            leave.adjusted_leave = 1
-                            allowed_leave -= 1
-                            contract_config.availed += 1
-                            # contract_config.remaining -= 1
-                            attendance = self.env['hiworth.hr.attendance'].search([('name', '=', self.employee_id.id),
-                                                                                   ('date', '=', leave.date),
-                                                                                   ])
-                            if attendance:
-                                attendance.attendance = 'full'
-                                attendance.compensatory_off = True
-                                attendance.leave_id = leave
-
-                            exgratia_full = self.env['exgratia.payment'].search([
-                                ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
-                                ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'),
-                                ('estimated', '=', False)], limit=1)
-                            exgratia_full_half = self.env['exgratia.payment'].search([
-                                ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
-                                ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'),
-                                ('estimated', '=', 'half')], limit=2)
-                            exgratia_half = self.env['exgratia.payment'].search([
-                                ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
-                                ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'half')], limit=2)
-
-                            if exgratia_full:
-                                exgratia_full.state = 'paid'
-                                leave.exgratia_id = exgratia_full.id
-                                active_contract.availed_exgratia += 1
-                                # contract_config.availa_exgre -= 1
-
-                            elif len(exgratia_full_half) == 2:
-                                    for exgratia_id in exgratia_full_half:
-                                        exgratia_id.state = 'paid'
-                                    leave.exgratia_id = exgratia_full_half.ids[0]
-                                    leave.exgratia_id2 = exgratia_full_half.ids[1]
-                                    active_contract.availed_exgratia += 1
-                                    # contract_config.availa_exgre -= 1
-
-                            elif len(exgratia_half) == 2:
-                                    for exgratia_id in exgratia_half:
-                                            exgratia_id.state = 'paid'
-                                    leave.exgratia_id = exgratia_half.ids[0]
-                                    leave.exgratia_id2 = exgratia_half.ids[1]
-                                    active_contract.availed_exgratia += 1
-                                    # contract_config.availa_exgre -= 1
-                            else:
-                                if exgratia_half_ids and exgratia_full_half_ids:
-                                    exgratia_half = self.env['exgratia.payment'].search([
-                                        ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
-                                        ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'half')], limit=1)
-
-                                    exgratia_full_half = self.env['exgratia.payment'].search([
-                                        ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
-                                        ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'),
-                                        ('estimated', '=', 'half')], limit=1)
-
-                                    exgratia_half.state = 'paid'
-                                    exgratia_full_half.state = 'paid'
-                                    leave.exgratia_id1 = exgratia_half.id
-                                    leave.exgratia_id2 = exgratia_full_half.id
-                                    active_contract.availed_exgratia += 1
-                                    # contract_config.availa_exgre -= .5
-
-                            if month_leave_status:
-                                month_leave_status.availed += 1
-                                # next_month_avialble = self.env['month.leave.status'].search(
-                                #     [('month_leave_status_id', '=', month_leave_status.id),
-                                #      ])
-                                # if next_month_avialble:
-                                #     next_month_avialble.available -= 1
-                else:
-                    if allowed_leave < 1 or self.attendance == 'half':
-                        leave.leave_credited = True
-                        leave.adjusted_leave = 0.5
-                        leave.lop_leave = 0.5
-                        allowed_leave -= 0.5
-                        # contract_config.availed += 0.5
-                        # contract_config.remaining -= .5
-                        attendance = self.env['hiworth.hr.attendance'].search([('name', '=', self.employee_id.id),
-                                                                               ('date', '=', leave.date),
-                                                                               ])
-                        if attendance:
-                            attendance.attendance = 'half'
-                            attendance.leave_id = leave
-                            attendance.compensatory_off = True
-
-                        # active_contract.remaining -= .5
-                        if month_leave_status:
-                            month_leave_status.availed += .5
-                            # next_month_avialble = self.env['month.leave.status'].search(
-                            #     [('month_leave_status_id', '=', month_leave_status.id),
-                            #      ])
-                            # if next_month_avialble:
-                            #     next_month_avialble.available -= .5
-                    else:
-                        leave.leave_credited = True
-                        leave.adjusted_leave = 1
-                        allowed_leave -= 1
-                        contract_config.availed += 1
-                        # contract_config.remaining -= 1
-                        attendance = self.env['hiworth.hr.attendance'].search([('name', '=', self.employee_id.id),
-                                                                               ('date', '=', leave.date),
-                                                                               ])
-                        if attendance:
-                            attendance.attendance = 'full'
-                            attendance.compensatory_off = True
-                            attendance.leave_id = leave
-                        # active_contract.remaining -= 1
-                        if month_leave_status:
-                            month_leave_status.availed += 1
-            #                 next_month_avialble = self.env['month.leave.status'].search(
-            #                     [('month_leave_status_id', '=', month_leave_status.id),
-            #                      ])
-            #                 if next_month_avialble:
-            #                     next_month_avialble.available -= 1
-            else:
-                leave.leave_credited = True
-                leave.lop_leave = 1
-                leave.adjusted_leave = 0
-                attendance = self.env['hiworth.hr.attendance'].search([('name', '=', self.employee_id.id),
-                                                                       ('date', '=', leave.date),
-                                                                       ])
-                if attendance:
-                    attendance.attendance = 'absent'
-                    attendance.leave_id = leave
+            from_date = from_date + timedelta(days=1)
+        # contract_config = self.env['employee.config.leave'].search([('employee_id', '=', self.employee_id.id),
+        #                                                             ('leave_id', '=', self.leave_id.id)]) 
+        # leave_request = self.env['employee.leave.request'].search(
+        #     [('leave_credited', '=', False), ('leave_request_id', '=', self.id)])
+        # active_contract = self.env['hr.contract'].search(
+        #     [('employee_id', '=', self.employee_id.id), ('state', '=', 'active')])
+        # contract_config = active_contract.employee_leave_ids.search([('id','in',active_contract.employee_leave_ids.ids),],limit=1,order= 'id desc')
+        #
+        # allowed_leave = contract_config.remaining
+        # for leave in leave_request:
+        #     leave_date = datetime.strptime(leave.date, "%Y-%m-%d")
+        #     month_leave_status = self.env['month.leave.status'].search(
+        #         [('status_id', '=', leave.employee_id.id), ('month_id', '=', leave_date.month),
+        #          ('leave_id', '=', leave.leave_id.id)])
+        #     prev_month = leave_date.month
+        #     if not month_leave_status:
+        #         if leave_date.month == 1:
+        #             prev_month = 12
+        #         else:
+        #             prev_month = leave_date.month - 1
+        #         prev_month_record = self.env['month.leave.status'].search([('status_id', '=', leave.employee_id.id),
+        #                                                                    ('month_id', '=', prev_month),
+        #                                                                    ('leave_id', '=', leave.leave_id.id),
+        #                                                                    ])
+        #         balance = prev_month_record.remaining or 0
+        #
+        #         month_leave_status = self.env['month.leave.status'].create({'status_id': leave.employee_id.id,
+        #                                                                     'month_id': leave_date.month,
+        #                                                                     'leave_id': leave.leave_id.id,
+        #                                                                     'availed': 0,
+        #                                                                     'available': balance,
+        #                                                                     # 'exgratia': contract_config.availa_exgre,
+        #                                                                     'month_leave_status_id': prev_month_record.id,
+        #                                                                     })
+        #     if allowed_leave > 0:
+        #         if active_contract.remaining >= contract_config.remaining:
+        #             exgratia_full_ids = self.env['exgratia.payment'].search([
+        #                 ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
+        #                 ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'), ('estimated', '=', False)])
+        #
+        #             exgratia_half_ids = self.env['exgratia.payment'].search([
+        #                 ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
+        #                 ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'half')])
+        #
+        #             exgratia_full_half_ids = self.env['exgratia.payment'].search([
+        #                 ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
+        #                 ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'),
+        #                 ('estimated', '=', 'half')])
+        #
+        #             exgratia = len(exgratia_full_ids) + (len(exgratia_half_ids) * .5) + (len(exgratia_full_half_ids) * 0.5)
+        #             if exgratia > 0:
+        #                 if allowed_leave < 1 or self.attendance == 'half':
+        #                     leave.leave_credited = True
+        #                     leave.adjusted_leave = 0.5
+        #                     leave.lop_leave = 0.5
+        #                     allowed_leave -= 0.5
+        #                     contract_config.availed += 0.5
+        #                     # contract_config.remaining -= 0.5
+        #                     attendance = self.env['hiworth.hr.attendance'].search([('name', '=', self.employee_id.id),
+        #                                                                            ('date', '=', leave.date),
+        #                                                                            ])
+        #                     if attendance:
+        #                         attendance.attendance = 'half'
+        #                         attendance.leave_id = leave
+        #                         attendance.compensatory_off = True
+        #
+        #                     if exgratia_half_ids:
+        #                         exgratia_half = self.env['exgratia.payment'].search([
+        #                                     ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
+        #                                     ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'half')], limit=1)
+        #
+        #                         exgratia_half.state = 'paid'
+        #                         leave.exgratia_id = exgratia_half.id
+        #                         active_contract.availed_exgratia += 0.5
+        #                         # contract_config.availa_exgre -= 0.5
+        #
+        #                     elif exgratia_full_half_ids and not exgratia_half_ids:
+        #                         exgratia_full_half = self.env['exgratia.payment'].search([
+        #                                         ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
+        #                                         ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'),
+        #                                         ('estimated', '=', 'half')], limit=1)
+        #                         exgratia_full_half.state = 'paid'
+        #                         leave.exgratia_id = exgratia_full_half.id
+        #                         active_contract.availed_exgratia += 0.5
+        #                         # contract_config.availa_exgre -= 0.5
+        #
+        #                     else:
+        #                         exgratia_full = self.env['exgratia.payment'].search([
+        #                                     ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
+        #                                     ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'),
+        #                                     ('estimated', '=', False)], limit=1)
+        #                         exgratia_full.attendance = 'half'
+        #                         exgratia_full.estimated = 'half'
+        #                         active_contract.availed_exgratia += 0.5
+        #                         # contract_config.availa_exgre -= 0.5
+        #                         leave.exgratia_id = exgratia_full.id
+        #
+        #                     if month_leave_status:
+        #                         month_leave_status.availed += .5
+        #                         # next_month_avialble = self.env['month.leave.status'].search(
+        #                         #     [('month_leave_status_id', '=', month_leave_status.id),
+        #                         #      ])
+        #                         # if next_month_avialble:
+        #                         #     next_month_avialble.available -= .5
+        #
+        #                 else:
+        #                     leave.leave_credited = True
+        #                     leave.adjusted_leave = 1
+        #                     allowed_leave -= 1
+        #                     contract_config.availed += 1
+        #                     # contract_config.remaining -= 1
+        #                     attendance = self.env['hiworth.hr.attendance'].search([('name', '=', self.employee_id.id),
+        #                                                                            ('date', '=', leave.date),
+        #                                                                            ])
+        #                     if attendance:
+        #                         attendance.attendance = 'full'
+        #                         attendance.compensatory_off = True
+        #                         attendance.leave_id = leave
+        #
+        #                     exgratia_full = self.env['exgratia.payment'].search([
+        #                         ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
+        #                         ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'),
+        #                         ('estimated', '=', False)], limit=1)
+        #                     exgratia_full_half = self.env['exgratia.payment'].search([
+        #                         ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
+        #                         ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'),
+        #                         ('estimated', '=', 'half')], limit=2)
+        #                     exgratia_half = self.env['exgratia.payment'].search([
+        #                         ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
+        #                         ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'half')], limit=2)
+        #
+        #                     if exgratia_full:
+        #                         exgratia_full.state = 'paid'
+        #                         leave.exgratia_id = exgratia_full.id
+        #                         active_contract.availed_exgratia += 1
+        #                         # contract_config.availa_exgre -= 1
+        #
+        #                     elif len(exgratia_full_half) == 2:
+        #                             for exgratia_id in exgratia_full_half:
+        #                                 exgratia_id.state = 'paid'
+        #                             leave.exgratia_id = exgratia_full_half.ids[0]
+        #                             leave.exgratia_id2 = exgratia_full_half.ids[1]
+        #                             active_contract.availed_exgratia += 1
+        #                             # contract_config.availa_exgre -= 1
+        #
+        #                     elif len(exgratia_half) == 2:
+        #                             for exgratia_id in exgratia_half:
+        #                                     exgratia_id.state = 'paid'
+        #                             leave.exgratia_id = exgratia_half.ids[0]
+        #                             leave.exgratia_id2 = exgratia_half.ids[1]
+        #                             active_contract.availed_exgratia += 1
+        #                             # contract_config.availa_exgre -= 1
+        #                     else:
+        #                         if exgratia_half_ids and exgratia_full_half_ids:
+        #                             exgratia_half = self.env['exgratia.payment'].search([
+        #                                 ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
+        #                                 ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'half')], limit=1)
+        #
+        #                             exgratia_full_half = self.env['exgratia.payment'].search([
+        #                                 ('employee_id', '=', self.employee_id.id), ('state', '=', 'new'),
+        #                                 ('exgratia_redeem', '=', 'leave'), ('attendance', '=', 'full'),
+        #                                 ('estimated', '=', 'half')], limit=1)
+        #
+        #                             exgratia_half.state = 'paid'
+        #                             exgratia_full_half.state = 'paid'
+        #                             leave.exgratia_id1 = exgratia_half.id
+        #                             leave.exgratia_id2 = exgratia_full_half.id
+        #                             active_contract.availed_exgratia += 1
+        #                             # contract_config.availa_exgre -= .5
+        #
+        #                     if month_leave_status:
+        #                         month_leave_status.availed += 1
+        #                         # next_month_avialble = self.env['month.leave.status'].search(
+        #                         #     [('month_leave_status_id', '=', month_leave_status.id),
+        #                         #      ])
+        #                         # if next_month_avialble:
+        #                         #     next_month_avialble.available -= 1
+        #         else:
+        #             if allowed_leave < 1 or self.attendance == 'half':
+        #                 leave.leave_credited = True
+        #                 leave.adjusted_leave = 0.5
+        #                 leave.lop_leave = 0.5
+        #                 allowed_leave -= 0.5
+        #                 # contract_config.availed += 0.5
+        #                 # contract_config.remaining -= .5
+        #                 attendance = self.env['hiworth.hr.attendance'].search([('name', '=', self.employee_id.id),
+        #                                                                        ('date', '=', leave.date),
+        #                                                                        ])
+        #                 if attendance:
+        #                     attendance.attendance = 'half'
+        #                     attendance.leave_id = leave
+        #                     attendance.compensatory_off = True
+        #
+        #                 # active_contract.remaining -= .5
+        #                 if month_leave_status:
+        #                     month_leave_status.availed += .5
+        #                     # next_month_avialble = self.env['month.leave.status'].search(
+        #                     #     [('month_leave_status_id', '=', month_leave_status.id),
+        #                     #      ])
+        #                     # if next_month_avialble:
+        #                     #     next_month_avialble.available -= .5
+        #             else:
+        #                 leave.leave_credited = True
+        #                 leave.adjusted_leave = 1
+        #                 allowed_leave -= 1
+        #                 contract_config.availed += 1
+        #                 # contract_config.remaining -= 1
+        #                 attendance = self.env['hiworth.hr.attendance'].search([('name', '=', self.employee_id.id),
+        #                                                                        ('date', '=', leave.date),
+        #                                                                        ])
+        #                 if attendance:
+        #                     attendance.attendance = 'full'
+        #                     attendance.compensatory_off = True
+        #                     attendance.leave_id = leave
+        #                 # active_contract.remaining -= 1
+        #                 if month_leave_status:
+        #                     month_leave_status.availed += 1
+        #     #                 next_month_avialble = self.env['month.leave.status'].search(
+        #     #                     [('month_leave_status_id', '=', month_leave_status.id),
+        #     #                      ])
+        #     #                 if next_month_avialble:
+        #     #                     next_month_avialble.available -= 1
+        #     else:
+        #         leave.leave_credited = True
+        #         leave.lop_leave = 1
+        #         leave.adjusted_leave = 0
+        #         attendance = self.env['hiworth.hr.attendance'].search([('name', '=', self.employee_id.id),
+        #                                                                ('date', '=', leave.date),
+        #                                                                ])
+        #         if attendance:
+        #             attendance.attendance = 'absent'
+        #             attendance.leave_id = leave
 
     @api.multi
     def validate_leave(self):

@@ -108,7 +108,7 @@
                     <group attrs="{'invisible':[('type','=','add')]}">
                         <group>
                             <field name="leave_id" attrs="{'required':[('type','=','remove')],'readonly':[('state', '!=', 'draft')]}"/>
-                            <field name="attendance" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+<!--                            <field name="attendance" attrs="{'readonly':[('state', '!=', 'draft')]}"/>-->
                             <field name="remaining" readonly="1"/>
 <!--                           <field name="remaining_exgratia" readonly="1"/>-->
                         </group>
