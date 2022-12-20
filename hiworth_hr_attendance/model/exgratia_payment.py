@@ -109,7 +109,7 @@ class ExgratiaPayment(models.Model):
     date = fields.Date("Date", required=True)
     hours = fields.Float()
     attendance = fields.Selection([('full','Full Present'),
-                                   ('half','Half Present')],default='full',string="Attendance")
+                                   ('half','Half Present')],string="Attendance")
     payment_amt = fields.Float("Payment Amount")
     journal_id = fields.Many2one('account.journal',"Mode of Payment")
     debit_account_id = fields.Many2one('account.account',"Debit Account",domain="[('type','!=','view')]")

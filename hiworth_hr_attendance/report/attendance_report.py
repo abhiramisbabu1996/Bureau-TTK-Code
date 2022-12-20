@@ -879,10 +879,9 @@ class AttendanceReport(ReportXlsx):
         next_col += 1
         worksheet.write('%s%s3' % (chr(new_col), chr(next_col)), "Non-Attendance Days", regular)
         next_col += 1
-        # worksheet.write('%s%s3' % (chr(new_col), chr(next_col)), "Total Attendance Payable", regular)
-        # next_col += 1
-        #
-        # worksheet.write('%s%s3' % (chr(new_col), chr(next_col)), "Balance Leave", regular)
+        worksheet.write('%s%s3' % (chr(new_col), chr(next_col)), "Total Attendance Payable", regular)
+        next_col += 1
+        worksheet.write('%s%s3' % (chr(new_col), chr(next_col)), "Balance Leave", regular)
 
         domain = []
         if lines.attendance_category:
@@ -902,6 +901,8 @@ class AttendanceReport(ReportXlsx):
                 join_date = emp.joining_date
             worksheet.write('D%s' % (row_no), join_date, regular)
 
+            sunday_holiday_att = emp.employee_attendance_regulise(start_date,end_date,emp)
+
             non_att_count = 0
             co_att_count = 0
             att_acount = 0
@@ -913,46 +914,11 @@ class AttendanceReport(ReportXlsx):
             next_col = 65
             sunday_holiday = 0
 
-            absent_attendance_days = attendance.search([('name', '=', emp.id),
-                                             ('date', '>=', start_date),
-                                             ('date', '<=', end_date),
-                                             ('attendance', '=', 'absent')])
-
-            half_attendance_days = attendance.search([('name', '=', emp.id),
-                                             ('date', '>=', start_date),
-                                             ('date', '<=', end_date),
-                                             ('attendance', '=', 'half')])
-            active_contract = self.env['hr.contract'].search(
-                [('employee_id', '=', emp.id), ('state', '=', 'active')])
-
-            employee_leave_id = active_contract.employee_leave_ids.search(
-                [('id', 'in', active_contract.employee_leave_ids.ids), ], limit=1, order='id desc')
-            remaining = employee_leave_id.remaining
-            if remaining:
-                for absent_attendance in absent_attendance_days:
-                    if remaining >= 1:
-                        absent_attendance.attendance = 'full'
-                        absent_attendance.compensatory_off = True
-                        employee_leave_id.availed += 1
-                        remaining=remaining-1
-
-                    elif remaining == 0.5:
-                        absent_attendance.attendance = 'half'
-                        absent_attendance.half_compensatory_off = True
-                        employee_leave_id.availed += 0.5
-                        remaining=remaining-0.5
-
-                for half_attendance in half_attendance_days:
-                    half_attendance.attendance = 'full'
-                    half_attendance.half_compensatory_off = True
-                    employee_leave_id.availed += 0.5
-                    remaining = remaining - 0.5
-
             for day in range(end_date.day):
                 if cmp_date.day < 23:
                     attendance_id = self.env['hiworth.hr.attendance'].search(
                         [('name', '=', emp.id), ('date', '=', cmp_date)])
-                    if not attendance_id.attendance:
+                    if not attendance_id:
                         attendance = ''
                         non_att_count += 1
                     if attendance_id.attendance == 'full':
@@ -991,7 +957,7 @@ class AttendanceReport(ReportXlsx):
                 else:
                     attendance_id = self.env['hiworth.hr.attendance'].search(
                         [('name', '=', emp.id), ('date', '=', cmp_date)])
-                    if not attendance_id.attendance:
+                    if not attendance_id:
                         attendance = ''
                         non_att_count += 1
                     if attendance_id.attendance == 'full':
@@ -1035,9 +1001,7 @@ class AttendanceReport(ReportXlsx):
             # worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), current_credit, regular)            #
             # next_col += 1
 
-            
             exgratia = self.env['exgratia.payment']
-
 
             over_time_ids = exgratia.search([('date', '>=', start_date),
                                                   ('date', '<=', end_date),
@@ -1049,20 +1013,9 @@ class AttendanceReport(ReportXlsx):
 
             worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), over_time, regular)
             next_col += 1
-
-            # exgratia_days_full = exgratia.search([('date', '>=', start_date),
-            #                                       ('date', '<=', end_date),
-            #                                       ('employee_id', '=', emp.id),
-            #                                       ('state', '!=', 'cancel'), ('attendance', '=', 'full')],)
-            #
-            # exgratia_days_half = exgratia.search([('date', '>=', start_date),
-            #                                       ('date', '<=', end_date),
-            #                                       ('employee_id', '=', emp.id),
-            #                                       ('state', '!=', 'cancel'), ('attendance', '=', 'half')],)
-
-            # sunday_holiday = (len(exgratia_days_full)+(len(exgratia_days_half)*0.5))
-
-            worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), sunday_holiday, regular)
+            
+            worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), sunday_holiday_att, regular)
+            # worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), sunday_holiday, regular)
             next_col += 1
             worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), att_acount, regular)
             next_col += 1
@@ -1072,17 +1025,22 @@ class AttendanceReport(ReportXlsx):
                                                                 ('date_to', '>=', lines.from_date),
                                                                 ('date_to', '<=', lines.to_date),
                                                                 ('state', 'not in', ['cancel','refuse','draft'])])
-            leaves = sum(leaves_ids.mapped('number_of_days_temp'))
+            leaves = sum(leaves_ids.mapped('nos'))
             worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), leaves, regular)
             next_col += 1
             worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), absent_count, regular)
             next_col += 1
-            worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), att_acount+co_att_count, regular)
+            worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), non_att_count, regular)
             next_col += 1
-            # contract = self.env['hr.contract'].search([
-            #     ('employee_id', '=', emp.id), ('state', '=', 'active')], limit=1, order='id desc')
-            # worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), carry_forward, regular)
+            worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), att_acount+co_att_count, regular)
+            # worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), att_acount+co_att_count+sun_hol_att, regular)
+            next_col += 1
+            active_contract = self.env['hr.contract'].search(
+                [('employee_id', '=', emp.id), ('state', '=', 'active')])
 
+            employee_leave_id = active_contract.employee_leave_ids.search(
+                [('id', 'in', active_contract.employee_leave_ids.ids), ], limit=1, order='id desc')
+            worksheet.write('%s%s%s' % (chr(new_col), chr(next_col), row_no), employee_leave_id.remaining, regular)
             row_no+=1
 
 

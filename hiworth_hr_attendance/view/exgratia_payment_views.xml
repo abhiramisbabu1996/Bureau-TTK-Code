@@ -97,6 +97,20 @@
         </record>
 
 
+        <record id="exgratia_payment_tree_holiday" model="ir.ui.view">
+            <field name="name">Exgratia Payment</field>
+            <field name="model">exgratia.payment</field>
+            <field name="arch" type="xml">
+                <tree>
+                     <field name="employee_id" options="{'no_create':True}"/>
+                        <field name="date"/>
+                    <field name="attendance"/>
+                     <field name="remarks"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="exgratia_payment_tree" model="ir.ui.view">
             <field name="name">Exgratia Payment</field>
             <field name="model">exgratia.payment</field>
@@ -118,6 +132,7 @@
             <field name="view_type">form</field>
             <field name="target">current</field>
             <field name="view_id" ref="exgratia_payment_tree" />
+            <field name="domain">[('hours','!=',0.0)]</field>
         </record>
 
         <record id="action_holiday_working_days" model="ir.actions.act_window">
@@ -126,16 +141,22 @@
             <field name="view_mode">tree,form</field>
             <field name="view_type">form</field>
             <field name="target">current</field>
+            <field name="domain">[('attendance','in',['full','half'])]</field>
+                        <field name="view_id" ref="exgratia_payment_tree_holiday" />
+
+
         </record>
 
+<!--        <record id="action_holiday_working_hiworth_tree_view" model="ir.actions.act_window.view">-->
+<!--            <field name="view_mode">tree</field>-->
+<!--            <field name="view_id" ref="exgratia_payment_tree"/>-->
+<!--            <field name="act_window_id" ref="action_holiday_working_days"/>-->
+<!--        </record>-->
         <record id="action_holiday_working_hiworth_form_view" model="ir.actions.act_window.view">
             <field name="view_mode">form</field>
-            <field name="view_id" ref="exgratia_payment_form_holiday" />
-            <field name="act_window_id" ref="action_holiday_working_days" />
+            <field name="view_id" ref="exgratia_payment_form_holiday"/>
+            <field name="act_window_id" ref="action_holiday_working_days"/>
         </record>
-
-
-
 
         <menuitem name="Overtime"
                   id="menu_exgratia"
@@ -144,10 +165,10 @@
                   action="exgratia_payment_action"
                   groups="base.group_erp_manager,group_hr"/>
 
-        <menuitem name="Holiday Working attendance"
-                  id="menu_exgratia_holiday"
+        <menuitem name="Holiday/Sunday attendance"
+                  id="menu_exgratia_holiday_id"
                   parent="hiworth_hr_attendance.menu_attendance"
-                  sequence="3"
+                  sequence="4"
                   action="action_holiday_working_days"
                   groups="base.group_erp_manager,group_hr"/>
     </data>

@@ -724,6 +724,77 @@ class HrEmployee(models.Model):
                     "context": {'default_name': self[0].id}
                 }
 
+    @api.multi
+    def employee_attendance_regulise(self,start_date,end_date,emp):
+        attendance_obj = self.env['hiworth.hr.attendance']
+        absent_attendance_days = attendance_obj.search([('name', '=', emp.id),
+                                                        ('date', '>=', start_date),
+                                                        ('date', '<=', end_date),
+                                                        ('attendance', '=', 'absent')])
+
+        half_attendance_days = attendance_obj.search([('name', '=', emp.id),
+                                                      ('date', '>=', start_date),
+                                                      ('date', '<=', end_date),
+                                                      ('attendance', '=', 'half')])
+
+        exgratia = self.env['exgratia.payment']
+
+        exgratia_days_full = exgratia.search([('date', '>=', start_date),
+                                              ('date', '<=', end_date),
+                                              ('employee_id', '=', emp.id),('hours','=',0),
+                                              ('state', '!=', 'cancel'), ('attendance', '=', 'full')], )
+
+        exgratia_days_half = exgratia.search([('date', '>=', start_date),
+                                              ('date', '<=', end_date),
+                                              ('employee_id', '=', emp.id),
+                                              ('state', '!=', 'cancel'), ('attendance', '=', 'half')], )
+
+        sunday_holiday_att = (len(exgratia_days_full) + (len(exgratia_days_half) * 0.5))
+
+        active_contract = self.env['hr.contract'].search(
+            [('employee_id', '=', emp.id), ('state', '=', 'active')])
+
+        employee_leave_id = active_contract.employee_leave_ids.search(
+            [('id', 'in', active_contract.employee_leave_ids.ids), ], limit=1, order='id desc')
+        remaining = employee_leave_id.remaining
+        sun_hol_att = sunday_holiday_att
+        if sunday_holiday_att or len(half_attendance_days.ids) or len(absent_attendance_days.ids):
+            for absent_attendance in absent_attendance_days:
+                if sun_hol_att >= 1:
+                    absent_attendance.attendance = 'full'
+                    absent_attendance.compensatory_off = True
+                    sun_hol_att = sun_hol_att - 1
+
+                elif sun_hol_att == 0.5:
+                    absent_attendance.attendance = 'half'
+                    absent_attendance.half_compensatory_off = True
+                    sun_hol_att = sun_hol_att - 0.5
+                if not sun_hol_att:
+                    if remaining >= 1:
+                        absent_attendance.attendance = 'full'
+                        absent_attendance.compensatory_off = True
+                        employee_leave_id.availed += 1
+                        remaining = remaining - 1
+
+                    elif remaining == 0.5:
+                        absent_attendance.attendance = 'half'
+                        absent_attendance.half_compensatory_off = True
+                        employee_leave_id.availed += 0.5
+                        remaining = remaining - 0.5
+
+            for half_attendance in half_attendance_days:
+                if sun_hol_att:
+                    half_attendance.attendance = 'half'
+                    half_attendance.half_compensatory_off = True
+                    sun_hol_att = sun_hol_att - 0.5
+                else:
+                    if remaining:
+                        half_attendance.attendance = 'full'
+                        half_attendance.half_compensatory_off = True
+                        employee_leave_id.availed += 0.5
+                        remaining = remaining - 0.5
+
+        return sunday_holiday_att
 
 
 
@@ -948,19 +1019,21 @@ class HrPayslip(models.Model):
         payslip = self.browse(cr, uid, ids[0])
         # sequence_obj = self.pool.get('ir.sequence')
         # payslip.number = payslip.number or sequence_obj.get(cr, uid, 'salary.slip')
-
+        start_date = datetime.strptime(payslip.date_from, "%Y-%m-%d")
+        end_date = datetime.strptime(payslip.date_to, "%Y-%m-%d")
+        sunday_holiday_att = payslip.employee_id.employee_attendance_regulise(self,start_date,end_date,payslip.employee_id)
         exgratia = self.pool.get('exgratia.payment')
-        # exgratia_days = exgratia.search(cr, uid,
-
-        exgratia_days_full = exgratia.search(cr, uid,[('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
-                                         ('date', '<=', datetime.strptime(payslip.date_to, "%Y-%m-%d")),
-                                         ('employee_id', '=', payslip.employee_id.id),
-                                         ('state', '!=', 'cancel'),('attendance','=','full')], context=context)
-
-        exgratia_days_half = exgratia.search(cr, uid,[('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
-                                         ('date', '<=', datetime.strptime(payslip.date_to, "%Y-%m-%d")),
-                                         ('employee_id', '=', payslip.employee_id.id),
-                                         ('state', '!=', 'cancel'),('attendance','=','half')], context=context)
+        # # exgratia_days = exgratia.search(cr, uid,
+        #
+        # exgratia_days_full = exgratia.search(cr, uid,[('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
+        #                                  ('date', '<=', datetime.strptime(payslip.date_to, "%Y-%m-%d")),
+        #                                  ('employee_id', '=', payslip.employee_id.id),
+        #                                  ('state', '!=', 'cancel'),('attendance','=','full')], context=context)
+        #
+        # exgratia_days_half = exgratia.search(cr, uid,[('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
+        #                                  ('date', '<=', datetime.strptime(payslip.date_to, "%Y-%m-%d")),
+        #                                  ('employee_id', '=', payslip.employee_id.id),
+        #                                  ('state', '!=', 'cancel'),('attendance','=','half')], context=context)
 
         over_time = exgratia.search(cr, uid,[('date', '>=', datetime.strptime(payslip.date_from, "%Y-%m-%d")),
                                          ('date', '<=', datetime.strptime(payslip.date_to, "%Y-%m-%d")),
@@ -986,12 +1059,12 @@ class HrPayslip(models.Model):
              ('date','<=',datetime.strptime(payslip.date_to, "%Y-%m-%d")),
              ('attendance','=','absent')], context=context)
 
-        payslip.attendance = len(full_present)+(len(half)*0.5)+(len(exgratia_days_full)+(len(exgratia_days_half)*0.5))
+        payslip.attendance = len(full_present)+(len(half)*0.5)
         per_day_salary = payslip.basic_salary * 12 / 365
         per_hour_salary = per_day_salary / 8
         over_time =  sum(exgratia.browse(cr,uid,over_time).mapped('hours')) *  per_hour_salary
         payslip.over_time = over_time
-        lop_days = len(full_absent)+(len(half)*0.5)-(len(exgratia_days_full)+(len(exgratia_days_half)*0.5))
+        lop_days = len(full_absent)+(len(half)*0.5)
         payslip.lop = lop_days
         lop_amount = lop_days * per_day_salary
         payslip.lop_amount = lop_amount
