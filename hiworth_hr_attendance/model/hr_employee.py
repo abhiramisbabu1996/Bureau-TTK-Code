@@ -1021,7 +1021,7 @@ class HrPayslip(models.Model):
         # payslip.number = payslip.number or sequence_obj.get(cr, uid, 'salary.slip')
         start_date = datetime.strptime(payslip.date_from, "%Y-%m-%d")
         end_date = datetime.strptime(payslip.date_to, "%Y-%m-%d")
-        sunday_holiday_att = payslip.employee_id.employee_attendance_regulise(self,start_date,end_date,payslip.employee_id)
+        sunday_holiday_att = payslip.employee_id.employee_attendance_regulise(start_date,end_date,payslip.employee_id)
         exgratia = self.pool.get('exgratia.payment')
         # # exgratia_days = exgratia.search(cr, uid,
         #
